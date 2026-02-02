@@ -12,11 +12,14 @@ export default function Navbar() {
   const { items } = useCart();
   const fav = useFavorites();
 
+  // ✅ Hide navbar on admin pages (optional)
+  if (pathname.startsWith("/admin")) return null;
+
   const favCount = Array.isArray(fav?.favIds) ? fav.favIds.length : 0;
-  const cartCount = items.reduce((s, x) => s + (x.qty || 0), 0);
+  const cartCount = Array.isArray(items) ? items.reduce((s, x) => s + (x.qty || 0), 0) : 0;
 
   // ✅ language
-  const [lang, setLang] = useState(localStorage.getItem("lang") || "en");
+  const [lang, setLang] = useState(() => localStorage.getItem("lang") || "en");
   useEffect(() => localStorage.setItem("lang", lang), [lang]);
 
   const t = useMemo(() => {
@@ -36,13 +39,31 @@ export default function Navbar() {
     nav(`/shop?q=${encodeURIComponent(text)}`);
   };
 
+  // ✅ active helper (nested routes friendly)
+  const isActive = (to) => (to === "/" ? pathname === "/" : pathname.startsWith(to));
+
+  // ✅ Brand logo (replace with your image url / import)
+  // option-1: put file in /public/logo.png then use "/logo.png"
+  const LOGO = "/logo.png";
+
   return (
     <div className="nav glassNav">
-      <Link className="brand" to="/">
-        E-COM
+      {/* ✅ Brand (image) */}
+      <Link className="brand" to="/" style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        {/* যদি logo না থাকে, img remove করে E-COM লিখে দাও */}
+        <img
+          src={LOGO}
+          alt="logo"
+          style={{ width: 36, height: 36, borderRadius: 10, objectFit: "cover" }}
+          onError={(e) => {
+            // fallback: hide broken image
+            e.currentTarget.style.display = "none";
+          }}
+        />
+        <span style={{ fontWeight: 900, color: "#111" }}>The Curious Empire</span>
       </Link>
 
-      {/* ✅ Search on TOP border (navbar) */}
+      {/* ✅ Search on navbar */}
       <form className="navSearchWrap" onSubmit={doSearch}>
         <input
           className="navSearch"
@@ -69,12 +90,12 @@ export default function Navbar() {
         <span className="navDivider" />
 
         {/* ✅ Icon menu */}
-        <Link className={`navItem ${pathname === "/" ? "active" : ""}`} to="/">
+        <Link className={`navItem ${isActive("/") ? "active" : ""}`} to="/">
           <span className="navIcon">🏠</span>
           <span>{t.home}</span>
         </Link>
 
-        <Link className={`navItem ${pathname === "/cart" ? "active" : ""}`} to="/cart">
+        <Link className={`navItem ${isActive("/cart") ? "active" : ""}`} to="/cart">
           <span className="navIcon">🛒</span>
           <span>
             {t.cart} ({cartCount})
@@ -83,20 +104,20 @@ export default function Navbar() {
 
         {user ? (
           <>
-            <Link className={`navItem ${pathname === "/favorites" ? "active" : ""}`} to="/favorites">
+            <Link className={`navItem ${isActive("/favorites") ? "active" : ""}`} to="/favorites">
               <span className="navIcon">❤️</span>
               <span>
                 {t.priyo} ({favCount})
               </span>
             </Link>
 
-            <Link className={`navItem ${pathname === "/profile" ? "active" : ""}`} to="/profile">
+            <Link className={`navItem ${isActive("/profile") ? "active" : ""}`} to="/profile">
               <span className="navIcon">👤</span>
               <span>{t.profile}</span>
             </Link>
           </>
         ) : (
-          <Link className={`navItem ${pathname === "/login" ? "active" : ""}`} to="/login">
+          <Link className={`navItem ${isActive("/login") ? "active" : ""}`} to="/login">
             <span className="navIcon">🔑</span>
             <span>{t.login}</span>
           </Link>
