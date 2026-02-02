@@ -19,12 +19,12 @@ export default function BottomNav() {
     <div className="bottomNav">
       <NavLink to="/" className={({ isActive }) => (isActive ? "bnItem active" : "bnItem")}>
         <span className="bnIcon">🏠</span>
-        <span className="bnText">Home</span>
+        <span className="bnTxt">Home</span>
       </NavLink>
 
       <NavLink to="/shop" className={({ isActive }) => (isActive ? "bnItem active" : "bnItem")}>
         <span className="bnIcon">🛍️</span>
-        <span className="bnText">Shop</span>
+        <span className="bnTxt">Shop</span>
       </NavLink>
 
       <div className="bnDivider" />
@@ -34,7 +34,7 @@ export default function BottomNav() {
           🛒
           {cartCount > 0 ? <i className="bnBadge">{cartCount}</i> : null}
         </span>
-        <span className="bnText">Cart</span>
+        <span className="bnTxt">Cart</span>
       </NavLink>
 
       <NavLink to="/favorites" className={({ isActive }) => (isActive ? "bnItem active" : "bnItem")}>
@@ -42,7 +42,7 @@ export default function BottomNav() {
           ❤️
           {favCount > 0 ? <i className="bnBadge">{favCount}</i> : null}
         </span>
-        <span className="bnText">Priyo</span>
+        <span className="bnTxt">Priyo</span>
       </NavLink>
 
       <NavLink
@@ -50,7 +50,7 @@ export default function BottomNav() {
         className={({ isActive }) => (isActive ? "bnItem active" : "bnItem")}
       >
         <span className="bnIcon">👤</span>
-        <span className="bnText">{user ? "Profile" : "Login"}</span>
+        <span className="bnTxt">{user ? "Profile" : "Login"}</span>
       </NavLink>
     </div>
   );
