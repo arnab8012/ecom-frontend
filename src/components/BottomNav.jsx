@@ -9,7 +9,7 @@ export default function BottomNav() {
   const { user } = useAuth();
   const loc = useLocation();
 
-  // ✅ Admin pages এ bottom nav hide (চাইলে)
+  // ✅ Admin pages এ bottom nav hide
   if (loc.pathname.startsWith("/admin")) return null;
 
   const cartCount = (items || []).reduce((s, x) => s + (x.qty || 0), 0);
@@ -26,8 +26,6 @@ export default function BottomNav() {
         <span className="bnIcon">🛍️</span>
         <span className="bnTxt">Shop</span>
       </NavLink>
-
-      <div className="bnDivider" />
 
       <NavLink to="/cart" className={({ isActive }) => (isActive ? "bnItem active" : "bnItem")}>
         <span className="bnIcon">
