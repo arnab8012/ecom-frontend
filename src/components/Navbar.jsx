@@ -12,58 +12,44 @@ export default function Navbar() {
   const { items } = useCart();
   const fav = useFavorites();
 
-  // ✅ Hide navbar on admin pages (optional)
-  if (pathname.startsWith("/admin")) return null;
-
+  const cartCount = items.reduce((s, x) => s + (x.qty || 0), 0);
   const favCount = Array.isArray(fav?.favIds) ? fav.favIds.length : 0;
-  const cartCount = Array.isArray(items) ? items.reduce((s, x) => s + (x.qty || 0), 0) : 0;
 
-  // ✅ language
-  const [lang, setLang] = useState(() => localStorage.getItem("lang") || "en");
+  /* ✅ language */
+  const [lang, setLang] = useState(localStorage.getItem("lang") || "en");
   useEffect(() => localStorage.setItem("lang", lang), [lang]);
 
   const t = useMemo(() => {
     const dict = {
-      en: { home: "Home", cart: "Cart", priyo: "Priyo", profile: "Profile", login: "Login" },
-      bn: { home: "হোম", cart: "কার্ট", priyo: "প্রিয়", profile: "প্রোফাইল", login: "লগইন" },
+      en: { home: "Home", cart: "Cart", fav: "Favorite", login: "Login", profile: "Profile" },
+      bn: { home: "হোম", cart: "কার্ট", fav: "প্রিয়", login: "লগইন", profile: "প্রোফাইল" },
     };
-    return dict[lang] || dict.en;
+    return dict[lang];
   }, [lang]);
 
-  // ✅ navbar search (go shop)
+  /* ✅ search */
   const [q, setQ] = useState("");
   const doSearch = (e) => {
     e.preventDefault();
-    const text = q.trim();
-    if (!text) return;
-    nav(`/shop?q=${encodeURIComponent(text)}`);
+    if (!q.trim()) return;
+    nav(`/shop?q=${encodeURIComponent(q)}`);
+    setOpen(false);
   };
 
-  // ✅ active helper (nested routes friendly)
-  const isActive = (to) => (to === "/" ? pathname === "/" : pathname.startsWith(to));
+  /* ✅ hamburger menu */
+  const [open, setOpen] = useState(false);
 
-  // ✅ Brand logo (replace with your image url / import)
-  // option-1: put file in /public/logo.png then use "/logo.png"
-  const LOGO = "/logo.png";
+  // ❌ admin page এ navbar hide
+  if (pathname.startsWith("/admin")) return null;
 
   return (
     <div className="nav glassNav">
-      {/* ✅ Brand (image) */}
-      <Link className="brand" to="/" style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        {/* যদি logo না থাকে, img remove করে E-COM লিখে দাও */}
-        <img
-          src={LOGO}
-          alt="logo"
-          style={{ width: 36, height: 36, borderRadius: 10, objectFit: "cover" }}
-          onError={(e) => {
-            // fallback: hide broken image
-            e.currentTarget.style.display = "none";
-          }}
-        />
-        <span style={{ fontWeight: 900, color: "#111" }}>The Curious Empire</span>
+      {/* Logo */}
+      <Link className="brand" to="/">
+        <img src="/logo.png" alt="logo" height="28" />
       </Link>
 
-      {/* ✅ Search on navbar */}
+      {/* Search */}
       <form className="navSearchWrap" onSubmit={doSearch}>
         <input
           className="navSearch"
@@ -71,58 +57,49 @@ export default function Navbar() {
           onChange={(e) => setQ(e.target.value)}
           placeholder={lang === "bn" ? "পণ্য খুঁজুন..." : "Search products..."}
         />
-        <button className="navSearchBtn" type="submit">
-          {lang === "bn" ? "খুঁজুন" : "Search"}
-        </button>
       </form>
 
-      <div className="navRight">
-        {/* ✅ Language Toggle */}
-        <button
-          className="langBtn"
-          type="button"
-          onClick={() => setLang((x) => (x === "en" ? "bn" : "en"))}
-          title="Language"
-        >
-          {lang === "en" ? "EN" : "BN"}
-        </button>
+      {/* ☰ Menu button */}
+      <button className="menuBtn" onClick={() => setOpen((x) => !x)}>
+        ☰
+      </button>
 
-        <span className="navDivider" />
-
-        {/* ✅ Icon menu */}
-        <Link className={`navItem ${isActive("/") ? "active" : ""}`} to="/">
-          <span className="navIcon">🏠</span>
-          <span>{t.home}</span>
-        </Link>
-
-        <Link className={`navItem ${isActive("/cart") ? "active" : ""}`} to="/cart">
-          <span className="navIcon">🛒</span>
-          <span>
-            {t.cart} ({cartCount})
-          </span>
-        </Link>
-
-        {user ? (
-          <>
-            <Link className={`navItem ${isActive("/favorites") ? "active" : ""}`} to="/favorites">
-              <span className="navIcon">❤️</span>
-              <span>
-                {t.priyo} ({favCount})
-              </span>
-            </Link>
-
-            <Link className={`navItem ${isActive("/profile") ? "active" : ""}`} to="/profile">
-              <span className="navIcon">👤</span>
-              <span>{t.profile}</span>
-            </Link>
-          </>
-        ) : (
-          <Link className={`navItem ${isActive("/login") ? "active" : ""}`} to="/login">
-            <span className="navIcon">🔑</span>
-            <span>{t.login}</span>
+      {/* Dropdown menu */}
+      {open && (
+        <div className="menuDrop glass">
+          <Link onClick={() => setOpen(false)} to="/">
+            🏠 {t.home}
           </Link>
-        )}
-      </div>
+
+          <Link onClick={() => setOpen(false)} to="/cart">
+            🛒 {t.cart} ({cartCount})
+          </Link>
+
+          {user ? (
+            <>
+              <Link onClick={() => setOpen(false)} to="/favorites">
+                ❤️ {t.fav} ({favCount})
+              </Link>
+              <Link onClick={() => setOpen(false)} to="/profile">
+                👤 {t.profile}
+              </Link>
+            </>
+          ) : (
+            <Link onClick={() => setOpen(false)} to="/login">
+              🔑 {t.login}
+            </Link>
+          )}
+
+          <hr />
+
+          <button
+            className="langBtn"
+            onClick={() => setLang((l) => (l === "en" ? "bn" : "en"))}
+          >
+            🌐 {lang === "en" ? "বাংলা" : "English"}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
