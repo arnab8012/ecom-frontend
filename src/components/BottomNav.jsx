@@ -1,53 +1,57 @@
-import { Link, useLocation } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { NavLink, useLocation } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useFavorites } from "../context/FavoritesContext";
+import { useAuth } from "../context/AuthContext";
 
 export default function BottomNav() {
-  const { user } = useAuth();
   const { items } = useCart();
-  const fav = useFavorites();
+  const { favIds } = useFavorites();
+  const { user } = useAuth();
   const loc = useLocation();
 
-  const cartCount = items.reduce((s, x) => s + (x.qty || 0), 0);
-  const favCount = Array.isArray(fav?.favIds) ? fav.favIds.length : 0;
+  // ✅ Admin pages এ bottom nav hide (চাইলে)
+  if (loc.pathname.startsWith("/admin")) return null;
 
-  const active = (path) => (loc.pathname === path ? "bnItem active" : "bnItem");
+  const cartCount = (items || []).reduce((s, x) => s + (x.qty || 0), 0);
+  const favCount = Array.isArray(favIds) ? favIds.length : 0;
 
   return (
     <div className="bottomNav">
-      <Link className={active("/")} to="/">
-        <div className="bnIcon">🏠</div>
-        <div className="bnTxt">Home</div>
-      </Link>
+      <NavLink to="/" className={({ isActive }) => (isActive ? "bnItem active" : "bnItem")}>
+        <span className="bnIcon">🏠</span>
+        <span className="bnText">Home</span>
+      </NavLink>
 
-      <Link className={active("/shop")} to="/shop">
-        <div className="bnIcon">🛍️</div>
-        <div className="bnTxt">Shop</div>
-      </Link>
+      <NavLink to="/shop" className={({ isActive }) => (isActive ? "bnItem active" : "bnItem")}>
+        <span className="bnIcon">🛍️</span>
+        <span className="bnText">Shop</span>
+      </NavLink>
 
-      <Link className={active("/cart")} to="/cart">
-        <div className="bnIcon">
+      <div className="bnDivider" />
+
+      <NavLink to="/cart" className={({ isActive }) => (isActive ? "bnItem active" : "bnItem")}>
+        <span className="bnIcon">
           🛒
-          {cartCount > 0 && <span className="bnBadge">{cartCount}</span>}
-        </div>
-        <div className="bnTxt">Cart</div>
-      </Link>
+          {cartCount > 0 ? <i className="bnBadge">{cartCount}</i> : null}
+        </span>
+        <span className="bnText">Cart</span>
+      </NavLink>
 
-      {user ? (
-        <Link className={active("/favorites")} to="/favorites">
-          <div className="bnIcon">
-            ❤️
-            {favCount > 0 && <span className="bnBadge">{favCount}</span>}
-          </div>
-          <div className="bnTxt">Priyo</div>
-        </Link>
-      ) : (
-        <Link className={active("/login")} to="/login">
-          <div className="bnIcon">🔑</div>
-          <div className="bnTxt">Login</div>
-        </Link>
-      )}
+      <NavLink to="/favorites" className={({ isActive }) => (isActive ? "bnItem active" : "bnItem")}>
+        <span className="bnIcon">
+          ❤️
+          {favCount > 0 ? <i className="bnBadge">{favCount}</i> : null}
+        </span>
+        <span className="bnText">Priyo</span>
+      </NavLink>
+
+      <NavLink
+        to={user ? "/profile" : "/login"}
+        className={({ isActive }) => (isActive ? "bnItem active" : "bnItem")}
+      >
+        <span className="bnIcon">👤</span>
+        <span className="bnText">{user ? "Profile" : "Login"}</span>
+      </NavLink>
     </div>
   );
 }
