@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 
 import Home from "./pages/Home";
@@ -52,6 +52,7 @@ export default function App() {
               </PrivateRoute>
             }
           />
+
           <Route
             path="/profile"
             element={
@@ -60,6 +61,7 @@ export default function App() {
               </PrivateRoute>
             }
           />
+
           <Route
             path="/favorites"
             element={
@@ -68,6 +70,7 @@ export default function App() {
               </PrivateRoute>
             }
           />
+
           <Route
             path="/settings"
             element={
@@ -76,6 +79,7 @@ export default function App() {
               </PrivateRoute>
             }
           />
+
           <Route
             path="/settings/edit"
             element={
@@ -85,7 +89,7 @@ export default function App() {
             }
           />
 
-          {/* Admin */}
+          {/* ✅ Admin */}
           <Route path="/admin/login" element={<AdminLogin />} />
 
           <Route
@@ -97,7 +101,6 @@ export default function App() {
             }
           />
 
-          {/* ✅ IMPORTANT: এগুলোও AdminRoute দিয়ে protect করলাম */}
           <Route
             path="/admin/products"
             element={
@@ -106,6 +109,7 @@ export default function App() {
               </AdminRoute>
             }
           />
+
           <Route
             path="/admin/orders"
             element={
@@ -114,6 +118,7 @@ export default function App() {
               </AdminRoute>
             }
           />
+
           <Route
             path="/admin/categories"
             element={
@@ -122,6 +127,7 @@ export default function App() {
               </AdminRoute>
             }
           />
+
           <Route
             path="/admin/banners"
             element={
@@ -131,8 +137,8 @@ export default function App() {
             }
           />
 
-          {/* ✅ FIX: Fallback */}
-          <Route path="*" element={<Navigate to="/" replace />} />
+          {/* Fallback */}
+          <Route path="*" element={<Home />} />
         </Routes>
       </div>
 
