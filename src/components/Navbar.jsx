@@ -42,7 +42,6 @@ export default function Navbar() {
   };
 
   // ✅ 3-line menu
-  const [open, setOpen] = useState(false);
   const menuRef = useRef(null);
 
   // outside click -> close
