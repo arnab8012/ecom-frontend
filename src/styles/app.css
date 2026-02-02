@@ -200,6 +200,57 @@ body{
   padding-bottom: 72px;
 }
 
+/* ✅ Bottom Mobile Navigation */
+.bottomNav{
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 99;
+
+  display: none; /* desktop এ hide */
+  justify-content: space-around;
+  align-items: center;
+
+  height: 64px;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(14px);
+  border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+.bItem{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:2px;
+
+  text-decoration:none;
+  color:#444;
+  font-size:11px;
+  font-weight:800;
+}
+
+.bIcon{
+  font-size:20px;
+}
+
+.bItem.active{
+  color: var(--pink);
+}
+
+/* 📱 only mobile */
+@media (max-width: 800px){
+  .bottomNav{
+    display:flex;
+  }
+
+  /* content যেন bar এর নিচে না ঢুকে */
+  body{
+    padding-bottom: 72px;
+  }
+}
+
 /* =========================
    ✅ COMMON UI
 ========================= */
