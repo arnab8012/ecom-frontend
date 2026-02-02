@@ -3,10 +3,12 @@ import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import { useFavorites } from "../context/FavoritesContext";
 import { useEffect, useMemo, useRef, useState } from "react";
+import MobileMenu from "./MobileMenu";
 
 export default function Navbar() {
   const nav = useNavigate();
   const { pathname } = useLocation();
+  const [open, setOpen] = useState(false);
 
   const { user } = useAuth();
   const { items } = useCart();
@@ -81,6 +83,13 @@ export default function Navbar() {
         />
         <span style={{ fontWeight: 900, color: "#111" }}>The Curious Empire</span>
       </Link>
+return (
+    <>
+      <button onClick={() => setOpen(true)}>☰</button>
+      <MobileMenu open={open} onClose={() => setOpen(false)} />
+    </>
+  );
+}
 
       {/* ✅ Search */}
       <form className="navSearchWrap" onSubmit={doSearch}>
