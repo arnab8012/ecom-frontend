@@ -93,6 +93,15 @@ export default function App() {
               </PrivateRoute>
             }
           />
+<>
+  <Navbar />
+
+  <Routes>
+    {/* routes */}
+  </Routes>
+
+  <BottomNav />
+</>
 
           {/* Admin */}
           <Route path="/admin/login" element={<AdminLogin />} />
@@ -108,6 +117,7 @@ export default function App() {
           <Route path="/admin/orders" element={<AdminOrders />} />
           <Route path="/admin/categories" element={<AdminCategories />} />
           <Route path="/admin/banners" element={<AdminBanners />} />
+
 
           {/* Fallback */}
           <Route path="*" element={<Home />} />
