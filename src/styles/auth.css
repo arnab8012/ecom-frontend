@@ -1,0 +1,14 @@
+.authWrap{
+  min-height: calc(100vh - 60px);
+  display:flex; align-items:center; justify-content:center;
+  padding:20px;
+}
+.authCard{
+  width: 100%;
+  max-width: 420px;
+  background:#fff; border:1px solid #eee;
+  border-radius:18px; padding:18px;
+  box-shadow:0 10px 30px rgba(0,0,0,.06);
+}
+.authTitle{ margin:0 0 10px; text-align:center; color:#ff007a; }
+.center{ text-align:center; }
