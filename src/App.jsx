@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 
 import Home from "./pages/Home";
@@ -23,8 +23,6 @@ import AdminCategories from "./pages/admin/AdminCategories";
 import AdminBanners from "./pages/admin/AdminBanners";
 
 import PrivateRoute from "./components/PrivateRoute";
-
-// ✅ ADD: bottom nav
 import BottomNav from "./components/BottomNav";
 
 import "./styles/app.css";
@@ -32,10 +30,8 @@ import "./styles/app.css";
 export default function App() {
   return (
     <>
-      {/* ✅ Top Navbar */}
       <Navbar />
 
-      {/* ✅ Wrapper (bottom nav এর জন্য padding) */}
       <div style={{ paddingBottom: 80 }}>
         <Routes>
           {/* Public */}
@@ -47,7 +43,7 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
-          {/* Private (must login) */}
+          {/* Private */}
           <Route
             path="/checkout"
             element={
@@ -56,7 +52,6 @@ export default function App() {
               </PrivateRoute>
             }
           />
-
           <Route
             path="/profile"
             element={
@@ -65,7 +60,6 @@ export default function App() {
               </PrivateRoute>
             }
           />
-
           <Route
             path="/favorites"
             element={
@@ -74,7 +68,6 @@ export default function App() {
               </PrivateRoute>
             }
           />
-
           <Route
             path="/settings"
             element={
@@ -83,7 +76,6 @@ export default function App() {
               </PrivateRoute>
             }
           />
-
           <Route
             path="/settings/edit"
             element={
@@ -95,6 +87,7 @@ export default function App() {
 
           {/* Admin */}
           <Route path="/admin/login" element={<AdminLogin />} />
+
           <Route
             path="/admin"
             element={
@@ -103,17 +96,46 @@ export default function App() {
               </AdminRoute>
             }
           />
-          <Route path="/admin/products" element={<AdminProducts />} />
-          <Route path="/admin/orders" element={<AdminOrders />} />
-          <Route path="/admin/categories" element={<AdminCategories />} />
-          <Route path="/admin/banners" element={<AdminBanners />} />
 
-          {/* Fallback */}
-          <Route path="*" element={<Home />} />
+          {/* ✅ IMPORTANT: এগুলোও AdminRoute দিয়ে protect করলাম */}
+          <Route
+            path="/admin/products"
+            element={
+              <AdminRoute>
+                <AdminProducts />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/orders"
+            element={
+              <AdminRoute>
+                <AdminOrders />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/categories"
+            element={
+              <AdminRoute>
+                <AdminCategories />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/banners"
+            element={
+              <AdminRoute>
+                <AdminBanners />
+              </AdminRoute>
+            }
+          />
+
+          {/* ✅ FIX: Fallback */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
 
-      {/* ✅ Bottom Bar (সব পেজে দেখাবে) */}
       <BottomNav />
     </>
   );
