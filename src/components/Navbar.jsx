@@ -41,8 +41,7 @@ export default function Navbar() {
     nav(`/shop?q=${encodeURIComponent(text)}`);
   };
 
-  // ✅ 3-line menu
-  const menuRef = useRef(null);
+ 
 
   // outside click -> close
   useEffect(() => {
@@ -103,18 +102,7 @@ return (
         </button>
       </form>
 
-      {/* ✅ Right: 3-line menu */}
-      <div className="navRight" ref={menuRef}>
-        <button
-          type="button"
-          className="menuBtn"
-          aria-label="Menu"
-          aria-expanded={open}
-          onClick={() => setOpen((x) => !x)}
-        >
-          ☰
-        </button>
-
+      
         {open && (
           <div className="menuDrop glass">
             {/* ✅ Language row */}
