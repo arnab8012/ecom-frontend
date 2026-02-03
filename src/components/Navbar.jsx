@@ -70,6 +70,9 @@ export default function Navbar() {
             </button>
           ) : (
             <button
-              className="profileCircle"
-              onClick={() => nav("/login")}
-              title
+  className="profileCircle"
+  onClick={() => nav(user ? "/profile" : "/login")}
+  title={user ? "Profile" : "Login"}
+>
+  {user ? "👤" : "🔑"}
+</button>
