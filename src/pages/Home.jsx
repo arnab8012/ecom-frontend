@@ -67,57 +67,63 @@ export default function Home() {
 
   return (
     <div className="container homeWrap" style={{ paddingBottom: 90 }}>
-      {/* ✅ welcome bar */}
-      <div className="welcomeBar">
-        <div className="welcomeLeft">
-          <div className="welcomeTitle">The Curious Empire</div>
-          <div className="welcomeSub">Premium Shopping Experience</div>
+      {/* ✅ BIG GREEN HERO like screenshot-2 */}
+      <div className="heroGreenShell">
+        {/* ✅ welcome bar (same as yours) */}
+        <div className="welcomeBar">
+          <div className="welcomeLeft">
+            <div className="welcomeTitle">The Curious Empire</div>
+            <div className="welcomeSub">Premium Shopping Experience</div>
+          </div>
+          <div className="welcomeBadge">✨ Premium</div>
         </div>
-        <div className="welcomeBadge">✨ Premium</div>
-      </div>
 
-      {/* ✅ Banner (DEMO U-CURVE CUT) */}
-      {bannerUrls.length > 0 && (
-        <div className="heroBannerWrap">
-          <div className="heroBanner">
-            <div
-              className="bannerTrack"
-              style={{
-                width: `${bannerUrls.length * 100}%`,
-                transform: `translateX(-${slide * (100 / bannerUrls.length)}%)`,
-              }}
-            >
-              {bannerUrls.map((url, i) => (
-                <div
-                  key={i}
-                  className="bannerSlide"
-                  style={{ width: `${100 / bannerUrls.length}%` }}
-                >
-                  <img className="bannerImg" src={url} alt="banner" />
-                </div>
-              ))}
-            </div>
-
-            {/* ✅ dots (always above curve) */}
-            {bannerUrls.length > 1 && (
-              <div className="bannerDots">
-                {bannerUrls.map((_, i) => (
-                  <button
+        {/* ✅ Banner (DEMO U-CURVE CUT) */}
+        {bannerUrls.length > 0 && (
+          <div className="heroBannerWrap">
+            <div className="heroBanner">
+              <div
+                className="bannerTrack"
+                style={{
+                  width: `${bannerUrls.length * 100}%`,
+                  transform: `translateX(-${slide * (100 / bannerUrls.length)}%)`,
+                }}
+              >
+                {bannerUrls.map((url, i) => (
+                  <div
                     key={i}
-                    className={`dot ${i === slide ? "active" : ""}`}
-                    onClick={() => setSlide(i)}
-                    type="button"
-                    aria-label={`banner-${i}`}
-                  />
+                    className="bannerSlide"
+                    style={{ width: `${100 / bannerUrls.length}%` }}
+                  >
+                    <img className="bannerImg" src={url} alt="banner" />
+                  </div>
                 ))}
               </div>
-            )}
 
-            {/* ✅ U-shape cut element (inside banner) */}
-            <div className="bannerUCut" aria-hidden="true" />
+              {/* ✅ dots (always above curve) */}
+              {bannerUrls.length > 1 && (
+                <div className="bannerDots">
+                  {bannerUrls.map((_, i) => (
+                    <button
+                      key={i}
+                      className={`dot ${i === slide ? "active" : ""}`}
+                      onClick={() => setSlide(i)}
+                      type="button"
+                      aria-label={`banner-${i}`}
+                    />
+                  ))}
+                </div>
+              )}
+
+              {/* ✅ U-shape cut element (inside banner) */}
+              <div className="bannerUCut" aria-hidden="true" />
+            </div>
           </div>
-        </div>
-      )}
+        )}
+
+        {/* ✅ curve cut of the green hero area */}
+        <div className="heroGreenCurve" aria-hidden="true" />
+      </div>
 
       {/* ✅ Categories */}
       {cats.length > 0 && (
