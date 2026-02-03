@@ -67,8 +67,8 @@ export default function Home() {
 
   return (
     <div className="container homeWrap" style={{ paddingBottom: 90 }}>
-      {/* ✅ Slim welcome bar */}
-      <div className="welcomeBar glass">
+      {/* ✅ welcome bar */}
+      <div className="welcomeBar">
         <div className="welcomeLeft">
           <div className="welcomeTitle">The Curious Empire</div>
           <div className="welcomeSub">Premium Shopping Experience</div>
@@ -76,10 +76,10 @@ export default function Home() {
         <div className="welcomeBadge">✨ Premium</div>
       </div>
 
-      {/* ✅ Banner + Curve */}
+      {/* ✅ Banner with curve bottom */}
       {bannerUrls.length > 0 && (
-        <div className="bannerShell">
-          <div className="bannerBox glass bannerSlim">
+        <div className="heroBannerWrap">
+          <div className="heroBanner">
             <div
               className="bannerTrack"
               style={{
@@ -88,7 +88,11 @@ export default function Home() {
               }}
             >
               {bannerUrls.map((url, i) => (
-                <div key={i} className="bannerSlide" style={{ width: `${100 / bannerUrls.length}%` }}>
+                <div
+                  key={i}
+                  className="bannerSlide"
+                  style={{ width: `${100 / bannerUrls.length}%` }}
+                >
                   <img className="bannerImg" src={url} alt="banner" />
                 </div>
               ))}
@@ -109,12 +113,11 @@ export default function Home() {
             )}
           </div>
 
-          {/* curve নিচে */}
-          <div className="bannerCurve" />
+          <div className="heroCurve" />
         </div>
       )}
 
-      {/* ✅ Premium Categories slider */}
+      {/* ✅ Categories slider (premium cards) */}
       {cats.length > 0 && (
         <div className="homeSection">
           <div className="secTop">
@@ -124,15 +127,15 @@ export default function Home() {
             </Link>
           </div>
 
-          <div className="catRow premiumCatRow">
+          <div className="catRow">
             {cats.map((c) => (
               <button
                 key={c._id}
-                className="catItem premiumCatItem"
+                className="catItem"
                 type="button"
                 onClick={() => nav(`/shop?category=${c._id}`)}
               >
-                <div className="catIcon premiumCatIcon">
+                <div className="catIcon">
                   <img
                     src={c.image || "https://via.placeholder.com/160"}
                     alt={c.name}
@@ -143,8 +146,7 @@ export default function Home() {
                     }}
                   />
                 </div>
-
-                <div className="catName premiumCatName">{c.name}</div>
+                <div className="catName">{c.name}</div>
               </button>
             ))}
           </div>
@@ -153,7 +155,7 @@ export default function Home() {
 
       {loading && <p style={{ padding: "12px 0" }}>Loading...</p>}
 
-      {/* ✅ Products grouped by category — 2 column + 2 products */}
+      {/* ✅ Products grouped by category — 2 column like demo */}
       {cats.map((c) => {
         const list = byCat.get(c._id) || [];
         if (!list.length) return null;
@@ -168,8 +170,8 @@ export default function Home() {
               </Link>
             </div>
 
-            <div className="homeGrid2">
-              {take(list, 2).map((p) => (
+            <div className="homeTwoGrid">
+              {take(list, 4).map((p) => (
                 <div key={p._id} style={{ width: "100%" }}>
                   <ProductCard p={p} />
                 </div>
