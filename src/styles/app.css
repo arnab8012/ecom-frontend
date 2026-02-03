@@ -242,8 +242,8 @@ body{
 }
 
 @media (max-width: 800px){
-  .heroGreenShell{ min-height: 100px; }
-  .heroBanner{ height: 100px; }
+  .heroGreenShell{ min-height: 200px; }
+  .heroBanner{ height: 200px; }
   .heroGreenCurve{
     height: 76px;
     border-top-left-radius: 100% 76px;
