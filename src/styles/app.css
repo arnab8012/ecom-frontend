@@ -233,7 +233,7 @@ body{
   left: 12%;
   right: 12%;
   bottom:-1px;
-  height: -50px;
+  height: -20px;
   background: var(--bg);
   border-top-left-radius: 100% 90px;
   border-top-right-radius: 100% 90px;
