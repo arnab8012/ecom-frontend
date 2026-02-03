@@ -67,7 +67,7 @@ export default function Home() {
 
   return (
     <div className="container homeWrap" style={{ paddingBottom: 90 }}>
-      {/* ✅ welcome bar */}
+      {/* ✅ welcome bar (same) */}
       <div className="welcomeBar">
         <div className="welcomeLeft">
           <div className="welcomeTitle">The Curious Empire</div>
@@ -76,12 +76,12 @@ export default function Home() {
         <div className="welcomeBadge">✨ Premium</div>
       </div>
 
-      {/* ✅ Banner with curve bottom */}
+      {/* ✅ Banner (demo মতো বড় + নিচে curve) */}
       {bannerUrls.length > 0 && (
-        <div className="heroBannerWrap">
-          <div className="heroBanner">
+        <div className="demoHero">
+          <div className="demoHeroInner">
             <div
-              className="bannerTrack"
+              className="demoBannerTrack"
               style={{
                 width: `${bannerUrls.length * 100}%`,
                 transform: `translateX(-${slide * (100 / bannerUrls.length)}%)`,
@@ -90,20 +90,20 @@ export default function Home() {
               {bannerUrls.map((url, i) => (
                 <div
                   key={i}
-                  className="bannerSlide"
+                  className="demoBannerSlide"
                   style={{ width: `${100 / bannerUrls.length}%` }}
                 >
-                  <img className="bannerImg" src={url} alt="banner" />
+                  <img className="demoBannerImg" src={url} alt="banner" />
                 </div>
               ))}
             </div>
 
             {bannerUrls.length > 1 && (
-              <div className="bannerDots">
+              <div className="demoDots">
                 {bannerUrls.map((_, i) => (
                   <button
                     key={i}
-                    className={`dot ${i === slide ? "active" : ""}`}
+                    className={`demoDot ${i === slide ? "active" : ""}`}
                     onClick={() => setSlide(i)}
                     type="button"
                     aria-label={`banner-${i}`}
@@ -113,49 +113,59 @@ export default function Home() {
             )}
           </div>
 
-          <div className="heroCurve" />
+          {/* ✅ curve */}
+          <div className="demoHeroCurve" />
         </div>
       )}
 
-      {/* ✅ Categories slider (premium cards) */}
+      {/* ✅ Categories (demo মতো box cards + ডানে see all green card) */}
       {cats.length > 0 && (
-        <div className="homeSection">
-          <div className="secTop">
-            <h3 className="secTitle">Categories</h3>
-            <Link className="seeMore" to="/shop">
+        <div className="demoCatsSection">
+          <div className="demoCatsTop">
+            <div className="demoCatsTitle">Categories</div>
+            <Link className="demoCatsMore" to="/shop">
               See more
             </Link>
           </div>
 
-          <div className="catRow">
-            {cats.map((c) => (
+          <div className="demoCatsRow">
+            {cats.slice(0, 5).map((c) => (
               <button
                 key={c._id}
-                className="catItem"
+                className="demoCatCard"
                 type="button"
                 onClick={() => nav(`/shop?category=${c._id}`)}
               >
-                <div className="catIcon">
-                  <img
-                    src={c.image || "https://via.placeholder.com/160"}
-                    alt={c.name}
-                    loading="lazy"
-                    onError={(e) => {
-                      e.currentTarget.onerror = null;
-                      e.currentTarget.src = "https://via.placeholder.com/160";
-                    }}
-                  />
-                </div>
-                <div className="catName">{c.name}</div>
+                <img
+                  className="demoCatImg"
+                  src={c.image || "https://via.placeholder.com/220x140"}
+                  alt={c.name}
+                  loading="lazy"
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = "https://via.placeholder.com/220x140";
+                  }}
+                />
               </button>
             ))}
+
+            {/* ✅ demo এর মতো "See all" card */}
+            <button
+              type="button"
+              className="demoSeeAll"
+              onClick={() => nav("/shop")}
+              aria-label="see all categories"
+            >
+              <span className="demoSeeAllIcon">→</span>
+              <span className="demoSeeAllTxt">See all</span>
+            </button>
           </div>
         </div>
       )}
 
       {loading && <p style={{ padding: "12px 0" }}>Loading...</p>}
 
-      {/* ✅ Products grouped by category — 2 column like demo */}
+      {/* ✅ Products grouped by category — 2 column (demo মতো) */}
       {cats.map((c) => {
         const list = byCat.get(c._id) || [];
         if (!list.length) return null;
