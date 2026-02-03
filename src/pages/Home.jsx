@@ -67,18 +67,9 @@ export default function Home() {
 
   return (
     <div className="container homeWrap" style={{ paddingBottom: 90 }}>
-      {/* ✅ BIG GREEN HERO like screenshot-2 */}
+      {/* ✅ FULL HERO IMAGE AREA (the whole orange-marked section) */}
       <div className="heroGreenShell">
-        {/* ✅ welcome bar (same as yours) */}
-        <div className="welcomeBar">
-          <div className="welcomeLeft">
-            <div className="welcomeTitle">The Curious Empire</div>
-            <div className="welcomeSub">Premium Shopping Experience</div>
-          </div>
-          <div className="welcomeBadge">✨ Premium</div>
-        </div>
-
-        {/* ✅ Banner (DEMO U-CURVE CUT) */}
+        {/* ✅ banner fills whole hero */}
         {bannerUrls.length > 0 && (
           <div className="heroBannerWrap">
             <div className="heroBanner">
@@ -100,7 +91,7 @@ export default function Home() {
                 ))}
               </div>
 
-              {/* ✅ dots (always above curve) */}
+              {/* ✅ dots */}
               {bannerUrls.length > 1 && (
                 <div className="bannerDots">
                   {bannerUrls.map((_, i) => (
@@ -114,14 +105,20 @@ export default function Home() {
                   ))}
                 </div>
               )}
-
-              {/* ✅ U-shape cut element (inside banner) */}
-              <div className="bannerUCut" aria-hidden="true" />
             </div>
           </div>
         )}
 
-        {/* ✅ curve cut of the green hero area */}
+        {/* ✅ welcome overlay */}
+        <div className="welcomeBar">
+          <div className="welcomeLeft">
+            <div className="welcomeTitle">The Curious Empire</div>
+            <div className="welcomeSub">Premium Shopping Experience</div>
+          </div>
+          <div className="welcomeBadge">✨ Premium</div>
+        </div>
+
+        {/* ✅ ONE SINGLE CURVE ONLY */}
         <div className="heroGreenCurve" aria-hidden="true" />
       </div>
 
