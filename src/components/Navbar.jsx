@@ -7,10 +7,8 @@ export default function Navbar() {
   const { pathname } = useLocation();
   const { user } = useAuth();
 
-  // ✅ Hide navbar on admin pages
   if (pathname.startsWith("/admin")) return null;
 
-  // ✅ language
   const [lang, setLang] = useState(() => localStorage.getItem("lang") || "en");
   useEffect(() => localStorage.setItem("lang", lang), [lang]);
 
@@ -22,8 +20,8 @@ export default function Navbar() {
     return dict[lang] || dict.en;
   }, [lang]);
 
-  // ✅ search
   const [q, setQ] = useState("");
+
   const doSearch = (e) => {
     e.preventDefault();
     const text = q.trim();
@@ -32,27 +30,30 @@ export default function Navbar() {
   };
 
   return (
-    <header className="tealNav">
-      <div className="tealNavInner">
-        {/* ⬅️ left spacer (demo মতো center search রাখতে) */}
-        <div className="navSpacer" />
+    <header className="topbar">
+      <div className="topbarInner">
+        {/* Brand */}
+        <Link className="topBrand" to="/">
+          <span className="topTitle">The Curious Empire</span>
+        </Link>
 
-        {/* 🔍 Center pill search */}
-        <form className="pillSearch" onSubmit={doSearch}>
+        {/* Search */}
+        <form className="topSearch" onSubmit={doSearch}>
           <input
+            className="topSearchInput"
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder={t.ph}
           />
-          <button type="submit" aria-label="search">
+          <button className="topSearchBtn" type="submit" aria-label="search">
             🔍
           </button>
         </form>
 
-        {/* 👉 Right side */}
-        <div className="navRight">
+        {/* Right side */}
+        <div className="topRight">
           <button
-            className="langCircle"
+            className="topLang"
             type="button"
             onClick={() => setLang((x) => (x === "en" ? "bn" : "en"))}
             title="Language"
@@ -60,19 +61,16 @@ export default function Navbar() {
             {lang === "en" ? "EN" : "BN"}
           </button>
 
-          {user ? (
-            <button
-              className="profileCircle"
-              onClick={() => nav("/profile")}
-              title="Profile"
-            >
-              👤
-            </button>
-          ) : (
-            <button
-  className="profileCircle"
-  onClick={() => nav(user ? "/profile" : "/login")}
-  title={user ? "Profile" : "Login"}
->
-  {user ? "👤" : "🔑"}
-</button>
+          <button
+            className="profileCircle"
+            type="button"
+            onClick={() => nav(user ? "/profile" : "/login")}
+            title={user ? "Profile" : "Login"}
+          >
+            {user ? "👤" : "🔑"}
+          </button>
+        </div>
+      </div>
+    </header>
+  );
+}
