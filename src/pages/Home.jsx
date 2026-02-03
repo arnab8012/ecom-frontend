@@ -63,8 +63,6 @@ export default function Home() {
   }, [allProducts]);
 
   const take = (arr, n) => (Array.isArray(arr) ? arr.slice(0, n) : []);
-
-  // ✅ ক্যাটাগরি টাইটেল uppercase
   const titleText = (name) => String(name || "").toUpperCase();
 
   return (
@@ -78,40 +76,41 @@ export default function Home() {
         <div className="welcomeBadge">✨ Premium</div>
       </div>
 
-      {/* ✅ Banner */}
+      {/* ✅ Banner + Curve */}
       {bannerUrls.length > 0 && (
-        <div className="bannerBox glass bannerSlim" style={{ marginBottom: 14 }}>
-          <div
-            className="bannerTrack"
-            style={{
-              width: `${bannerUrls.length * 100}%`,
-              transform: `translateX(-${slide * (100 / bannerUrls.length)}%)`,
-            }}
-          >
-            {bannerUrls.map((url, i) => (
-              <div
-                key={i}
-                className="bannerSlide"
-                style={{ width: `${100 / bannerUrls.length}%` }}
-              >
-                <img className="bannerImg" src={url} alt="banner" />
-              </div>
-            ))}
-          </div>
-
-          {bannerUrls.length > 1 && (
-            <div className="bannerDots">
-              {bannerUrls.map((_, i) => (
-                <button
-                  key={i}
-                  className={`dot ${i === slide ? "active" : ""}`}
-                  onClick={() => setSlide(i)}
-                  type="button"
-                  aria-label={`banner-${i}`}
-                />
+        <div className="bannerShell">
+          <div className="bannerBox glass bannerSlim">
+            <div
+              className="bannerTrack"
+              style={{
+                width: `${bannerUrls.length * 100}%`,
+                transform: `translateX(-${slide * (100 / bannerUrls.length)}%)`,
+              }}
+            >
+              {bannerUrls.map((url, i) => (
+                <div key={i} className="bannerSlide" style={{ width: `${100 / bannerUrls.length}%` }}>
+                  <img className="bannerImg" src={url} alt="banner" />
+                </div>
               ))}
             </div>
-          )}
+
+            {bannerUrls.length > 1 && (
+              <div className="bannerDots">
+                {bannerUrls.map((_, i) => (
+                  <button
+                    key={i}
+                    className={`dot ${i === slide ? "active" : ""}`}
+                    onClick={() => setSlide(i)}
+                    type="button"
+                    aria-label={`banner-${i}`}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* curve নিচে */}
+          <div className="bannerCurve" />
         </div>
       )}
 
@@ -125,21 +124,15 @@ export default function Home() {
             </Link>
           </div>
 
-          <div className="catRow">
+          <div className="catRow premiumCatRow">
             {cats.map((c) => (
               <button
                 key={c._id}
-                className="catItem"
+                className="catItem premiumCatItem"
                 type="button"
                 onClick={() => nav(`/shop?category=${c._id}`)}
-                style={{
-                  background: "transparent",
-                  border: "none",
-                  padding: 0,
-                  cursor: "pointer",
-                }}
               >
-                <div className="catIcon">
+                <div className="catIcon premiumCatIcon">
                   <img
                     src={c.image || "https://via.placeholder.com/160"}
                     alt={c.name}
@@ -151,7 +144,7 @@ export default function Home() {
                   />
                 </div>
 
-                <div className="catName">{c.name}</div>
+                <div className="catName premiumCatName">{c.name}</div>
               </button>
             ))}
           </div>
@@ -160,61 +153,23 @@ export default function Home() {
 
       {loading && <p style={{ padding: "12px 0" }}>Loading...</p>}
 
-      {/* ✅ Products grouped by category — স্ক্রিনশটের মতো 2 column */}
+      {/* ✅ Products grouped by category — 2 column + 2 products */}
       {cats.map((c) => {
         const list = byCat.get(c._id) || [];
         if (!list.length) return null;
 
         return (
           <div className="homeSection" key={c._id} style={{ marginTop: 18 }}>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                gap: 12,
-                marginBottom: 10,
-              }}
-            >
-              <div
-                style={{
-                  fontWeight: 900,
-                  fontSize: 20,
-                  letterSpacing: 0.6,
-                  textTransform: "uppercase",
-                  borderBottom: "3px solid rgba(0,0,0,0.8)",
-                  paddingBottom: 4,
-                  lineHeight: 1,
-                }}
-              >
-                {titleText(c.name)}
-              </div>
+            <div className="catHeaderRow">
+              <div className="catHeaderTitle">{titleText(c.name)}</div>
 
-              <Link
-                to={`/shop?category=${c._id}`}
-                className="seeMoreBtn"
-                style={{
-                  textDecoration: "none",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 8,
-                  padding: "10px 14px",
-                  borderRadius: 12,
-                  fontWeight: 800,
-                }}
-              >
+              <Link to={`/shop?category=${c._id}`} className="seeMoreBtn">
                 See More →
               </Link>
             </div>
 
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-                gap: 12,
-              }}
-            >
-              {take(list, 4).map((p) => (
+            <div className="homeGrid2">
+              {take(list, 2).map((p) => (
                 <div key={p._id} style={{ width: "100%" }}>
                   <ProductCard p={p} />
                 </div>
