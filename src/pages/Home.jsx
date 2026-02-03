@@ -67,9 +67,9 @@ export default function Home() {
 
   return (
     <div className="container homeWrap" style={{ paddingBottom: 90 }}>
-      {/* ✅ FULL HERO IMAGE AREA (the whole orange-marked section) */}
-      <div className="heroGreenShell">
-        {/* ✅ banner fills whole hero */}
+      {/* ✅ FULL-WIDTH HERO: no side gaps + no white strip */}
+      <div className="heroGreenShell heroFullBleed">
+        {/* ✅ banner image fills full hero */}
         {bannerUrls.length > 0 && (
           <div className="heroBannerWrap">
             <div className="heroBanner">
@@ -91,7 +91,7 @@ export default function Home() {
                 ))}
               </div>
 
-              {/* ✅ dots */}
+              {/* dots */}
               {bannerUrls.length > 1 && (
                 <div className="bannerDots">
                   {bannerUrls.map((_, i) => (
@@ -118,7 +118,7 @@ export default function Home() {
           <div className="welcomeBadge">✨ Premium</div>
         </div>
 
-        {/* ✅ ONE SINGLE CURVE ONLY */}
+        {/* ✅ only ONE U curve */}
         <div className="heroGreenCurve" aria-hidden="true" />
       </div>
 
@@ -160,7 +160,7 @@ export default function Home() {
 
       {loading && <p style={{ padding: "12px 0" }}>Loading...</p>}
 
-      {/* ✅ Products grouped by category — 2 column like demo */}
+      {/* ✅ Products grouped by category */}
       {cats.map((c) => {
         const list = byCat.get(c._id) || [];
         if (!list.length) return null;
