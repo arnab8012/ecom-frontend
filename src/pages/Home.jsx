@@ -64,20 +64,21 @@ export default function Home() {
 
   const take = (arr, n) => (Array.isArray(arr) ? arr.slice(0, n) : []);
 
+  // ✅ ছোট helper: ক্যাটাগরি টাইটেল uppercase এর মতো দেখাতে
+  const titleText = (name) => String(name || "").toUpperCase();
+
   return (
-    <div className="container homeWrap">
-      {/* ✅ Slim glass welcome bar */}
+    <div className="container homeWrap" style={{ paddingBottom: 90 }}>
+      {/* ✅ Slim welcome bar (optional, তোমার আগেরটা রাখা) */}
       <div className="welcomeBar glass">
         <div className="welcomeLeft">
           <div className="welcomeTitle">The Curious Empire</div>
           <div className="welcomeSub">Premium Shopping Experience</div>
         </div>
-
-        {/* optional small badge */}
         <div className="welcomeBadge">✨ Premium</div>
       </div>
 
-      {/* ✅ Banner (glass frame + slim height) */}
+      {/* ✅ Banner */}
       {bannerUrls.length > 0 && (
         <div className="bannerBox glass bannerSlim" style={{ marginBottom: 14 }}>
           <div
@@ -114,7 +115,7 @@ export default function Home() {
         </div>
       )}
 
-      {/* ✅ Categories slider */}
+      {/* ✅ Categories slider (তোমার আগেরটা রাখা) */}
       {cats.length > 0 && (
         <div className="homeSection">
           <div className="secTop">
@@ -153,23 +154,70 @@ export default function Home() {
 
       {loading && <p style={{ padding: "12px 0" }}>Loading...</p>}
 
-      {/* ✅ Products grouped by category */}
+      {/* ✅ Products grouped by category — ঠিক স্ক্রিনশটের মতো (Title left + See More right + 2 column) */}
       {cats.map((c) => {
         const list = byCat.get(c._id) || [];
         if (!list.length) return null;
 
         return (
-          <div className="homeSection" key={c._id}>
-            <div className="secTop">
-              <h3 className="secTitle">{c.name}</h3>
-              <Link className="seeMoreBtn" to={`/shop?category=${c._id}`}>
+          <div
+            className="homeSection"
+            key={c._id}
+            style={{ marginTop: 18 }}
+          >
+            {/* Header row like screenshot */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 12,
+                marginBottom: 10,
+              }}
+            >
+              <div
+                style={{
+                  fontWeight: 900,
+                  fontSize: 20,
+                  letterSpacing: 0.6,
+                  textTransform: "uppercase",
+                  borderBottom: "3px solid rgba(0,0,0,0.8)",
+                  paddingBottom: 4,
+                  lineHeight: 1,
+                }}
+              >
+                {titleText(c.name)}
+              </div>
+
+              <Link
+                to={`/shop?category=${c._id}`}
+                style={{
+                  textDecoration: "none",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                  padding: "10px 14px",
+                  borderRadius: 12,
+                  fontWeight: 800,
+                }}
+                className="seeMoreBtn"
+              >
                 See More →
               </Link>
             </div>
 
-            <div className="homeGrid4">
-              {take(list, 8).map((p) => (
-                <ProductCard key={p._id} p={p} />
+            {/* ✅ 2 column grid */}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+                gap: 12,
+              }}
+            >
+              {take(list, 4).map((p) => (
+                <div key={p._id} style={{ width: "100%" }}>
+                  <ProductCard p={p} />
+                </div>
               ))}
             </div>
           </div>
