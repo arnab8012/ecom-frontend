@@ -1,22 +1,20 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import { api } from "../api/api";
 import ProductCard from "../components/ProductCard";
 
-export default function Home() {
-  const nav = useNavigate();
+export default function Shop() {
+  const { search } = useLocation();
+  const params = useMemo(() => new URLSearchParams(search), [search]);
 
-  const [cats, setCats] = useState([]);
-  const [allProducts, setAllProducts] = useState([]);
-  const [banners, setBanners] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const category = params.get("category") || "";
+  const q = (params.get("q") || "").trim();
 
-  const [slide, setSlide] = useState(0);
+  const [all, setAll] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const bannerUrls = useMemo(() => {
-    const arr = Array.isArray(banners) ? banners : [];
-    return arr.map((b) => (typeof b === "string" ? b : b?.url)).filter(Boolean);
-  }, [banners]);
+  // "See more" limit
+  const [limit, setLimit] = useState(12);
 
   useEffect(() => {
     let alive = true;
@@ -24,205 +22,87 @@ export default function Home() {
     (async () => {
       try {
         setLoading(true);
-        const [c, r, p] = await Promise.all([
-          api.get("/api/categories"),
-          api.get("/api/banners"),
-          api.get("/api/products"),
-        ]);
 
+        const url = category
+          ? `/api/products?category=${encodeURIComponent(category)}`
+          : "/api/products";
+
+        const r = await api.get(url);
         if (!alive) return;
-        if (c?.ok) setCats(c.categories || []);
-        if (r?.ok) setBanners(r.banners || []);
-        if (p?.ok) setAllProducts(p.products || []);
-      } catch (e) {
-        console.log("Home Load Error", e);
+
+        if (r?.ok) setAll(Array.isArray(r.products) ? r.products : []);
+        else setAll([]);
       } finally {
         if (alive) setLoading(false);
       }
     })();
 
-    return () => (alive = false);
-  }, []);
+    return () => {
+      alive = false;
+    };
+  }, [category]);
+
+  const filtered = useMemo(() => {
+    const text = q.toLowerCase();
+    if (!text) return all;
+
+    return (all || []).filter((p) => {
+      const title = String(p?.title || "").toLowerCase();
+      const desc = String(p?.description || "").toLowerCase();
+      const catName = String(p?.category?.name || "").toLowerCase();
+      return title.includes(text) || desc.includes(text) || catName.includes(text);
+    });
+  }, [all, q]);
+
+  const visible = useMemo(() => filtered.slice(0, limit), [filtered, limit]);
+  const canMore = visible.length < filtered.length;
 
   useEffect(() => {
-    if (bannerUrls.length <= 1) return;
-    const id = setInterval(() => {
-      setSlide((s) => (s + 1) % bannerUrls.length);
-    }, 3500);
-    return () => clearInterval(id);
-  }, [bannerUrls.length]);
-
-  const byCat = useMemo(() => {
-    const map = new Map();
-    for (const p of allProducts || []) {
-      const cid = p?.category?._id || "uncat";
-      if (!map.has(cid)) map.set(cid, []);
-      map.get(cid).push(p);
-    }
-    return map;
-  }, [allProducts]);
-
-  const take = (arr, n) => (Array.isArray(arr) ? arr.slice(0, n) : []);
-
-  // ✅ ছোট helper: ক্যাটাগরি টাইটেল uppercase এর মতো দেখাতে
-  const titleText = (name) => String(name || "").toUpperCase();
+    setLimit(12);
+  }, [q, category]);
 
   return (
-    <div className="container homeWrap" style={{ paddingBottom: 90 }}>
-      {/* ✅ Slim welcome bar (optional, তোমার আগেরটা রাখা) */}
-      <div className="welcomeBar glass">
-        <div className="welcomeLeft">
-          <div className="welcomeTitle">The Curious Empire</div>
-          <div className="welcomeSub">Premium Shopping Experience</div>
+    <div className="container">
+      {/* Header row */}
+      <div className="shopHead">
+        <div>
+          <div className="shopTitle">Products</div>
+          <div className="shopSub">
+            {q ? (
+              <>
+                Search: <b>{q}</b> —{" "}
+              </>
+            ) : null}
+            Showing {visible.length} / {filtered.length}
+          </div>
         </div>
-        <div className="welcomeBadge">✨ Premium</div>
+
+        <Link className="btnSoftLink" to="/">
+          ← Back
+        </Link>
       </div>
 
-      {/* ✅ Banner */}
-      {bannerUrls.length > 0 && (
-        <div className="bannerBox glass bannerSlim" style={{ marginBottom: 14 }}>
-          <div
-            className="bannerTrack"
-            style={{
-              width: `${bannerUrls.length * 100}%`,
-              transform: `translateX(-${slide * (100 / bannerUrls.length)}%)`,
-            }}
-          >
-            {bannerUrls.map((url, i) => (
-              <div
-                key={i}
-                className="bannerSlide"
-                style={{ width: `${100 / bannerUrls.length}%` }}
-              >
-                <img className="bannerImg" src={url} alt="banner" />
-              </div>
+      {loading ? (
+        <div className="softBox">Loading...</div>
+      ) : filtered.length === 0 ? (
+        <div className="softBox">No products found</div>
+      ) : (
+        <>
+          <div className="shopGrid">
+            {visible.map((p) => (
+              <ProductCard key={p._id} p={p} />
             ))}
           </div>
 
-          {bannerUrls.length > 1 && (
-            <div className="bannerDots">
-              {bannerUrls.map((_, i) => (
-                <button
-                  key={i}
-                  className={`dot ${i === slide ? "active" : ""}`}
-                  onClick={() => setSlide(i)}
-                  type="button"
-                  aria-label={`banner-${i}`}
-                />
-              ))}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* ✅ Categories slider (তোমার আগেরটা রাখা) */}
-      {cats.length > 0 && (
-        <div className="homeSection">
-          <div className="secTop">
-            <h3 className="secTitle">Categories</h3>
-            <Link className="seeMore" to="/shop">
-              See more
-            </Link>
-          </div>
-
-          <div className="catRow">
-            {cats.map((c) => (
-              <button
-                key={c._id}
-                className="catItem"
-                type="button"
-                onClick={() => nav(`/shop?category=${c._id}`)}
-                style={{
-                  background: "transparent",
-                  border: "none",
-                  padding: 0,
-                  cursor: "pointer",
-                }}
-              >
-                <div className="catIcon glass">
-                  <img
-                    src={c.image || "https://via.placeholder.com/80"}
-                    alt={c.name}
-                  />
-                </div>
-                <div className="catName">{c.name}</div>
+          {canMore ? (
+            <div className="shopMoreWrap">
+              <button className="btnPrimary" type="button" onClick={() => setLimit((x) => x + 12)}>
+                See more
               </button>
-            ))}
-          </div>
-        </div>
+            </div>
+          ) : null}
+        </>
       )}
-
-      {loading && <p style={{ padding: "12px 0" }}>Loading...</p>}
-
-      {/* ✅ Products grouped by category — ঠিক স্ক্রিনশটের মতো (Title left + See More right + 2 column) */}
-      {cats.map((c) => {
-        const list = byCat.get(c._id) || [];
-        if (!list.length) return null;
-
-        return (
-          <div
-            className="homeSection"
-            key={c._id}
-            style={{ marginTop: 18 }}
-          >
-            {/* Header row like screenshot */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                gap: 12,
-                marginBottom: 10,
-              }}
-            >
-              <div
-                style={{
-                  fontWeight: 900,
-                  fontSize: 20,
-                  letterSpacing: 0.6,
-                  textTransform: "uppercase",
-                  borderBottom: "3px solid rgba(0,0,0,0.8)",
-                  paddingBottom: 4,
-                  lineHeight: 1,
-                }}
-              >
-                {titleText(c.name)}
-              </div>
-
-              <Link
-                to={`/shop?category=${c._id}`}
-                style={{
-                  textDecoration: "none",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 8,
-                  padding: "10px 14px",
-                  borderRadius: 12,
-                  fontWeight: 800,
-                }}
-                className="seeMoreBtn"
-              >
-                See More →
-              </Link>
-            </div>
-
-            {/* ✅ 2 column grid */}
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-                gap: 12,
-              }}
-            >
-              {take(list, 4).map((p) => (
-                <div key={p._id} style={{ width: "100%" }}>
-                  <ProductCard p={p} />
-                </div>
-              ))}
-            </div>
-          </div>
-        );
-      })}
     </div>
   );
 }
