@@ -1,15 +1,12 @@
-/* =========================
-   ✅ GLOBAL
-========================= */
 html, body, #root { height: 100%; }
 
 :root{
   --bg: #f7f7fb;
   --ink:#0b1220;
   --muted:#6b7280;
-  --green:#0f5f5c;   /* demo navbar teal */
-  --accent:#75d84b;  /* demo green */
-  --accent2:#77b7ff; /* demo blue title */
+  --green:#0f5f5c;
+  --accent:#75d84b;
+  --accent2:#77b7ff;
   --card:#ffffff;
   --line: rgba(0,0,0,0.08);
   --shadow: 0 14px 30px rgba(0,0,0,0.06);
@@ -22,23 +19,17 @@ body{
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
   color: var(--ink);
   background: var(--bg);
-  padding-bottom: 78px; /* bottom nav space */
+  padding-bottom: 78px;
 }
 
-a{ color: inherit; }
-
-/* =========================
-   ✅ TOPBAR (DEMO STYLE)
-   (works with your Navbar.jsx)
-========================= */
+/* TOPBAR */
 .topbar{
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 50;
   background: var(--green);
   padding: 10px 12px;
 }
-
 .topbarInner{
   max-width: 1100px;
   margin: 0 auto;
@@ -46,8 +37,6 @@ a{ color: inherit; }
   align-items:center;
   gap: 10px;
 }
-
-/* Brand */
 .topBrand{
   display:flex;
   align-items:center;
@@ -57,57 +46,48 @@ a{ color: inherit; }
   font-weight:900;
   min-width: 170px;
 }
-
 .topLogo{
   width:34px;
   height:34px;
   border-radius: 10px;
   object-fit: cover;
 }
-
 .topTitle{
   font-weight: 900;
   letter-spacing: 0.2px;
   white-space: nowrap;
 }
-
-/* Search pill */
 .topSearch{
   flex: 1;
   display:flex;
   align-items:center;
   justify-content:center;
 }
-
 .topSearchInput{
   width: min(520px, 100%);
   height: 38px;
   border-radius: 999px;
   border: none;
   outline: none;
-  padding: 0 44px 0 14px; /* right space for icon */
+  padding: 0 14px;
   font-weight: 800;
   background: rgba(255,255,255,0.92);
 }
-
 .topSearchBtn{
-  width: 38px;
-  height: 38px;
-  margin-left: -40px;  /* icon inside pill */
+  width: 40px;
+  height: 40px;
+  margin-left: -42px;
   border-radius: 999px;
   border: none;
   background: transparent;
   cursor: pointer;
   font-size: 18px;
 }
-
-/* Right side */
 .topRight{
   display:flex;
   align-items:center;
   gap: 10px;
 }
-
 .topLang{
   border: none;
   background: rgba(255,255,255,0.18);
@@ -118,12 +98,8 @@ a{ color: inherit; }
   font-weight: 900;
   cursor: pointer;
 }
-
-/* if you use <Link className="topAvatarBtn"> ... */
 .topAvatarBtn{ text-decoration:none; }
-
-.topAvatarCircle,
-.profileCircle{
+.topAvatarCircle{
   width: 38px;
   height: 38px;
   border-radius: 999px;
@@ -133,31 +109,22 @@ a{ color: inherit; }
   background: rgba(255,255,255,0.18);
   color:#fff;
   font-size: 18px;
-  border: none;       /* for button */
-  cursor: pointer;    /* for button */
 }
-
-/* mobile tweaks */
 @media (max-width: 800px){
   .topTitle{ display:none; }
   .topBrand{ min-width: 60px; }
 }
 
-/* =========================
-   ✅ LAYOUT
-========================= */
+/* LAYOUT */
 .container{
   max-width: 1100px;
   margin: 0 auto;
   padding: 16px;
 }
-
 .homeWrap{ padding-top: 6px; }
 .homeSection{ margin-top: 18px; }
 
-/* =========================
-   ✅ Welcome bar (Premium)
-========================= */
+/* Welcome */
 .welcomeBar{
   display:flex;
   justify-content:space-between;
@@ -170,20 +137,8 @@ a{ color: inherit; }
   box-shadow: 0 10px 25px rgba(0,0,0,0.04);
   margin-top: 10px;
 }
-
-.welcomeTitle{
-  font-weight: 1000;
-  font-size: 16px;
-  color: var(--ink);
-}
-
-.welcomeSub{
-  margin-top: 2px;
-  font-size: 12px;
-  color: var(--muted);
-  font-weight: 700;
-}
-
+.welcomeTitle{ font-weight: 1000; font-size: 16px; }
+.welcomeSub{ margin-top: 2px; font-size: 12px; color: var(--muted); font-weight: 700; }
 .welcomeBadge{
   font-size: 12px;
   font-weight: 900;
@@ -193,33 +148,19 @@ a{ color: inherit; }
   border: 1px solid rgba(117,216,75,0.25);
 }
 
-/* =========================
-   ✅ Banner + Bottom Curve (DEMO)
-   (works with Home.jsx heroBannerWrap/heroBanner/heroCurve)
-========================= */
-.heroBannerWrap{
-  position: relative;
-  margin-top: 12px;
-}
-
+/* Banner curve */
+.heroBannerWrap{ position: relative; margin-top: 12px; }
 .heroBanner{
-  border-radius: 22px;
+  border-radius: 18px;
   overflow: hidden;
   background: rgba(255,255,255,0.65);
   border: 1px solid var(--line);
   height: 240px;
   box-shadow: var(--shadow);
 }
-
-.bannerTrack{
-  height: 100%;
-  display:flex;
-  transition: transform 500ms ease;
-}
-
+.bannerTrack{ height: 100%; display:flex; transition: transform 500ms ease; }
 .bannerSlide{ height:100%; flex: 0 0 auto; }
 .bannerImg{ width:100%; height:100%; object-fit: cover; display:block; }
-
 .bannerDots{
   position:absolute;
   left:0; right:0; bottom: 12px;
@@ -227,7 +168,6 @@ a{ color: inherit; }
   justify-content:center;
   gap:8px;
 }
-
 .dot{
   width: 10px;
   height: 10px;
@@ -238,8 +178,6 @@ a{ color: inherit; }
   box-shadow: 0 6px 14px rgba(0,0,0,0.12);
 }
 .dot.active{ background: rgba(255,255,255,0.95); }
-
-/* ✅ curve like demo */
 .heroCurve{
   position: absolute;
   left: -6%;
@@ -250,15 +188,12 @@ a{ color: inherit; }
   border-top-left-radius: 100% 100%;
   border-top-right-radius: 100% 100%;
 }
-
 @media (max-width: 800px){
   .heroBanner{ height: 200px; }
   .heroCurve{ bottom: -16px; height: 44px; }
 }
 
-/* =========================
-   ✅ Section Header (Categories title like demo)
-========================= */
+/* Section head */
 .secTop{
   display:flex;
   align-items:flex-end;
@@ -266,7 +201,6 @@ a{ color: inherit; }
   gap: 10px;
   margin: 16px 0 10px;
 }
-
 .secTitle{
   margin: 0;
   font-size: 34px;
@@ -274,29 +208,21 @@ a{ color: inherit; }
   color: var(--accent2);
   letter-spacing: 0.3px;
 }
-
 .seeMore{
   text-decoration:none;
   font-weight: 900;
   color: rgba(117,216,75,0.95);
 }
 
-/* =========================
-   ✅ Categories Row (DEMO cards)
-   (IMPORTANT: only one version, no duplicates)
-========================= */
+/* Categories */
 .catRow{
   display:flex;
   gap: 14px;
   overflow-x: auto;
   padding: 6px 2px 10px;
 }
-
 .catRow::-webkit-scrollbar{ height: 6px; }
-.catRow::-webkit-scrollbar-thumb{
-  background: rgba(0,0,0,0.14);
-  border-radius: 99px;
-}
+.catRow::-webkit-scrollbar-thumb{ background: rgba(0,0,0,0.14); border-radius: 99px; }
 
 .catItem{
   min-width: 120px;
@@ -306,7 +232,6 @@ a{ color: inherit; }
   padding: 0;
   cursor: pointer;
 }
-
 .catIcon{
   width: 120px;
   height: 76px;
@@ -315,17 +240,8 @@ a{ color: inherit; }
   border: 1px solid rgba(0,0,0,0.06);
   box-shadow: 0 12px 26px rgba(0,0,0,0.06);
   overflow:hidden;
-  display:flex;
-  align-items:center;
-  justify-content:center;
 }
-
-.catIcon img{
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
+.catIcon img{ width: 100%; height: 100%; object-fit: cover; }
 .catName{
   margin-top: 8px;
   font-weight: 950;
@@ -339,9 +255,7 @@ a{ color: inherit; }
   -webkit-box-orient: vertical;
 }
 
-/* =========================
-   ✅ Product group header row (per category)
-========================= */
+/* Category header + products grid */
 .catHeaderRow{
   display:flex;
   align-items:center;
@@ -349,7 +263,6 @@ a{ color: inherit; }
   gap: 10px;
   margin: 18px 0 10px;
 }
-
 .catHeaderTitle{
   font-weight: 1000;
   font-size: 22px;
@@ -359,7 +272,6 @@ a{ color: inherit; }
   padding-bottom: 4px;
   line-height: 1;
 }
-
 .seeMoreBtn{
   text-decoration:none;
   font-weight: 950;
@@ -369,20 +281,13 @@ a{ color: inherit; }
   border-radius: 14px;
   box-shadow: 0 10px 20px rgba(0,0,0,0.08);
 }
-
-/* ✅ 2 column product grid like demo */
 .homeTwoGrid{
   display:grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
 }
 
-/* =========================
-   ✅ Product Card (DEMO-ish)
-   (Works if you update ProductCard to use these classes)
-   If your ProductCard still uses .card etc, it will still work,
-   but for demo look use these.
-========================= */
+/* Product card */
 .pCard{
   background: var(--card);
   border: 1px solid rgba(0,0,0,0.06);
@@ -390,16 +295,8 @@ a{ color: inherit; }
   overflow: hidden;
   box-shadow: var(--shadow);
 }
-
 .pImgWrap{ position: relative; background: #fff; }
-
-.pImg{
-  width: 100%;
-  height: 160px;
-  object-fit: cover;
-  display:block;
-}
-
+.pImg{ width: 100%; height: 160px; object-fit: cover; display:block; }
 .pFav{
   position: absolute;
   top: 10px;
@@ -415,7 +312,6 @@ a{ color: inherit; }
   align-items:center;
   justify-content:center;
 }
-
 .pDots{
   position:absolute;
   left:0; right:0;
@@ -424,7 +320,6 @@ a{ color: inherit; }
   justify-content:center;
   gap: 6px;
 }
-
 .pDot{
   width: 8px;
   height: 8px;
@@ -436,7 +331,6 @@ a{ color: inherit; }
 .pDot.active{ background: rgba(0,0,0,0.85); }
 
 .pBody{ padding: 12px 12px 14px; }
-
 .pTitle{
   display:block;
   text-decoration:none;
@@ -447,13 +341,8 @@ a{ color: inherit; }
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-
 .pPriceRow{ display:flex; align-items:center; gap: 10px; }
-.pPrice{
-  font-weight: 1000;
-  font-size: 18px;
-  color: var(--ink);
-}
+.pPrice{ font-weight: 1000; font-size: 18px; color: var(--ink); }
 
 .pActions{
   margin-top: 12px;
@@ -462,7 +351,6 @@ a{ color: inherit; }
   justify-content: space-between;
   gap: 10px;
 }
-
 .btnSoft{
   flex: 1;
   border: none;
@@ -473,7 +361,6 @@ a{ color: inherit; }
   border-radius: 14px;
   cursor: pointer;
 }
-
 .btnPrimary{
   border: none;
   background: rgba(117,216,75,0.92);
@@ -484,9 +371,7 @@ a{ color: inherit; }
   cursor: pointer;
 }
 
-/* =========================
-   ✅ Bottom Nav (works with BottomNav.jsx)
-========================= */
+/* BottomNav */
 .bottomNav{
   position: fixed;
   left: 0;
@@ -503,7 +388,6 @@ a{ color: inherit; }
   backdrop-filter: blur(14px);
   border-top: 1px solid rgba(0,0,0,0.10);
 }
-
 .bnItem{
   flex: 1;
   text-decoration: none;
@@ -517,17 +401,9 @@ a{ color: inherit; }
   justify-content:center;
   gap: 4px;
 }
-
 .bnItem.active{ color: var(--green); }
-
-.bnIcon{
-  position: relative;
-  font-size: 20px;
-  line-height: 1;
-}
-
+.bnIcon{ position: relative; font-size: 20px; line-height: 1; }
 .bnTxt{ font-size: 11px; }
-
 .bnBadge{
   position:absolute;
   top: -8px;
@@ -542,61 +418,5 @@ a{ color: inherit; }
   font-weight: 1000;
   display:flex;
   align-items:center;
-  justify-content:center;
-}
-
-/* =========================
-   ✅ Shop helpers
-========================= */
-.shopHead{
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap: 12px;
-  margin: 10px 0 14px;
-}
-
-.shopTitle{
-  font-weight: 1000;
-  font-size: 22px;
-  color: var(--ink);
-}
-
-.shopSub{
-  margin-top: 6px;
-  color: var(--muted);
-  font-weight: 800;
-  font-size: 13px;
-}
-
-.softBox{
-  background: rgba(255,255,255,0.75);
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  padding: 14px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.04);
-}
-
-.shopGrid{
-  display:grid;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-  gap: 14px;
-}
-
-.btnSoftLink{
-  text-decoration:none;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  padding: 10px 12px;
-  border-radius: 14px;
-  background: rgba(117,216,75,0.18);
-  color: #174a2a;
-  font-weight: 950;
-}
-
-.shopMoreWrap{
-  margin-top: 16px;
-  display:flex;
   justify-content:center;
 }
