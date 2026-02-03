@@ -1,12 +1,15 @@
+/* =========================
+   ✅ GLOBAL
+========================= */
 html, body, #root { height: 100%; }
 
 :root{
   --bg: #f7f7fb;
   --ink:#0b1220;
   --muted:#6b7280;
-  --green:#0f5f5c;   /* demo-like navbar green */
-  --accent:#75d84b;  /* demo green button 느낌 */
-  --accent2:#77b7ff; /* demo blue-ish title */
+  --green:#0f5f5c;   /* demo navbar teal */
+  --accent:#75d84b;  /* demo green */
+  --accent2:#77b7ff; /* demo blue title */
   --card:#ffffff;
   --line: rgba(0,0,0,0.08);
   --shadow: 0 14px 30px rgba(0,0,0,0.06);
@@ -22,13 +25,16 @@ body{
   padding-bottom: 78px; /* bottom nav space */
 }
 
+a{ color: inherit; }
+
 /* =========================
-   ✅ TOPBAR (demo style)
+   ✅ TOPBAR (DEMO STYLE)
+   (works with your Navbar.jsx)
 ========================= */
 .topbar{
   position: sticky;
   top: 0;
-  z-index: 50;
+  z-index: 1000;
   background: var(--green);
   padding: 10px 12px;
 }
@@ -41,6 +47,7 @@ body{
   gap: 10px;
 }
 
+/* Brand */
 .topBrand{
   display:flex;
   align-items:center;
@@ -64,6 +71,7 @@ body{
   white-space: nowrap;
 }
 
+/* Search pill */
 .topSearch{
   flex: 1;
   display:flex;
@@ -77,15 +85,15 @@ body{
   border-radius: 999px;
   border: none;
   outline: none;
-  padding: 0 14px;
+  padding: 0 44px 0 14px; /* right space for icon */
   font-weight: 800;
   background: rgba(255,255,255,0.92);
 }
 
 .topSearchBtn{
-  width: 40px;
-  height: 40px;
-  margin-left: -42px;
+  width: 38px;
+  height: 38px;
+  margin-left: -40px;  /* icon inside pill */
   border-radius: 999px;
   border: none;
   background: transparent;
@@ -93,6 +101,7 @@ body{
   font-size: 18px;
 }
 
+/* Right side */
 .topRight{
   display:flex;
   align-items:center;
@@ -110,8 +119,11 @@ body{
   cursor: pointer;
 }
 
+/* if you use <Link className="topAvatarBtn"> ... */
 .topAvatarBtn{ text-decoration:none; }
-.topAvatarCircle{
+
+.topAvatarCircle,
+.profileCircle{
   width: 38px;
   height: 38px;
   border-radius: 999px;
@@ -121,8 +133,11 @@ body{
   background: rgba(255,255,255,0.18);
   color:#fff;
   font-size: 18px;
+  border: none;       /* for button */
+  cursor: pointer;    /* for button */
 }
 
+/* mobile tweaks */
 @media (max-width: 800px){
   .topTitle{ display:none; }
   .topBrand{ min-width: 60px; }
@@ -138,11 +153,10 @@ body{
 }
 
 .homeWrap{ padding-top: 6px; }
-
 .homeSection{ margin-top: 18px; }
 
 /* =========================
-   ✅ Welcome bar (premium)
+   ✅ Welcome bar (Premium)
 ========================= */
 .welcomeBar{
   display:flex;
@@ -180,7 +194,8 @@ body{
 }
 
 /* =========================
-   ✅ Banner with bottom curve
+   ✅ Banner + Bottom Curve (DEMO)
+   (works with Home.jsx heroBannerWrap/heroBanner/heroCurve)
 ========================= */
 .heroBannerWrap{
   position: relative;
@@ -188,7 +203,7 @@ body{
 }
 
 .heroBanner{
-  border-radius: 18px;
+  border-radius: 22px;
   overflow: hidden;
   background: rgba(255,255,255,0.65);
   border: 1px solid var(--line);
@@ -224,6 +239,7 @@ body{
 }
 .dot.active{ background: rgba(255,255,255,0.95); }
 
+/* ✅ curve like demo */
 .heroCurve{
   position: absolute;
   left: -6%;
@@ -241,7 +257,7 @@ body{
 }
 
 /* =========================
-   ✅ Section header (like demo)
+   ✅ Section Header (Categories title like demo)
 ========================= */
 .secTop{
   display:flex;
@@ -266,7 +282,8 @@ body{
 }
 
 /* =========================
-   ✅ Categories row (premium cards)
+   ✅ Categories Row (DEMO cards)
+   (IMPORTANT: only one version, no duplicates)
 ========================= */
 .catRow{
   display:flex;
@@ -323,7 +340,7 @@ body{
 }
 
 /* =========================
-   ✅ Category product header row
+   ✅ Product group header row (per category)
 ========================= */
 .catHeaderRow{
   display:flex;
@@ -353,6 +370,7 @@ body{
   box-shadow: 0 10px 20px rgba(0,0,0,0.08);
 }
 
+/* ✅ 2 column product grid like demo */
 .homeTwoGrid{
   display:grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -360,7 +378,10 @@ body{
 }
 
 /* =========================
-   ✅ Product Card (demo-ish)
+   ✅ Product Card (DEMO-ish)
+   (Works if you update ProductCard to use these classes)
+   If your ProductCard still uses .card etc, it will still work,
+   but for demo look use these.
 ========================= */
 .pCard{
   background: var(--card);
@@ -370,10 +391,7 @@ body{
   box-shadow: var(--shadow);
 }
 
-.pImgWrap{
-  position: relative;
-  background: #fff;
-}
+.pImgWrap{ position: relative; background: #fff; }
 
 .pImg{
   width: 100%;
@@ -417,9 +435,7 @@ body{
 }
 .pDot.active{ background: rgba(0,0,0,0.85); }
 
-.pBody{
-  padding: 12px 12px 14px;
-}
+.pBody{ padding: 12px 12px 14px; }
 
 .pTitle{
   display:block;
@@ -447,7 +463,6 @@ body{
   gap: 10px;
 }
 
-/* buttons like demo */
 .btnSoft{
   flex: 1;
   border: none;
@@ -470,7 +485,7 @@ body{
 }
 
 /* =========================
-   ✅ Bottom Nav
+   ✅ Bottom Nav (works with BottomNav.jsx)
 ========================= */
 .bottomNav{
   position: fixed;
@@ -528,116 +543,4 @@ body{
   display:flex;
   align-items:center;
   justify-content:center;
-}
-
-/* =====================
-   NAVBAR (DEMO STYLE)
-===================== */
-.tealNav{
-  background:#0f5c5c;
-  padding:12px 14px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-}
-
-.pillSearch{
-  flex:1;
-  max-width:360px;
-  display:flex;
-  background:#fff;
-  border-radius:999px;
-  padding:6px 10px;
-}
-
-.pillSearch input{
-  border:none;
-  outline:none;
-  flex:1;
-  font-weight:600;
-}
-
-.pillSearch button{
-  border:none;
-  background:none;
-  cursor:pointer;
-}
-
-.langCircle{
-  background:rgba(255,255,255,.2);
-  color:#fff;
-  border:none;
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  font-weight:800;
-}
-
-.navAvatar{
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  object-fit:cover;
-  cursor:pointer;
-}
-
-/* =====================
-   CURVED BANNER
-===================== */
-.curvedBanner{
-  margin-top:12px;
-  border-radius:22px;
-  overflow:hidden;
-  position:relative;
-}
-
-.curvedBanner img{
-  width:100%;
-  height:220px;
-  object-fit:cover;
-}
-
-/* bottom curve illusion */
-.curvedBanner::after{
-  content:"";
-  position:absolute;
-  bottom:-1px;
-  left:0;
-  right:0;
-  height:40px;
-  background:#f7f7fb;
-  border-top-left-radius:100% 40px;
-  border-top-right-radius:100% 40px;
-}
-
-/* =====================
-   CATEGORIES (PREMIUM)
-===================== */
-.catRow{
-  display:flex;
-  gap:14px;
-  overflow-x:auto;
-}
-
-.catItem{
-  min-width:120px;
-}
-
-.catIcon{
-  background:#fff;
-  border-radius:18px;
-  padding:12px;
-  box-shadow:0 8px 20px rgba(0,0,0,.06);
-}
-
-.catIcon img{
-  width:100%;
-  height:80px;
-  object-fit:contain;
-}
-
-.catName{
-  text-align:center;
-  font-weight:700;
-  margin-top:6px;
 }
