@@ -64,12 +64,12 @@ export default function Home() {
 
   const take = (arr, n) => (Array.isArray(arr) ? arr.slice(0, n) : []);
 
-  // ✅ ছোট helper: ক্যাটাগরি টাইটেল uppercase এর মতো দেখাতে
+  // ✅ ক্যাটাগরি টাইটেল uppercase
   const titleText = (name) => String(name || "").toUpperCase();
 
   return (
     <div className="container homeWrap" style={{ paddingBottom: 90 }}>
-      {/* ✅ Slim welcome bar (optional, তোমার আগেরটা রাখা) */}
+      {/* ✅ Slim welcome bar */}
       <div className="welcomeBar glass">
         <div className="welcomeLeft">
           <div className="welcomeTitle">The Curious Empire</div>
@@ -115,7 +115,7 @@ export default function Home() {
         </div>
       )}
 
-      {/* ✅ Categories slider (তোমার আগেরটা রাখা) */}
+      {/* ✅ Premium Categories slider */}
       {cats.length > 0 && (
         <div className="homeSection">
           <div className="secTop">
@@ -139,12 +139,18 @@ export default function Home() {
                   cursor: "pointer",
                 }}
               >
-                <div className="catIcon glass">
+                <div className="catIcon">
                   <img
-                    src={c.image || "https://via.placeholder.com/80"}
+                    src={c.image || "https://via.placeholder.com/160"}
                     alt={c.name}
+                    loading="lazy"
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = "https://via.placeholder.com/160";
+                    }}
                   />
                 </div>
+
                 <div className="catName">{c.name}</div>
               </button>
             ))}
@@ -154,18 +160,13 @@ export default function Home() {
 
       {loading && <p style={{ padding: "12px 0" }}>Loading...</p>}
 
-      {/* ✅ Products grouped by category — ঠিক স্ক্রিনশটের মতো (Title left + See More right + 2 column) */}
+      {/* ✅ Products grouped by category — স্ক্রিনশটের মতো 2 column */}
       {cats.map((c) => {
         const list = byCat.get(c._id) || [];
         if (!list.length) return null;
 
         return (
-          <div
-            className="homeSection"
-            key={c._id}
-            style={{ marginTop: 18 }}
-          >
-            {/* Header row like screenshot */}
+          <div className="homeSection" key={c._id} style={{ marginTop: 18 }}>
             <div
               style={{
                 display: "flex",
@@ -191,6 +192,7 @@ export default function Home() {
 
               <Link
                 to={`/shop?category=${c._id}`}
+                className="seeMoreBtn"
                 style={{
                   textDecoration: "none",
                   display: "inline-flex",
@@ -200,13 +202,11 @@ export default function Home() {
                   borderRadius: 12,
                   fontWeight: 800,
                 }}
-                className="seeMoreBtn"
               >
                 See More →
               </Link>
             </div>
 
-            {/* ✅ 2 column grid */}
             <div
               style={{
                 display: "grid",
