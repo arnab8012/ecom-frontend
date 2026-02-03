@@ -8,15 +8,14 @@ export default function Shop() {
   const params = useMemo(() => new URLSearchParams(search), [search]);
 
   const category = params.get("category") || "";
-  const q = (params.get("q") || "").trim(); // ✅ from navbar
+  const q = (params.get("q") || "").trim();
 
-  const [all, setAll] = useState([]);         // fetched products
+  const [all, setAll] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // ✅ "See more" limit
+  // "See more" limit
   const [limit, setLimit] = useState(12);
 
-  // ✅ Load products by category (backend)
   useEffect(() => {
     let alive = true;
 
@@ -43,7 +42,6 @@ export default function Shop() {
     };
   }, [category]);
 
-  // ✅ Frontend search filter (works without backend search API)
   const filtered = useMemo(() => {
     const text = q.toLowerCase();
     if (!text) return all;
@@ -56,51 +54,49 @@ export default function Shop() {
     });
   }, [all, q]);
 
-  // ✅ Show limited products for "See more"
   const visible = useMemo(() => filtered.slice(0, limit), [filtered, limit]);
   const canMore = visible.length < filtered.length;
 
-  // ✅ Reset limit when query/category changes
   useEffect(() => {
     setLimit(12);
   }, [q, category]);
 
   return (
     <div className="container">
-      <div className="rowBetween" style={{ marginBottom: 12 }}>
+      {/* Header row */}
+      <div className="shopHead">
         <div>
-          <h2 style={{ margin: 0 }}>Products</h2>
-          <div className="muted" style={{ marginTop: 6 }}>
+          <div className="shopTitle">Products</div>
+          <div className="shopSub">
             {q ? (
-              <>Search: <b>{q}</b> — </>
+              <>
+                Search: <b>{q}</b> —{" "}
+              </>
             ) : null}
             Showing {visible.length} / {filtered.length}
           </div>
         </div>
 
-        <Link className="btnGhost" to="/">← Back</Link>
+        <Link className="btnSoftLink" to="/">
+          ← Back
+        </Link>
       </div>
 
       {loading ? (
-        <div className="box">Loading...</div>
+        <div className="softBox">Loading...</div>
       ) : filtered.length === 0 ? (
-        <div className="box">No products found</div>
+        <div className="softBox">No products found</div>
       ) : (
         <>
-          <div className="grid">
+          <div className="shopGrid">
             {visible.map((p) => (
               <ProductCard key={p._id} p={p} />
             ))}
           </div>
 
-          {/* ✅ See more */}
           {canMore ? (
-            <div className="center" style={{ marginTop: 16 }}>
-              <button
-                className="btnPink"
-                type="button"
-                onClick={() => setLimit((x) => x + 12)}
-              >
+            <div className="shopMoreWrap">
+              <button className="btnPrimary" type="button" onClick={() => setLimit((x) => x + 12)}>
                 See more
               </button>
             </div>
