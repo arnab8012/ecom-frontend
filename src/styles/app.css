@@ -222,10 +222,10 @@ body{
   border-radius: 999px;
   border: none;
   cursor: pointer;
-  background: rgba(255,255,255,0.55);
+  background: none:
   box-shadow: 0 6px 14px rgba(0,0,0,0.12);
 }
-.dot.active{ background: rgba(255,255,255,0.95); }
+.dot.active{ background: none; }
 
 /* ✅ SINGLE U curve (only cut, no extra white bar) */
 .heroGreenCurve{
@@ -234,7 +234,7 @@ body{
   right:-12%;
   bottom:-1px;
   height: 90px;
-  background: var(--bg);
+  background: none;
   border-top-left-radius: 100% 90px;
   border-top-right-radius: 100% 90px;
   pointer-events:none;
