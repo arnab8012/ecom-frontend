@@ -9,6 +9,7 @@ export default function Navbar() {
   const nav = useNavigate();
   const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
+  const menuRef = useRef(null);
 
   const { user } = useAuth();
   const { items } = useCart();
@@ -41,8 +42,6 @@ export default function Navbar() {
     nav(`/shop?q=${encodeURIComponent(text)}`);
   };
 
- 
-
   // outside click -> close
   useEffect(() => {
     const onDown = (e) => {
@@ -68,7 +67,7 @@ export default function Navbar() {
   const LOGO = "/logo.png";
 
   return (
-    <div className="nav glassNav">
+    <div className="nav glassNav" ref={menuRef}>
       {/* ✅ Brand */}
       <Link className="brand" to="/" style={{ display: "flex", alignItems: "center", gap: 10 }}>
         <img
@@ -81,13 +80,26 @@ export default function Navbar() {
         />
         <span style={{ fontWeight: 900, color: "#111" }}>The Curious Empire</span>
       </Link>
-return (
-    <>
-      <button onClick={() => setOpen(true)}>☰</button>
+
+      {/* ✅ ONLY ONE Hamburger */}
+      <button
+        type="button"
+        className="navHamburger"
+        onClick={() => setOpen(true)}
+        aria-label="menu"
+        style={{
+          border: "none",
+          background: "transparent",
+          fontSize: 22,
+          cursor: "pointer",
+          marginLeft: 8,
+        }}
+      >
+        ☰
+      </button>
+
+      {/* ✅ MobileMenu */}
       <MobileMenu open={open} onClose={() => setOpen(false)} />
-    </>
-  );
-}
 
       {/* ✅ Search */}
       <form className="navSearchWrap" onSubmit={doSearch}>
@@ -102,60 +114,57 @@ return (
         </button>
       </form>
 
-      
-        {open && (
-          <div className="menuDrop glass">
-            {/* ✅ Language row */}
-            <div className="menuLangRow">
-              <span className="menuLangTxt">{t.language}</span>
-              <button
-                className="langBtn"
-                type="button"
-                onClick={() => setLang((x) => (x === "en" ? "bn" : "en"))}
-                title="Language"
-              >
-                {lang === "en" ? "EN" : "BN"}
-              </button>
-            </div>
-
-            <div className="menuGrid">
-              <NavLink to="/" className={({ isActive }) => (isActive ? "mItem active" : "mItem")}>
-                <span className="mIcon">🏠</span>
-                <span className="mTxt">{t.home}</span>
-              </NavLink>
-
-              <NavLink to="/shop" className={({ isActive }) => (isActive ? "mItem active" : "mItem")}>
-                <span className="mIcon">🛍️</span>
-                <span className="mTxt">{t.shop}</span>
-              </NavLink>
-
-              <NavLink to="/cart" className={({ isActive }) => (isActive ? "mItem active" : "mItem")}>
-                <span className="mIcon">
-                  🛒
-                  {cartCount > 0 ? <i className="mBadge">{cartCount}</i> : null}
-                </span>
-                <span className="mTxt">{t.cart}</span>
-              </NavLink>
-
-              <NavLink to="/favorites" className={({ isActive }) => (isActive ? "mItem active" : "mItem")}>
-                <span className="mIcon">
-                  ❤️
-                  {favCount > 0 ? <i className="mBadge">{favCount}</i> : null}
-                </span>
-                <span className="mTxt">{t.priyo}</span>
-              </NavLink>
-
-              <NavLink
-                to={user ? "/profile" : "/login"}
-                className={({ isActive }) => (isActive ? "mItem active" : "mItem")}
-              >
-                <span className="mIcon">👤</span>
-                <span className="mTxt">{user ? t.profile : t.login}</span>
-              </NavLink>
-            </div>
+      {/* ✅ Drop menu */}
+      {open && (
+        <div className="menuDrop glass">
+          {/* ✅ Language row */}
+          <div className="menuLangRow">
+            <span className="menuLangTxt">{t.language}</span>
+            <button
+              className="langBtn"
+              type="button"
+              onClick={() => setLang((x) => (x === "en" ? "bn" : "en"))}
+              title="Language"
+            >
+              {lang === "en" ? "EN" : "BN"}
+            </button>
           </div>
-        )}
-      </div>
+
+          <div className="menuGrid">
+            <NavLink to="/" className={({ isActive }) => (isActive ? "mItem active" : "mItem")}>
+              <span className="mIcon">🏠</span>
+              <span className="mTxt">{t.home}</span>
+            </NavLink>
+
+            <NavLink to="/shop" className={({ isActive }) => (isActive ? "mItem active" : "mItem")}>
+              <span className="mIcon">🛍️</span>
+              <span className="mTxt">{t.shop}</span>
+            </NavLink>
+
+            <NavLink to="/cart" className={({ isActive }) => (isActive ? "mItem active" : "mItem")}>
+              <span className="mIcon">
+                🛒 {cartCount > 0 ? <i className="mBadge">{cartCount}</i> : null}
+              </span>
+              <span className="mTxt">{t.cart}</span>
+            </NavLink>
+
+            <NavLink to="/favorites" className={({ isActive }) => (isActive ? "mItem active" : "mItem")}>
+              <span className="mIcon">
+                ❤️ {favCount > 0 ? <i className="mBadge">{favCount}</i> : null}
+              </span>
+              <span className="mTxt">{t.priyo}</span>
+            </NavLink>
+
+            <NavLink
+              to={user ? "/profile" : "/login"}
+              className={({ isActive }) => (isActive ? "mItem active" : "mItem")}
+            >
+              <span className="mIcon">👤</span>
+              <span className="mTxt">{user ? t.profile : t.login}</span>
+            </NavLink>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
