@@ -20,22 +20,18 @@ export default function AdminLogin() {
     try {
       setLoading(true);
 
-      const r = await api.post("/api/.        
-         admin-auth/login", {
-         email: email.trim(),
-         password: password.trim(),
-   });
+      // ✅ FIX: correct route
+      const r = await api.post("/api/admin-auth/login", {
+        email: email.trim(),
+        password: password.trim(),
+      });
 
       if (!r?.ok) {
         return alert(r?.message || "Admin login failed");
       }
 
-      // ✅ token save
       localStorage.setItem("admin_token", r.token);
-
-      // ✅ redirect
-      nav("/admin");
-
+      nav("/admin", { replace: true });
     } catch (err) {
       console.error(err);
       alert("Server error");
