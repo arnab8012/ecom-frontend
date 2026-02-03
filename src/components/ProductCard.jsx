@@ -1,103 +1,46 @@
-import { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useCart } from "../context/CartContext";
-import { useFavorites } from "../context/FavoritesContext";
-import { useAuth } from "../context/AuthContext";
+import { Link } from "react-router-dom";
 
-export default function ProductCard({ p }) {
-  const nav = useNavigate();
-  const { add } = useCart();
-  const { user } = useAuth();
-  const { isFav, toggle } = useFavorites();
+export default function ProductCard({ p, onAdd }) {
+  const img = p?.images?.[0] || p?.image || p?.thumbnail || p?.photo || "";
+  const title = p?.name || p?.title || "Product";
+  const weight = p?.weight || p?.size || p?.unit || "";
+  const price = Number(p?.price || 0);
 
-  const imgs = useMemo(() => {
-    const arr = Array.isArray(p?.images) ? p.images : [];
-    return arr.filter(Boolean);
-  }, [p?._id]);
-
-  const [idx, setIdx] = useState(0);
-
-  useEffect(() => {
-    if (imgs.length <= 1) return;
-    setIdx(0);
-    const t = setInterval(() => {
-      setIdx((x) => (x + 1) % imgs.length);
-    }, 2500);
-    return () => clearInterval(t);
-  }, [imgs.length]);
-
-  const img = imgs[idx] || "https://via.placeholder.com/400x300?text=Product";
-
-  const onFav = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!user) return nav("/login");
-    toggle(p._id);
-  };
+  const whole = Math.floor(price);
+  const frac = Math.round((price - whole) * 100);
 
   return (
-    <div className="pCard">
-      <div className="pImgWrap">
-        <Link to={`/product/${p._id}`}>
-          <img className="pImg" src={img} alt={p?.title || ""} />
-        </Link>
-
-        <button className="pFav" type="button" onClick={onFav} title="Priyo">
-          {isFav(p._id) ? "❤️" : "🤍"}
-        </button>
-
-        {imgs.length > 1 && (
-          <div className="pDots">
-            {imgs.map((_, i) => (
-              <button
-                key={i}
-                className={`pDot ${i === idx ? "active" : ""}`}
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setIdx(i);
-                }}
-                aria-label={`img-${i}`}
-              />
-            ))}
-          </div>
-        )}
-      </div>
-
-      <div className="pBody">
-        <Link className="pTitle" to={`/product/${p._id}`}>
-          {p.title}
-        </Link>
-
-        <div className="pPriceRow">
-          <span className="pPrice">৳ {p.price}</span>
+    <div className="pCardV2">
+      <Link className="pTopLink" to={`/product/${p?._id || ""}`}>
+        <div className="pThumb">
+          {img ? (
+            <img className="pThumbImg" src={img} alt={title} loading="lazy" />
+          ) : (
+            <div className="pThumbPh">No image</div>
+          )}
         </div>
 
-        <div className="pActions">
-          <button className="btnSoft" type="button" onClick={() => nav(`/product/${p._id}`)}>
-            View
-          </button>
-
-          <button
-            className="btnPrimary"
-            type="button"
-            onClick={() => {
-              add({
-                productId: p._id,
-                title: p.title,
-                price: p.price,
-                image: imgs[0] || "",
-                variant: "",
-                qty: 1,
-              });
-              alert("✅ Added to cart");
-            }}
-          >
-            Add
-          </button>
+        <div className="pInfo">
+          <div className="pName">{title}</div>
+          {!!weight && <div className="pMeta">{weight}</div>}
         </div>
-      </div>
+
+        <div className="pPriceBig">
+          <span className="pWhole">{whole}</span>
+          <span className="pFrac">{String(frac).padStart(2, "0")}৳</span>
+        </div>
+      </Link>
+
+      {/* ✅ curved bottom bar + plus button */}
+      <div className="pBottomCurve" aria-hidden="true" />
+      <button
+        type="button"
+        className="pPlusBtn"
+        onClick={() => (onAdd ? onAdd(p) : null)}
+        aria-label="Add to cart"
+      >
+        +
+      </button>
     </div>
   );
 }
