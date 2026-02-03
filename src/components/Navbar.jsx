@@ -7,21 +7,25 @@ export default function Navbar() {
   const { pathname } = useLocation();
   const { user } = useAuth();
 
+  // ✅ hide on admin pages
   if (pathname.startsWith("/admin")) return null;
 
+  // ✅ language
   const [lang, setLang] = useState(() => localStorage.getItem("lang") || "en");
-  useEffect(() => localStorage.setItem("lang", lang), [lang]);
+  useEffect(() => {
+    localStorage.setItem("lang", lang);
+  }, [lang]);
 
   const t = useMemo(() => {
     const dict = {
       en: { ph: "Search products..." },
-      bn: { ph: "পণ্য খুঁজুন..." },
+      bn: { ph: "পণ্য খুঁজুন..." }
     };
     return dict[lang] || dict.en;
   }, [lang]);
 
+  // ✅ search
   const [q, setQ] = useState("");
-
   const doSearch = (e) => {
     e.preventDefault();
     const text = q.trim();
@@ -29,11 +33,20 @@ export default function Navbar() {
     nav(`/shop?q=${encodeURIComponent(text)}`);
   };
 
+  // optional logo
+  const LOGO = "/logo.png";
+
   return (
     <header className="topbar">
       <div className="topbarInner">
         {/* Brand */}
-        <Link className="topBrand" to="/">
+        <Link to="/" className="topBrand">
+          <img
+            className="topLogo"
+            src={LOGO}
+            alt="logo"
+            onError={(e) => (e.currentTarget.style.display = "none")}
+          />
           <span className="topTitle">The Curious Empire</span>
         </Link>
 
@@ -45,30 +58,29 @@ export default function Navbar() {
             onChange={(e) => setQ(e.target.value)}
             placeholder={t.ph}
           />
-          <button className="topSearchBtn" type="submit" aria-label="search">
+          <button type="submit" className="topSearchBtn" aria-label="search">
             🔍
           </button>
         </form>
 
-        {/* Right side */}
+        {/* Right */}
         <div className="topRight">
           <button
-            className="topLang"
             type="button"
+            className="topLang"
             onClick={() => setLang((x) => (x === "en" ? "bn" : "en"))}
             title="Language"
           >
             {lang === "en" ? "EN" : "BN"}
           </button>
 
-          <button
-            className="profileCircle"
-            type="button"
-            onClick={() => nav(user ? "/profile" : "/login")}
+          <Link
+            to={user ? "/profile" : "/login"}
+            className="topAvatarBtn"
             title={user ? "Profile" : "Login"}
           >
-            {user ? "👤" : "🔑"}
-          </button>
+            <span className="topAvatarCircle">{user ? "👤" : "🔑"}</span>
+          </Link>
         </div>
       </div>
     </header>
