@@ -141,8 +141,8 @@ body{
 .heroGreenShell{
   position: relative;
   overflow: hidden;
-  background: none;
-  box-shadow: none;
+  background: white;
+  box-shadow: white;
   border-radius: 0;       /* ✅ no side rounding => full width look */
   min-height: 300px;
 }
