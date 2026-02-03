@@ -95,8 +95,6 @@ export default function Navbar() {
           marginLeft: 8,
         }}
       >
-        ☰
-      </button>
 
       {/* ✅ MobileMenu */}
       <MobileMenu open={open} onClose={() => setOpen(false)} />
