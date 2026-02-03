@@ -20,11 +20,9 @@ export default function ProductCard({ p }) {
   useEffect(() => {
     if (imgs.length <= 1) return;
     setIdx(0);
-
     const t = setInterval(() => {
       setIdx((x) => (x + 1) % imgs.length);
     }, 2500);
-
     return () => clearInterval(t);
   }, [imgs.length]);
 
@@ -33,11 +31,7 @@ export default function ProductCard({ p }) {
   const onFav = (e) => {
     e.preventDefault();
     e.stopPropagation();
-
-    if (!user) {
-      nav("/login");
-      return;
-    }
+    if (!user) return nav("/login");
     toggle(p._id);
   };
 
@@ -48,8 +42,8 @@ export default function ProductCard({ p }) {
           <img className="pImg" src={img} alt={p?.title || ""} />
         </Link>
 
-        <button type="button" className="pFav" onClick={onFav} title="Priyo">
-          <span>{isFav(p._id) ? "❤️" : "🤍"}</span>
+        <button className="pFav" type="button" onClick={onFav} title="Priyo">
+          {isFav(p._id) ? "❤️" : "🤍"}
         </button>
 
         {imgs.length > 1 && (
@@ -57,8 +51,8 @@ export default function ProductCard({ p }) {
             {imgs.map((_, i) => (
               <button
                 key={i}
-                type="button"
                 className={`pDot ${i === idx ? "active" : ""}`}
+                type="button"
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -82,7 +76,7 @@ export default function ProductCard({ p }) {
 
         <div className="pActions">
           <button className="btnSoft" type="button" onClick={() => nav(`/product/${p._id}`)}>
-            View &amp; Buy
+            View
           </button>
 
           <button
