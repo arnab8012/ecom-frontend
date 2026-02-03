@@ -142,8 +142,8 @@ body{
   position: relative;
   overflow: hidden;
   background: var(--green);
-  box-shadow: var(--shadow);
-  border-radius: 0;       /* ✅ no side rounding => full width look */
+ 
+      /* ✅ no side rounding => full width look */
   min-height: 300px;
 }
 
@@ -202,7 +202,7 @@ body{
   font-weight: 900;
   padding: 8px 10px;
   border-radius: 999px;
-  background: rgba(117,216,75,0.16);
+  background: transparent;
   border: 1px solid rgba(117,216,75,0.25);
 }
 
