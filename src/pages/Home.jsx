@@ -66,17 +66,17 @@ export default function Home() {
   const titleText = (name) => String(name || "").toUpperCase();
 
   return (
-    <div className="container homeWrap">
-      {/* welcome */}
+    <div className="container homeWrap" style={{ paddingBottom: 90 }}>
+      {/* ✅ welcome bar */}
       <div className="welcomeBar">
-        <div>
+        <div className="welcomeLeft">
           <div className="welcomeTitle">The Curious Empire</div>
           <div className="welcomeSub">Premium Shopping Experience</div>
         </div>
         <div className="welcomeBadge">✨ Premium</div>
       </div>
 
-      {/* Banner curve */}
+      {/* ✅ Banner (DEMO U-CURVE CUT) */}
       {bannerUrls.length > 0 && (
         <div className="heroBannerWrap">
           <div className="heroBanner">
@@ -98,6 +98,7 @@ export default function Home() {
               ))}
             </div>
 
+            {/* ✅ dots (always above curve) */}
             {bannerUrls.length > 1 && (
               <div className="bannerDots">
                 {bannerUrls.map((_, i) => (
@@ -111,12 +112,14 @@ export default function Home() {
                 ))}
               </div>
             )}
+
+            {/* ✅ U-shape cut element (inside banner) */}
+            <div className="bannerUCut" aria-hidden="true" />
           </div>
-          <div className="heroCurve" />
         </div>
       )}
 
-      {/* Categories */}
+      {/* ✅ Categories */}
       {cats.length > 0 && (
         <div className="homeSection">
           <div className="secTop">
@@ -154,15 +157,16 @@ export default function Home() {
 
       {loading && <p style={{ padding: "12px 0" }}>Loading...</p>}
 
-      {/* Products by category */}
+      {/* ✅ Products grouped by category — 2 column like demo */}
       {cats.map((c) => {
         const list = byCat.get(c._id) || [];
         if (!list.length) return null;
 
         return (
-          <div className="homeSection" key={c._id}>
+          <div className="homeSection" key={c._id} style={{ marginTop: 18 }}>
             <div className="catHeaderRow">
               <div className="catHeaderTitle">{titleText(c.name)}</div>
+
               <Link to={`/shop?category=${c._id}`} className="seeMoreBtn">
                 See More →
               </Link>
@@ -170,7 +174,9 @@ export default function Home() {
 
             <div className="homeTwoGrid">
               {take(list, 4).map((p) => (
-                <ProductCard key={p._id} p={p} />
+                <div key={p._id} style={{ width: "100%" }}>
+                  <ProductCard p={p} />
+                </div>
               ))}
             </div>
           </div>
