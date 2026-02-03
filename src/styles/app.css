@@ -490,3 +490,116 @@ body{
   align-items:center;
   justify-content:center;
 }
+
+/* =========================
+   Product Card V2 (Like sample)
+========================= */
+.pCardV2{
+  position: relative;
+  background: #fff;
+  border-radius: 18px;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  padding-bottom: 56px; /* space for curved bar */
+}
+
+.pTopLink{
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  padding: 14px 14px 0;
+}
+
+.pThumb{
+  height: 140px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.pThumbImg{
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* ✅ grocery style */
+  display:block;
+}
+.pThumbPh{
+  width:100%;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color: #999;
+}
+
+.pInfo{
+  padding: 10px 0 8px;
+}
+.pName{
+  font-weight: 950;
+  font-size: 14px;
+  line-height: 1.2;
+}
+.pMeta{
+  margin-top: 6px;
+  color: var(--muted);
+  font-weight: 800;
+  font-size: 12px;
+}
+
+.pPriceBig{
+  padding: 6px 0 10px;
+  text-align: left;
+  font-weight: 1000;
+  letter-spacing: 0.2px;
+}
+.pWhole{
+  font-size: 28px;
+  margin-right: 2px;
+}
+.pFrac{
+  font-size: 14px;
+  vertical-align: top;
+  opacity: 0.95;
+}
+
+/* ✅ bottom curved bar */
+.pBottomCurve{
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 10px;
+  height: 44px;
+  background: rgba(15, 95, 92, 0.10);
+  border-radius: 999px;
+
+  /* curved shape */
+  border-top-left-radius: 100% 44px;
+  border-top-right-radius: 100% 44px;
+}
+
+/* ✅ plus button */
+.pPlusBtn{
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 14px;
+
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+
+  border: none;
+  cursor: pointer;
+
+  background: rgba(15, 95, 92, 0.16);
+  color: #0f5f5c;
+  font-weight: 1000;
+  font-size: 28px;
+  line-height: 1;
+
+  box-shadow: 0 10px 18px rgba(0,0,0,0.10);
+}
+.pPlusBtn:active{
+  transform: translateX(-50%) scale(0.98);
+}
