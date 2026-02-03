@@ -230,10 +230,10 @@ body{
 /* ✅ SINGLE U curve (only cut, no extra white bar) */
 .heroGreenCurve{
   position:absolute;
-  left: 0%;
-  right: 0%;
+  left: 12%;
+  right: 12%;
   bottom:-1px;
-  height: 800px;
+  height: -100px;
   background: 0;
   border-top-left-radius: 100% 90px;
   border-top-right-radius: 100% 90px;
