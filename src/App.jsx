@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 
 import Home from "./pages/Home";
@@ -89,7 +89,7 @@ export default function App() {
             }
           />
 
-          {/* ✅ Admin */}
+          {/* Admin */}
           <Route path="/admin/login" element={<AdminLogin />} />
 
           <Route
@@ -138,7 +138,7 @@ export default function App() {
           />
 
           {/* Fallback */}
-          <Route path="*" element={<Home />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
 
