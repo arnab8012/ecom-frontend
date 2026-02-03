@@ -154,7 +154,7 @@ body{
 }
 .heroBanner{
   position: relative;
-  height: 300px;
+  height: 100px;
   border-radius: 0;
   overflow: hidden;
   box-shadow: none;
