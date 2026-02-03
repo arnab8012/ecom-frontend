@@ -22,7 +22,7 @@ export const api = {
 
   getAuth(path, token) {
     return jsonFetch(`${BASE}${path}`, {
-      headers: token ? { Authorization: `Bearer ${token}` } : {}
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
     });
   },
 
@@ -31,9 +31,9 @@ export const api = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {})
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
-      body: JSON.stringify(body || {})
+      body: JSON.stringify(body || {}),
     });
   },
 
@@ -42,21 +42,19 @@ export const api = {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {})
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
-      body: JSON.stringify(body || {})
+      body: JSON.stringify(body || {}),
     });
   },
 
-  // ✅ ADD THIS: delete (for product/category delete)
   delete(path, token) {
     return jsonFetch(`${BASE}${path}`, {
       method: "DELETE",
-      headers: token ? { Authorization: `Bearer ${token}` } : {}
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
     });
   },
 
-  // ✅ postAuth/putAuth (optional helper)
   postAuth(path, body, token) {
     return api.post(path, body, token);
   },
@@ -65,5 +63,5 @@ export const api = {
   },
 
   token: getToken,
-  adminToken: getAdminToken
+  adminToken: getAdminToken,
 };
