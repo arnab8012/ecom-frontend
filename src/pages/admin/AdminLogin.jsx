@@ -20,10 +20,11 @@ export default function AdminLogin() {
     try {
       setLoading(true);
 
-      const r = await api.post("/api/admin-auth/login", {
-        email,
-        password,
-      });
+      const r = await api.post("/api/.        
+         admin-auth/login", {
+         email: email.trim(),
+         password: password.trim(),
+   });
 
       if (!r?.ok) {
         return alert(r?.message || "Admin login failed");
