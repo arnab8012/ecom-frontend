@@ -1,46 +1,49 @@
 import { Link } from "react-router-dom";
 
-export default function ProductCard({ p, onAdd }) {
-  const img = p?.images?.[0] || p?.image || p?.thumbnail || p?.photo || "";
-  const title = p?.name || p?.title || "Product";
-  const weight = p?.weight || p?.size || p?.unit || "";
-  const price = Number(p?.price || 0);
-
-  const whole = Math.floor(price);
-  const frac = Math.round((price - whole) * 100);
+export default function ProductCard({ p, onAdd, onBuy }) {
+  const img =
+    p?.images?.[0] ||
+    p?.image ||
+    p?.thumbnail ||
+    "https://via.placeholder.com/300x300?text=No+Image";
 
   return (
-    <div className="pCardV2">
-      <Link className="pTopLink" to={`/product/${p?._id || ""}`}>
-        <div className="pThumb">
-          {img ? (
-            <img className="pThumbImg" src={img} alt={title} loading="lazy" />
-          ) : (
-            <div className="pThumbPh">No image</div>
-          )}
+    <div className="pCard">
+      <Link to={`/product/${p?._id}`} className="pLink">
+        <div className="pImgWrap">
+          <img className="pImg" src={img} alt={p?.name || "product"} />
         </div>
 
-        <div className="pInfo">
-          <div className="pName">{title}</div>
-          {!!weight && <div className="pMeta">{weight}</div>}
-        </div>
+        <div className="pBody">
+          <span className="pTitle">{p?.name}</span>
 
-        <div className="pPriceBig">
-          <span className="pWhole">{whole}</span>
-          <span className="pFrac">{String(frac).padStart(2, "0")}৳</span>
+          <div className="pPriceRow">
+            <div className="pPrice">
+              {p?.price}
+              <span style={{ fontSize: 14 }}>৳</span>
+            </div>
+          </div>
         </div>
       </Link>
 
-      {/* ✅ curved bottom bar + plus button */}
-      <div className="pBottomCurve" aria-hidden="true" />
-      <button
-        type="button"
-        className="pPlusBtn"
-        onClick={() => (onAdd ? onAdd(p) : null)}
-        aria-label="Add to cart"
-      >
-        +
-      </button>
+      {/* ✅ আগের মতো বাটন (No +) */}
+      <div className="pActions">
+        <button
+          type="button"
+          className="btnSoft"
+          onClick={() => (onAdd ? onAdd(p) : null)}
+        >
+          Add to Cart
+        </button>
+
+        <button
+          type="button"
+          className="btnPrimary"
+          onClick={() => (onBuy ? onBuy(p) : onAdd ? onAdd(p) : null)}
+        >
+          Buy
+        </button>
+      </div>
     </div>
   );
 }
