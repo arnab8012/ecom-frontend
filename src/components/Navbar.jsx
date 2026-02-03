@@ -2,14 +2,11 @@ import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import { useFavorites } from "../context/FavoritesContext";
-import { useEffect, useMemo, useRef, useState } from "react";
-import MobileMenu from "./MobileMenu";
+import { useEffect, useMemo, useState } from "react";
 
 export default function Navbar() {
   const nav = useNavigate();
   const { pathname } = useLocation();
-  const [open, setOpen] = useState(false);
-  const menuRef = useRef(null);
 
   const { user } = useAuth();
   const { items } = useCart();
@@ -19,7 +16,9 @@ export default function Navbar() {
   if (pathname.startsWith("/admin")) return null;
 
   const favCount = Array.isArray(fav?.favIds) ? fav.favIds.length : 0;
-  const cartCount = Array.isArray(items) ? items.reduce((s, x) => s + (x.qty || 0), 0) : 0;
+  const cartCount = Array.isArray(items)
+    ? items.reduce((s, x) => s + (x.qty || 0), 0)
+    : 0;
 
   // ✅ language
   const [lang, setLang] = useState(() => localStorage.getItem("lang") || "en");
@@ -27,79 +26,36 @@ export default function Navbar() {
 
   const t = useMemo(() => {
     const dict = {
-      en: { home: "Home", shop: "Shop", cart: "Cart", priyo: "Priyo", profile: "Profile", login: "Login", language: "Language" },
-      bn: { home: "হোম", shop: "শপ", cart: "কার্ট", priyo: "প্রিয়", profile: "প্রোফাইল", login: "লগইন", language: "ভাষা" },
+      en: { home: "Home", shop: "Shop", cart: "Cart", priyo: "Priyo", profile: "Profile", login: "Login" },
+      bn: { home: "হোম", shop: "শপ", cart: "কার্ট", priyo: "প্রিয়", profile: "প্রোফাইল", login: "লগইন" },
     };
     return dict[lang] || dict.en;
   }, [lang]);
 
-  // ✅ navbar search (go shop)
+  // ✅ search
   const [q, setQ] = useState("");
   const doSearch = (e) => {
     e.preventDefault();
-    const text = q.trim();
-    if (!text) return;
-    nav(`/shop?q=${encodeURIComponent(text)}`);
+    if (!q.trim()) return;
+    nav(`/shop?q=${encodeURIComponent(q.trim())}`);
   };
-
-  // outside click -> close
-  useEffect(() => {
-    const onDown = (e) => {
-      if (!menuRef.current) return;
-      if (!menuRef.current.contains(e.target)) setOpen(false);
-    };
-    document.addEventListener("mousedown", onDown);
-    return () => document.removeEventListener("mousedown", onDown);
-  }, []);
-
-  // Esc -> close
-  useEffect(() => {
-    const onKey = (e) => {
-      if (e.key === "Escape") setOpen(false);
-    };
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, []);
-
-  // close menu on route change
-  useEffect(() => setOpen(false), [pathname]);
 
   const LOGO = "/logo.png";
 
   return (
-    <div className="nav glassNav" ref={menuRef}>
-      {/* ✅ Brand */}
+    <div className="nav glassNav">
+      {/* Brand */}
       <Link className="brand" to="/" style={{ display: "flex", alignItems: "center", gap: 10 }}>
         <img
           src={LOGO}
           alt="logo"
-          style={{ width: 36, height: 36, borderRadius: 10, objectFit: "cover" }}
-          onError={(e) => {
-            e.currentTarget.style.display = "none";
-          }}
+          style={{ width: 36, height: 36, borderRadius: 10 }}
+          onError={(e) => (e.currentTarget.style.display = "none")}
         />
-        <span style={{ fontWeight: 900, color: "#111" }}>The Curious Empire</span>
+        <span style={{ fontWeight: 900 }}>The Curious Empire</span>
       </Link>
 
-      {/* ✅ ONLY ONE Hamburger */}
-      <button
-        type="button"
-        className="navHamburger"
-        onClick={() => setOpen(true)}
-        aria-label="menu"
-        style={{
-          border: "none",
-          background: "transparent",
-          fontSize: 22,
-          cursor: "pointer",
-          marginLeft: 8,
-        }}
-      >
-
-      {/* ✅ MobileMenu */}
-      <MobileMenu open={open} onClose={() => setOpen(false)} />
-
-      {/* ✅ Search */}
+      {/* Search */}
       <form className="navSearchWrap" onSubmit={doSearch}>
         <input
           className="navSearch"
@@ -107,62 +63,30 @@ export default function Navbar() {
           onChange={(e) => setQ(e.target.value)}
           placeholder={lang === "bn" ? "পণ্য খুঁজুন..." : "Search products..."}
         />
-        <button className="navSearchBtn" type="submit">
-          {lang === "bn" ? "খুঁজুন" : "Search"}
-        </button>
+        <button className="navSearchBtn">Search</button>
       </form>
 
-      {/* ✅ Drop menu */}
-      {open && (
-        <div className="menuDrop glass">
-          {/* ✅ Language row */}
-          <div className="menuLangRow">
-            <span className="menuLangTxt">{t.language}</span>
-            <button
-              className="langBtn"
-              type="button"
-              onClick={() => setLang((x) => (x === "en" ? "bn" : "en"))}
-              title="Language"
-            >
-              {lang === "en" ? "EN" : "BN"}
-            </button>
-          </div>
+      {/* Menu links (no hamburger) */}
+      <div className="navLinks">
+        <NavLink to="/">{t.home}</NavLink>
+        <NavLink to="/shop">{t.shop}</NavLink>
+        <NavLink to="/cart">
+          {t.cart} {cartCount > 0 && `(${cartCount})`}
+        </NavLink>
+        <NavLink to="/favorites">
+          {t.priyo} {favCount > 0 && `(${favCount})`}
+        </NavLink>
+        <NavLink to={user ? "/profile" : "/login"}>
+          {user ? t.profile : t.login}
+        </NavLink>
 
-          <div className="menuGrid">
-            <NavLink to="/" className={({ isActive }) => (isActive ? "mItem active" : "mItem")}>
-              <span className="mIcon">🏠</span>
-              <span className="mTxt">{t.home}</span>
-            </NavLink>
-
-            <NavLink to="/shop" className={({ isActive }) => (isActive ? "mItem active" : "mItem")}>
-              <span className="mIcon">🛍️</span>
-              <span className="mTxt">{t.shop}</span>
-            </NavLink>
-
-            <NavLink to="/cart" className={({ isActive }) => (isActive ? "mItem active" : "mItem")}>
-              <span className="mIcon">
-                🛒 {cartCount > 0 ? <i className="mBadge">{cartCount}</i> : null}
-              </span>
-              <span className="mTxt">{t.cart}</span>
-            </NavLink>
-
-            <NavLink to="/favorites" className={({ isActive }) => (isActive ? "mItem active" : "mItem")}>
-              <span className="mIcon">
-                ❤️ {favCount > 0 ? <i className="mBadge">{favCount}</i> : null}
-              </span>
-              <span className="mTxt">{t.priyo}</span>
-            </NavLink>
-
-            <NavLink
-              to={user ? "/profile" : "/login"}
-              className={({ isActive }) => (isActive ? "mItem active" : "mItem")}
-            >
-              <span className="mIcon">👤</span>
-              <span className="mTxt">{user ? t.profile : t.login}</span>
-            </NavLink>
-          </div>
-        </div>
-      )}
+        <button
+          className="langBtn"
+          onClick={() => setLang((x) => (x === "en" ? "bn" : "en"))}
+        >
+          {lang === "en" ? "BN" : "EN"}
+        </button>
+      </div>
     </div>
   );
 }
