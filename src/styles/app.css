@@ -544,3 +544,59 @@ a{ color: inherit; }
   align-items:center;
   justify-content:center;
 }
+
+/* =========================
+   ✅ Shop helpers
+========================= */
+.shopHead{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap: 12px;
+  margin: 10px 0 14px;
+}
+
+.shopTitle{
+  font-weight: 1000;
+  font-size: 22px;
+  color: var(--ink);
+}
+
+.shopSub{
+  margin-top: 6px;
+  color: var(--muted);
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.softBox{
+  background: rgba(255,255,255,0.75);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.04);
+}
+
+.shopGrid{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 14px;
+}
+
+.btnSoftLink{
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(117,216,75,0.18);
+  color: #174a2a;
+  font-weight: 950;
+}
+
+.shopMoreWrap{
+  margin-top: 16px;
+  display:flex;
+  justify-content:center;
+}
