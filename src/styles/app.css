@@ -149,24 +149,24 @@ body{
 }
 
 /* =========================
-   ✅ Banner with bottom curve (DEMO FIX)
+   ✅ Banner (U-curve cut like demo)
 ========================= */
 .heroBannerWrap{
   position: relative;
   margin-top: 12px;
 }
 
+/* no border/white strip */
 .heroBanner{
   position: relative;
+  height: 240px;
   border-radius: 22px;
   overflow: hidden;
-  background: rgba(255,255,255,0.65);
-  border: 1px solid var(--line);
-  height: 240px;
   box-shadow: var(--shadow);
+  background: transparent; /* important */
 }
 
-/* slider track */
+/* slider */
 .bannerTrack{
   height: 100%;
   display:flex;
@@ -174,34 +174,44 @@ body{
 }
 
 .bannerSlide{ height:100%; flex: 0 0 auto; }
-.bannerImg{ width:100%; height:100%; object-fit: cover; display:block; }
-
-/* ✅ THE ACTUAL CURVE CUT (thin like demo) */
-.heroBanner::after{
-  content:"";
-  position:absolute;
-  left:-10%;
-  right:-10%;
-  bottom:-1px;
-  height: 44px;
-  background: var(--bg);
-
-  /* curved top edge */
-  border-top-left-radius: 100% 44px;
-  border-top-right-radius: 100% 44px;
-
-  /* smooth shadow like demo */
-  box-shadow: 0 -10px 18px rgba(0,0,0,0.06);
-  pointer-events:none;
+.bannerImg{
+  width:100%;
+  height:100%;
+  object-fit: cover;
+  display:block;
 }
 
-/* dots */
+/* ✅ U-shape cut (concave, up side on left+right) */
+.bannerUCut{
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  bottom: -2px;
+
+  height: 64px;
+  background: var(--bg);
+
+  /* creates “U” curve upward */
+  border-top-left-radius: 100% 64px;
+  border-top-right-radius: 100% 64px;
+
+  /* soft shadow like demo */
+  box-shadow: 0 -14px 24px rgba(0,0,0,0.10);
+
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* dots always visible (above cut) */
 .bannerDots{
   position:absolute;
-  left:0; right:0; bottom: 14px;
+  left:0; right:0;
+  bottom: 14px;
+
   display:flex;
   justify-content:center;
   gap:8px;
+
   z-index: 5;
 }
 
@@ -216,18 +226,14 @@ body{
 }
 .dot.active{ background: rgba(255,255,255,0.95); }
 
-/* ✅ old heroCurve div থাকলেও hide করে দিচ্ছি */
-.heroCurve{ display:none; }
-
 @media (max-width: 800px){
   .heroBanner{ height: 200px; }
-  .heroBanner::after{
-    height: 40px;
-    border-top-left-radius: 100% 40px;
-    border-top-right-radius: 100% 40px;
+  .bannerUCut{
+    height: 54px;
+    border-top-left-radius: 100% 54px;
+    border-top-right-radius: 100% 54px;
   }
 }
-
 
 .heroCurve{
   position: absolute;
