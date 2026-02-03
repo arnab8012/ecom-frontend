@@ -7,7 +7,7 @@ export default function Navbar() {
   const { pathname } = useLocation();
   const { user } = useAuth();
 
-  // ✅ Hide navbar on admin pages (optional)
+  // ✅ Hide navbar on admin pages
   if (pathname.startsWith("/admin")) return null;
 
   // ✅ language
@@ -16,13 +16,13 @@ export default function Navbar() {
 
   const t = useMemo(() => {
     const dict = {
-      en: { ph: "Search products...", search: "Search" },
-      bn: { ph: "পণ্য খুঁজুন...", search: "Search" },
+      en: { ph: "Search products..." },
+      bn: { ph: "পণ্য খুঁজুন..." },
     };
     return dict[lang] || dict.en;
   }, [lang]);
 
-  // ✅ navbar search (go shop)
+  // ✅ search
   const [q, setQ] = useState("");
   const doSearch = (e) => {
     e.preventDefault();
@@ -31,39 +31,28 @@ export default function Navbar() {
     nav(`/shop?q=${encodeURIComponent(text)}`);
   };
 
-  const LOGO = "/logo.png";
-
   return (
-    <header className="topbar">
-      <div className="topbarInner">
-        {/* ✅ Brand */}
-        <Link className="topBrand" to="/">
-          <img
-            className="topLogo"
-            src={LOGO}
-            alt="logo"
-            onError={(e) => (e.currentTarget.style.display = "none")}
-          />
-          <span className="topTitle">The Curious Empire</span>
-        </Link>
+    <header className="tealNav">
+      <div className="tealNavInner">
+        {/* ⬅️ left spacer (demo মতো center search রাখতে) */}
+        <div className="navSpacer" />
 
-        {/* ✅ Small search */}
-        <form className="topSearch" onSubmit={doSearch}>
+        {/* 🔍 Center pill search */}
+        <form className="pillSearch" onSubmit={doSearch}>
           <input
-            className="topSearchInput"
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder={t.ph}
           />
-          <button className="topSearchBtn" type="submit" aria-label="search">
+          <button type="submit" aria-label="search">
             🔍
           </button>
         </form>
 
-        {/* ✅ Right side: language + profile/login icon */}
-        <div className="topRight">
+        {/* 👉 Right side */}
+        <div className="navRight">
           <button
-            className="topLang"
+            className="langCircle"
             type="button"
             onClick={() => setLang((x) => (x === "en" ? "bn" : "en"))}
             title="Language"
@@ -71,11 +60,16 @@ export default function Navbar() {
             {lang === "en" ? "EN" : "BN"}
           </button>
 
-          <Link className="topAvatarBtn" to={user ? "/profile" : "/login"} title="Account">
-            <span className="topAvatarCircle">{user ? "👤" : "🔑"}</span>
-          </Link>
-        </div>
-      </div>
-    </header>
-  );
-}
+          {user ? (
+            <button
+              className="profileCircle"
+              onClick={() => nav("/profile")}
+              title="Profile"
+            >
+              👤
+            </button>
+          ) : (
+            <button
+              className="profileCircle"
+              onClick={() => nav("/login")}
+              title
