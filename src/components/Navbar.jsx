@@ -7,25 +7,26 @@ export default function Navbar() {
   const { pathname } = useLocation();
   const { user } = useAuth();
 
-  // ✅ hide on admin pages
+  // hide on admin
   if (pathname.startsWith("/admin")) return null;
 
-  // ✅ language
+  // language
   const [lang, setLang] = useState(() => localStorage.getItem("lang") || "en");
   useEffect(() => {
     localStorage.setItem("lang", lang);
   }, [lang]);
 
   const t = useMemo(() => {
-    const dict = {
-      en: { ph: "Search products..." },
-      bn: { ph: "পণ্য খুঁজুন..." }
-    };
-    return dict[lang] || dict.en;
+    return (
+      {
+        en: { ph: "Search products..." },
+        bn: { ph: "পণ্য খুঁজুন..." },
+      }[lang] || { ph: "Search products..." }
+    );
   }, [lang]);
 
-  // ✅ search
   const [q, setQ] = useState("");
+
   const doSearch = (e) => {
     e.preventDefault();
     const text = q.trim();
@@ -33,7 +34,6 @@ export default function Navbar() {
     nav(`/shop?q=${encodeURIComponent(text)}`);
   };
 
-  // optional logo
   const LOGO = "/logo.png";
 
   return (
@@ -68,7 +68,7 @@ export default function Navbar() {
           <button
             type="button"
             className="topLang"
-            onClick={() => setLang((x) => (x === "en" ? "bn" : "en"))}
+            onClick={() => setLang(lang === "en" ? "bn" : "en")}
             title="Language"
           >
             {lang === "en" ? "EN" : "BN"}
