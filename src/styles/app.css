@@ -230,10 +230,10 @@ body{
 /* ✅ SINGLE U curve (only cut, no extra white bar) */
 .heroGreenCurve{
   position:absolute;
-  left:-12%;
-  right:-12%;
+  left: 12%;
+  right: 12%;
   bottom:-1px;
-  height: 90px;
+  height: -50px;
   background: var(--bg);
   border-top-left-radius: 100% 90px;
   border-top-right-radius: 100% 90px;
@@ -242,14 +242,14 @@ body{
 }
 
 @media (max-width: 800px){
-  .heroGreenShell{ min-height: 200px; }
+  .heroGreenShell{ min-height: 250px; }
   .heroBanner{ height: 200px; }
   .heroGreenCurve{
     height: 76px;
     border-top-left-radius: 100% 76px;
     border-top-right-radius: 100% 76px;
   }
-  .bannerDots{ bottom: 18px; }
+  .bannerDots{ bottom: 12px; }
 }
 
 /* =========================
