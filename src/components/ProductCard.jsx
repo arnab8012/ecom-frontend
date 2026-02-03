@@ -1,81 +1,108 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
 import { useEffect, useMemo, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useCart } from "../context/CartContext";
+import { useFavorites } from "../context/FavoritesContext";
+import { useAuth } from "../context/AuthContext";
 
-export default function Navbar() {
+export default function ProductCard({ p }) {
   const nav = useNavigate();
-  const { pathname } = useLocation();
+  const { add } = useCart();
   const { user } = useAuth();
+  const { isFav, toggle } = useFavorites();
 
-  // ✅ Hide navbar on admin pages
-  if (pathname.startsWith("/admin")) return null;
+  const imgs = useMemo(() => {
+    const arr = Array.isArray(p?.images) ? p.images : [];
+    return arr.filter(Boolean);
+  }, [p?._id]);
 
-  const [lang, setLang] = useState(() => localStorage.getItem("lang") || "en");
-  useEffect(() => localStorage.setItem("lang", lang), [lang]);
+  const [idx, setIdx] = useState(0);
 
-  const t = useMemo(() => {
-    const dict = {
-      en: { search: "Search", ph: "Search products..." },
-      bn: { search: "খুঁজুন", ph: "পণ্য খুঁজুন..." },
-    };
-    return dict[lang] || dict.en;
-  }, [lang]);
+  useEffect(() => {
+    if (imgs.length <= 1) return;
+    setIdx(0);
 
-  const [q, setQ] = useState("");
-  const doSearch = (e) => {
+    const t = setInterval(() => {
+      setIdx((x) => (x + 1) % imgs.length);
+    }, 2500);
+
+    return () => clearInterval(t);
+  }, [imgs.length]);
+
+  const img = imgs[idx] || "https://via.placeholder.com/400x300?text=Product";
+
+  const onFav = (e) => {
     e.preventDefault();
-    const text = q.trim();
-    if (!text) return;
-    nav(`/shop?q=${encodeURIComponent(text)}`);
+    e.stopPropagation();
+
+    if (!user) {
+      nav("/login");
+      return;
+    }
+    toggle(p._id);
   };
 
-  const LOGO = "/logo.png";
-
   return (
-    <div className="nav premiumNav">
-      <Link className="brand premiumBrand" to="/">
-        <img
-          src={LOGO}
-          alt="logo"
-          className="brandLogo"
-          onError={(e) => {
-            e.currentTarget.style.display = "none";
-          }}
-        />
-        <span className="brandTxt">The Curious Empire</span>
-      </Link>
+    <div className="pCard">
+      <div className="pImgWrap">
+        <Link to={`/product/${p._id}`}>
+          <img className="pImg" src={img} alt={p?.title || ""} />
+        </Link>
 
-      <form className="navSearchWrap premiumSearch" onSubmit={doSearch}>
-        <input
-          className="navSearch premiumSearchInput"
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder={t.ph}
-        />
-        <button className="navSearchBtn premiumSearchBtn" type="submit">
-          {t.search}
-        </button>
-      </form>
-
-      <div className="navRight premiumRight">
-        <button
-          className="langBtn premiumLang"
-          type="button"
-          onClick={() => setLang((x) => (x === "en" ? "bn" : "en"))}
-          title="Language"
-        >
-          {lang === "en" ? "EN" : "BN"}
+        <button type="button" className="pFav" onClick={onFav} title="Priyo">
+          <span>{isFav(p._id) ? "❤️" : "🤍"}</span>
         </button>
 
-        {user ? (
-          <button type="button" className="navIconBtn" title="Profile" onClick={() => nav("/profile")}>
-            👤
-          </button>
-        ) : (
-          <button type="button" className="navIconBtn" title="Login" onClick={() => nav("/login")}>
-            🔑
-          </button>
+        {imgs.length > 1 && (
+          <div className="pDots">
+            {imgs.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                className={`pDot ${i === idx ? "active" : ""}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setIdx(i);
+                }}
+                aria-label={`img-${i}`}
+              />
+            ))}
+          </div>
         )}
+      </div>
+
+      <div className="pBody">
+        <Link className="pTitle" to={`/product/${p._id}`}>
+          {p.title}
+        </Link>
+
+        <div className="pPriceRow">
+          <span className="pPrice">৳ {p.price}</span>
+        </div>
+
+        <div className="pActions">
+          <button className="btnSoft" type="button" onClick={() => nav(`/product/${p._id}`)}>
+            View &amp; Buy
+          </button>
+
+          <button
+            className="btnPrimary"
+            type="button"
+            onClick={() => {
+              add({
+                productId: p._id,
+                title: p.title,
+                price: p.price,
+                image: imgs[0] || "",
+                variant: "",
+                qty: 1,
+              });
+              alert("✅ Added to cart");
+            }}
+          >
+            Add
+          </button>
+        </div>
       </div>
     </div>
   );
