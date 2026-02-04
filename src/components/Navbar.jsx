@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import logo from "../assets/logo.png";
+import logo from "../assets/logo.png"; // এখানে assets same level না, তাই আলাদা path লাগবে
 
 export default function Navbar() {
   const nav = useNavigate();
