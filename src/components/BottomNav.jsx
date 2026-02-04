@@ -11,47 +11,41 @@ export default function BottomNav() {
 
   if (loc.pathname.startsWith("/admin")) return null;
 
-  const cartCount = (items || []).reduce((s, x) => s + (x.qty || 0), 0);
+  const cartCount = (items || []).reduce((s, x) => s + (Number(x?.qty) || 0), 0);
   const favCount = Array.isArray(favIds) ? favIds.length : 0;
 
+  const cls = ({ isActive }) => (isActive ? "bnItem active" : "bnItem");
+
   return (
-    <div className="bottomNav">
-      <NavLink to="/" className={({ isActive }) => (isActive ? "bnItem active" : "bnItem")}>
+    <nav className="bottomNav">
+      <NavLink to="/" end className={cls}>
         <span className="bnIcon">🏠</span>
         <span className="bnTxt">Home</span>
       </NavLink>
 
-      <NavLink to="/shop" className={({ isActive }) => (isActive ? "bnItem active" : "bnItem")}>
+      <NavLink to="/shop" className={cls}>
         <span className="bnIcon">🛍️</span>
         <span className="bnTxt">Shop</span>
       </NavLink>
 
-      <NavLink to="/cart" className={({ isActive }) => (isActive ? "bnItem active" : "bnItem")}>
+      <NavLink to="/cart" className={cls}>
         <span className="bnIcon">
-          🛒
-          {cartCount > 0 ? <i className="bnBadge">{cartCount}</i> : null}
+          🛒{cartCount > 0 ? <i className="bnBadge">{cartCount}</i> : null}
         </span>
         <span className="bnTxt">Cart</span>
       </NavLink>
 
-      <NavLink
-        to="/favorites"
-        className={({ isActive }) => (isActive ? "bnItem active" : "bnItem")}
-      >
+      <NavLink to="/favorites" className={cls}>
         <span className="bnIcon">
-          ❤️
-          {favCount > 0 ? <i className="bnBadge">{favCount}</i> : null}
+          ❤️{favCount > 0 ? <i className="bnBadge">{favCount}</i> : null}
         </span>
         <span className="bnTxt">Priyo</span>
       </NavLink>
 
-      <NavLink
-        to={user ? "/profile" : "/login"}
-        className={({ isActive }) => (isActive ? "bnItem active" : "bnItem")}
-      >
+      <NavLink to={user ? "/profile" : "/login"} className={cls}>
         <span className="bnIcon">👤</span>
         <span className="bnTxt">{user ? "Profile" : "Login"}</span>
       </NavLink>
-    </div>
+    </nav>
   );
 }
