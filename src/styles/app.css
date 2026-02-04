@@ -615,9 +615,58 @@ body{
   }
 }
 
+/* TOP BAR */
+.topbar{
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--green);
+  padding: 8px 12px;
+}
+
+/* ভিতরের layout */
+.topbarInner{
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ✅ LOGO বড় করে */
+.topBrand{
+  flex: 0 0 auto;
+}
+
 .topLogo{
-  width: 44px;     /* বড় করতে এখানে সংখ্যা বাড়াও */
-  height: 44px;
+  height: 48px;      /* 🔥 পুরো bar অনুযায়ী বড় */
+  width: auto;
   object-fit: contain;
-  border-radius: 10px;  /* চাইলে */
+}
+
+/* SEARCH মাঝখানে */
+.topSearch{
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.topSearchInput{
+  max-width: 360px;
+  width: 100%;
+  height: 40px;
+  border-radius: 999px;
+  border: none;
+  padding: 0 16px;
+  font-weight: 800;
+}
+
+/* MOBILE এ আরও বড় */
+@media (max-width: 520px){
+  .topLogo{
+    height: 44px;
+  }
+  .topSearchInput{
+    max-width: 240px;
+  }
 }
