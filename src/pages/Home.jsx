@@ -9,15 +9,19 @@ export default function Home() {
   const [cats, setCats] = useState([]);
   const [allProducts, setAllProducts] = useState([]);
   const [banners, setBanners] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const [slide, setSlide] = useState(0);
 
+  // ✅ safe banner urls
   const bannerUrls = useMemo(() => {
     const arr = Array.isArray(banners) ? banners : [];
-    return arr.map((b) => (typeof b === "string" ? b : b?.url)).filter(Boolean);
+    return arr
+      .map((b) => (typeof b === "string" ? b : b?.url))
+      .filter(Boolean);
   }, [banners]);
 
+  // ✅ load home data (categories + banners + products)
   useEffect(() => {
     let alive = true;
 
@@ -31,9 +35,10 @@ export default function Home() {
         ]);
 
         if (!alive) return;
-        if (c?.ok) setCats(Array.isArray(c.categories) ? c.categories : []);
-        if (r?.ok) setBanners(Array.isArray(r.banners) ? r.banners : []);
-        if (p?.ok) setAllProducts(Array.isArray(p.products) ? p.products : []);
+
+        setCats(c?.ok ? c.categories || [] : []);
+        setBanners(r?.ok ? r.banners || [] : []);
+        setAllProducts(p?.ok ? p.products || [] : []);
       } catch (e) {
         console.log("Home Load Error", e);
       } finally {
@@ -41,9 +46,12 @@ export default function Home() {
       }
     })();
 
-    return () => (alive = false);
+    return () => {
+      alive = false;
+    };
   }, []);
 
+  // ✅ banner auto slide
   useEffect(() => {
     if (bannerUrls.length <= 1) return;
     const id = setInterval(() => {
@@ -52,10 +60,11 @@ export default function Home() {
     return () => clearInterval(id);
   }, [bannerUrls.length]);
 
+  // ✅ group products by category
   const byCat = useMemo(() => {
     const map = new Map();
     for (const p of allProducts || []) {
-      const cid = p?.category?._id || "uncat";
+      const cid = p?.category?._id || p?.category || "uncat";
       if (!map.has(cid)) map.set(cid, []);
       map.get(cid).push(p);
     }
@@ -65,19 +74,22 @@ export default function Home() {
   const take = (arr, n) => (Array.isArray(arr) ? arr.slice(0, n) : []);
   const titleText = (name) => String(name || "").toUpperCase();
 
-  const getCatImg = (c) =>
-    c?.image ||
-    c?.imageUrl ||
-    c?.img ||
-    c?.photo ||
-    c?.icon ||
-    "https://via.placeholder.com/160";
+  // ✅ fallback category image (no blank card)
+  const catImage = (c) => {
+    const img = c?.image || c?.icon || c?.img;
+    if (img) return img;
+
+    // auto placeholder with text (looks premium enough)
+    return `https://dummyimage.com/600x400/ffffff/111111&text=${encodeURIComponent(
+      c?.name || "Category"
+    )}`;
+  };
 
   return (
     <div className="container homeWrap" style={{ paddingBottom: 90 }}>
       {/* welcome bar */}
       <div className="welcomeBar">
-        <div>
+        <div className="welcomeLeft">
           <div className="welcomeTitle">The Curious Empire</div>
           <div className="welcomeSub">Premium Shopping Experience</div>
         </div>
@@ -85,7 +97,7 @@ export default function Home() {
       </div>
 
       {/* Banner */}
-      {bannerUrls.length > 0 && (
+      {bannerUrls.length > 0 ? (
         <div className="heroBannerWrap">
           <div className="heroBanner">
             <div
@@ -121,7 +133,13 @@ export default function Home() {
             )}
           </div>
         </div>
+      ) : (
+        // ✅ no banner? keep layout stable
+        <div style={{ height: 12 }} />
       )}
+
+      {/* Loading */}
+      {loading && <p style={{ padding: "12px 0", fontWeight: 900 }}>Loading...</p>}
 
       {/* Categories */}
       {cats.length > 0 && (
@@ -139,27 +157,26 @@ export default function Home() {
                 key={c._id}
                 className="catItem"
                 type="button"
-                onClick={() => nav(`/shop?category=${encodeURIComponent(c._id)}`)}
+                onClick={() => nav(`/shop?category=${c._id}`)}
               >
                 <div className="catIcon">
                   <img
-                    src={getCatImg(c)}
-                    alt={c?.name || "category"}
+                    src={catImage(c)}
+                    alt={c.name}
                     loading="lazy"
                     onError={(e) => {
                       e.currentTarget.onerror = null;
-                      e.currentTarget.src = "https://via.placeholder.com/160";
+                      e.currentTarget.src =
+                        "https://via.placeholder.com/600x400?text=Category";
                     }}
                   />
                 </div>
-                <div className="catName">{c?.name}</div>
+                <div className="catName">{c.name}</div>
               </button>
             ))}
           </div>
         </div>
       )}
-
-      {loading && <p style={{ padding: "12px 0" }}>Loading...</p>}
 
       {/* Products by category */}
       {cats.map((c) => {
@@ -171,7 +188,7 @@ export default function Home() {
             <div className="catHeaderRow">
               <div className="catHeaderTitle">{titleText(c.name)}</div>
 
-              <Link to={`/shop?category=${encodeURIComponent(c._id)}`} className="seeMoreBtn">
+              <Link to={`/shop?category=${c._id}`} className="seeMoreBtn">
                 See More →
               </Link>
             </div>
