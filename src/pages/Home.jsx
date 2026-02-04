@@ -15,58 +15,9 @@ export default function Home() {
 
   const bannerUrls = useMemo(() => {
     const arr = Array.isArray(banners) ? banners : [];
-    return arr
-      .map((b) => (typeof b === "string" ? b : b?.url))
-      .filter(Boolean);
+    return arr.map((b) => (typeof b === "string" ? b : b?.url)).filter(Boolean);
   }, [banners]);
 
-  // ✅ group products by category
-  const byCat = useMemo(() => {
-    const map = new Map();
-    for (const p of allProducts || []) {
-      const cid = p?.category?._id || "uncat";
-      if (!map.has(cid)) map.set(cid, []);
-      map.get(cid).push(p);
-    }
-    return map;
-  }, [allProducts]);
-
-  // ✅ helper
-  const take = (arr, n) => (Array.isArray(arr) ? arr.slice(0, n) : []);
-  const titleText = (name) => String(name || "").toUpperCase();
-
-  // ✅ url resolve helper (relative -> backend BASE)
-  const resolveUrl = (u) => {
-    if (!u) return "";
-    const url = String(u);
-
-    // already absolute
-    if (url.startsWith("http://") || url.startsWith("https://")) return url;
-
-    // if url like "/uploads/..." or "uploads/..."
-    const clean = url.startsWith("/") ? url : `/${url}`;
-    return `${api.BASE}${clean}`;
-  };
-
-  // ✅ category image fallback
-  const getCatImg = (c) => {
-    // try common fields
-    const raw =
-      c?.image || c?.imageUrl || c?.img || c?.photo || c?.icon || "";
-
-    if (raw) return resolveUrl(raw);
-
-    // fallback: first product image from this category
-    const list = byCat.get(c?._id) || [];
-    const p0 = list[0];
-    const pImg =
-      (Array.isArray(p0?.images) && p0.images[0]) || p0?.image || "";
-
-    const resolved = resolveUrl(pImg);
-    return resolved || "https://via.placeholder.com/160";
-  };
-
-  // ✅ load all data once
   useEffect(() => {
     let alive = true;
 
@@ -80,15 +31,9 @@ export default function Home() {
         ]);
 
         if (!alive) return;
-
         if (c?.ok) setCats(Array.isArray(c.categories) ? c.categories : []);
-        else setCats([]);
-
         if (r?.ok) setBanners(Array.isArray(r.banners) ? r.banners : []);
-        else setBanners([]);
-
         if (p?.ok) setAllProducts(Array.isArray(p.products) ? p.products : []);
-        else setAllProducts([]);
       } catch (e) {
         console.log("Home Load Error", e);
       } finally {
@@ -96,12 +41,9 @@ export default function Home() {
       }
     })();
 
-    return () => {
-      alive = false;
-    };
+    return () => (alive = false);
   }, []);
 
-  // ✅ auto slide
   useEffect(() => {
     if (bannerUrls.length <= 1) return;
     const id = setInterval(() => {
@@ -110,16 +52,32 @@ export default function Home() {
     return () => clearInterval(id);
   }, [bannerUrls.length]);
 
-  // ✅ keep slide valid
-  useEffect(() => {
-    if (slide >= bannerUrls.length) setSlide(0);
-  }, [bannerUrls.length, slide]);
+  const byCat = useMemo(() => {
+    const map = new Map();
+    for (const p of allProducts || []) {
+      const cid = p?.category?._id || "uncat";
+      if (!map.has(cid)) map.set(cid, []);
+      map.get(cid).push(p);
+    }
+    return map;
+  }, [allProducts]);
+
+  const take = (arr, n) => (Array.isArray(arr) ? arr.slice(0, n) : []);
+  const titleText = (name) => String(name || "").toUpperCase();
+
+  const getCatImg = (c) =>
+    c?.image ||
+    c?.imageUrl ||
+    c?.img ||
+    c?.photo ||
+    c?.icon ||
+    "https://via.placeholder.com/160";
 
   return (
     <div className="container homeWrap" style={{ paddingBottom: 90 }}>
       {/* welcome bar */}
       <div className="welcomeBar">
-        <div className="welcomeLeft">
+        <div>
           <div className="welcomeTitle">The Curious Empire</div>
           <div className="welcomeSub">Premium Shopping Experience</div>
         </div>
@@ -181,7 +139,7 @@ export default function Home() {
                 key={c._id}
                 className="catItem"
                 type="button"
-                onClick={() => nav(`/shop?category=${c._id}`)}
+                onClick={() => nav(`/shop?category=${encodeURIComponent(c._id)}`)}
               >
                 <div className="catIcon">
                   <img
@@ -194,8 +152,7 @@ export default function Home() {
                     }}
                   />
                 </div>
-
-                <div className="catName">{c.name}</div>
+                <div className="catName">{c?.name}</div>
               </button>
             ))}
           </div>
@@ -214,7 +171,7 @@ export default function Home() {
             <div className="catHeaderRow">
               <div className="catHeaderTitle">{titleText(c.name)}</div>
 
-              <Link to={`/shop?category=${c._id}`} className="seeMoreBtn">
+              <Link to={`/shop?category=${encodeURIComponent(c._id)}`} className="seeMoreBtn">
                 See More →
               </Link>
             </div>
