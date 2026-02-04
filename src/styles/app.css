@@ -684,3 +684,28 @@ body{
     max-width: 240px;
   }
 }
+/* ===== FORCE TOPBAR SIZE (put at END of App.css) ===== */
+.topbar{
+  padding: 18px 12px !important;   /* bar উঁচু */
+  min-height: 74px !important;     /* উঁচু নিশ্চিত */
+  display: flex !important;
+  align-items: center !important;
+}
+
+.topbarInner{
+  width: 100% !important;
+  align-items: center !important;
+}
+
+/* logo বড় */
+.topLogo{
+  height: 56px !important;
+  width: 56px !important;
+  object-fit: contain !important;
+}
+
+/* mobile এও বড় */
+@media (max-width: 520px){
+  .topbar{ min-height: 78px !important; }
+  .topLogo{ height: 60px !important; width: 60px !important; }
+}
