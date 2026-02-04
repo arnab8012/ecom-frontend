@@ -1,6 +1,7 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import logo from "../assets/logo.png";
 
 export default function Navbar() {
   const nav = useNavigate();
@@ -9,6 +10,12 @@ export default function Navbar() {
 
   // ✅ Hide navbar on admin pages
   if (pathname.startsWith("/admin")) return null;
+
+<img
+  className="topLogo"
+  src={logo}
+  alt="The Curious Empire"
+/>
 
   // ✅ language
   const [lang, setLang] = useState(() => localStorage.getItem("lang") || "en");
