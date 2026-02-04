@@ -4,9 +4,11 @@ html, body, #root { height: 100%; }
   --bg: #f7f7fb;
   --ink:#0b1220;
   --muted:#6b7280;
-  --green:#0f5f5c;
-  --accent:#75d84b;
-  --accent2:#77b7ff;
+
+  --green:#0f5f5c;   /* demo navbar teal */
+  --accent:#75d84b;  /* demo green */
+  --accent2:#77b7ff; /* demo title blue */
+
   --card:#ffffff;
   --line: rgba(0,0,0,0.08);
   --shadow: 0 14px 30px rgba(0,0,0,0.06);
@@ -19,107 +21,90 @@ body{
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
   color: var(--ink);
   background: var(--bg);
-  padding-bottom: 78px;
+  padding-bottom: 78px; /* bottom nav space */
 }
 
 /* =========================
-   TOPBAR
+   ✅ NAVBAR (DEMO)
 ========================= */
 .topbar{
   position: sticky;
   top: 0;
   z-index: 50;
   background: var(--green);
-  padding: 10px 12px;
+  padding: 12px 14px;
 }
+
 .topbarInner{
   max-width: 1100px;
   margin: 0 auto;
   display:flex;
   align-items:center;
-  gap: 10px;
+  gap: 12px;
 }
+
 .topBrand{
+  text-decoration:none;
   display:flex;
   align-items:center;
-  gap:10px;
-  text-decoration:none;
-  color:#fff;
-  font-weight:900;
-  min-width: 170px;
+  justify-content:center;
+  width: 42px;
+  height: 42px;
 }
-.topLogo{
-  width:34px;
-  height:34px;
-  border-radius: 10px;
-  object-fit: cover;
+
+.topBrandDot{
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.85);
+  display:inline-block;
 }
-.topTitle{
-  font-weight: 900;
-  letter-spacing: 0.2px;
-  white-space: nowrap;
-}
-.topSearch{
+
+.pillSearch{
   flex: 1;
   display:flex;
   align-items:center;
-  justify-content:center;
-}
-.topSearchInput{
-  width: min(520px, 100%);
-  height: 38px;
-  border-radius: 999px;
-  border: none;
-  outline: none;
-  padding: 0 14px;
-  font-weight: 800;
+  gap: 8px;
+  max-width: 520px;
+  margin: 0 auto;
+
   background: rgba(255,255,255,0.92);
-}
-.topSearchBtn{
-  width: 40px;
-  height: 40px;
-  margin-left: -42px;
   border-radius: 999px;
-  border: none;
+  padding: 8px 12px;
+}
+
+.pillSearch input{
+  border:none;
+  outline:none;
+  flex:1;
   background: transparent;
-  cursor: pointer;
-  font-size: 18px;
+  font-weight: 800;
+  color: #111;
 }
-.topRight{
-  display:flex;
-  align-items:center;
-  gap: 10px;
-}
-.topLang{
-  border: none;
-  background: rgba(255,255,255,0.18);
-  color: #fff;
-  height: 38px;
-  padding: 0 12px;
-  border-radius: 999px;
-  font-weight: 900;
-  cursor: pointer;
-}
-.topAvatarBtn{ text-decoration:none; }
-.topAvatarCircle{
-  width: 38px;
-  height: 38px;
-  border-radius: 999px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background: rgba(255,255,255,0.18);
-  color:#fff;
+
+.pillSearch button{
+  border:none;
+  background: transparent;
+  cursor:pointer;
   font-size: 18px;
 }
 
-@media (max-width: 800px){
-  .topTitle{ display:none; }
-  .topBrand{ min-width: 60px; }
+.langCircle, .keyCircle{
+  border:none;
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  cursor: pointer;
+  background: rgba(255,255,255,0.18);
+  color: #fff;
+  font-weight: 900;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
 /* =========================
-   LAYOUT
+   ✅ LAYOUT
 ========================= */
 .container{
   max-width: 1100px;
@@ -129,82 +114,59 @@ body{
 .homeWrap{ padding-top: 6px; }
 .homeSection{ margin-top: 18px; }
 
-/* =========================
-   BIG GREEN HERO (like screenshot-2)
-========================= */
-.heroGreenShell{
-  background: var(--green);
-  border-radius: 22px;
-  padding: 14px 14px 34px; /* bottom space for curve */
-  box-shadow: var(--shadow);
-  position: relative;
-  overflow: hidden;
-}
-
-.heroGreenShell::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  opacity: .10;
-  background-image:
-    radial-gradient(circle at 20% 30%, #fff 0 2px, transparent 3px),
-    radial-gradient(circle at 80% 60%, #fff 0 2px, transparent 3px);
-  background-size: 120px 120px;
-  pointer-events:none;
-}
-
-.heroGreenCurve{
-  position:absolute;
-  left: -8%;
-  right: -8%;
-  bottom: -28px;
-  height: 90px;
-  background: var(--bg);
-  border-top-left-radius: 100% 90px;
-  border-top-right-radius: 100% 90px;
-  box-shadow: 0 -18px 28px rgba(0,0,0,0.16);
-  pointer-events:none;
+.box{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.04);
 }
 
 /* =========================
-   Welcome
+   ✅ Welcome Bar
 ========================= */
 .welcomeBar{
   display:flex;
   justify-content:space-between;
   align-items:center;
   gap: 10px;
-  padding: 10px 12px;
-  border-radius: 16px;
-  background: rgba(255,255,255,0.75);
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.82);
   border: 1px solid var(--line);
   box-shadow: 0 10px 25px rgba(0,0,0,0.04);
   margin-top: 10px;
 }
-.welcomeTitle{ font-weight: 1000; font-size: 16px; }
-.welcomeSub{ margin-top: 2px; font-size: 12px; color: var(--muted); font-weight: 700; }
+
+.welcomeTitle{
+  font-weight: 1000;
+  font-size: 16px;
+}
+.welcomeSub{
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 700;
+}
 .welcomeBadge{
   font-size: 12px;
   font-weight: 900;
-  padding: 8px 10px;
+  padding: 8px 12px;
   border-radius: 999px;
   background: rgba(117,216,75,0.16);
   border: 1px solid rgba(117,216,75,0.25);
 }
 
 /* =========================
-   Banner (U-curve cut like demo)
+   ✅ CURVED BANNER (CORRECT)
+   sides up, middle down
 ========================= */
-.heroBannerWrap{
-  position: relative;
+.curvedBanner{
   margin-top: 12px;
-}
-
-.heroBanner{
-  position: relative;
-  height: 240px;
   border-radius: 22px;
   overflow: hidden;
+  position: relative;
+  height: 240px;
   box-shadow: var(--shadow);
   background: transparent;
 }
@@ -215,60 +177,62 @@ body{
   transition: transform 500ms ease;
 }
 
-.bannerSlide{ height:100%; flex: 0 0 auto; }
-.bannerImg{
+.bannerSlide{
+  height: 100%;
+  flex: 0 0 auto;
+}
+
+.curvedBanner img{
   width:100%;
   height:100%;
-  object-fit: cover;
+  object-fit:cover;
   display:block;
 }
 
-.bannerUCut{
-  position: absolute;
-  left: -10%;
-  right: -10%;
-  bottom: -2px;
-  height: 64px;
-  background: var(--bg);
-  border-top-left-radius: 100% 64px;
-  border-top-right-radius: 100% 64px;
-  box-shadow: 0 -14px 24px rgba(0,0,0,0.10);
-  z-index: 2;
-  pointer-events: none;
+/* overlay curve (no white border) */
+.curveSvg{
+  position:absolute;
+  left:-6%;
+  right:-6%;
+  bottom:-2px;
+  height: 78px;
+  width:auto;
+  z-index: 3;
+  pointer-events:none;
+  filter: drop-shadow(0 -18px 24px rgba(0,0,0,0.10));
+}
+.curveSvg path{
+  fill: var(--bg);
 }
 
+/* dots */
 .bannerDots{
   position:absolute;
   left:0; right:0;
-  bottom: 14px;
+  bottom: 18px;
   display:flex;
   justify-content:center;
   gap:8px;
-  z-index: 5;
+  z-index: 6;
 }
-
 .dot{
   width: 10px;
   height: 10px;
   border-radius: 999px;
-  border: none;
-  cursor: pointer;
+  border:none;
+  cursor:pointer;
   background: rgba(255,255,255,0.55);
   box-shadow: 0 6px 14px rgba(0,0,0,0.12);
 }
 .dot.active{ background: rgba(255,255,255,0.95); }
 
 @media (max-width: 800px){
-  .heroBanner{ height: 200px; }
-  .bannerUCut{
-    height: 54px;
-    border-top-left-radius: 100% 54px;
-    border-top-right-radius: 100% 54px;
-  }
+  .curvedBanner{ height: 210px; }
+  .curveSvg{ height: 72px; }
 }
 
 /* =========================
-   Section head
+   ✅ Section header (demo style)
 ========================= */
 .secTop{
   display:flex;
@@ -277,6 +241,7 @@ body{
   gap: 10px;
   margin: 16px 0 10px;
 }
+
 .secTitle{
   margin: 0;
   font-size: 34px;
@@ -284,6 +249,7 @@ body{
   color: var(--accent2);
   letter-spacing: 0.3px;
 }
+
 .seeMore{
   text-decoration:none;
   font-weight: 900;
@@ -291,7 +257,7 @@ body{
 }
 
 /* =========================
-   Categories
+   ✅ Categories row
 ========================= */
 .catRow{
   display:flex;
@@ -299,8 +265,12 @@ body{
   overflow-x: auto;
   padding: 6px 2px 10px;
 }
+
 .catRow::-webkit-scrollbar{ height: 6px; }
-.catRow::-webkit-scrollbar-thumb{ background: rgba(0,0,0,0.14); border-radius: 99px; }
+.catRow::-webkit-scrollbar-thumb{
+  background: rgba(0,0,0,0.14);
+  border-radius: 99px;
+}
 
 .catItem{
   min-width: 120px;
@@ -310,16 +280,23 @@ body{
   padding: 0;
   cursor: pointer;
 }
+
 .catIcon{
   width: 120px;
-  height: 76px;
-  border-radius: 16px;
+  height: 82px;
+  border-radius: 18px;
   background: rgba(255,255,255,0.96);
   border: 1px solid rgba(0,0,0,0.06);
   box-shadow: 0 12px 26px rgba(0,0,0,0.06);
   overflow:hidden;
 }
-.catIcon img{ width: 100%; height: 100%; object-fit: cover; }
+
+.catIcon img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .catName{
   margin-top: 8px;
   font-weight: 950;
@@ -334,7 +311,7 @@ body{
 }
 
 /* =========================
-   Category header + products grid
+   ✅ Category product header row
 ========================= */
 .catHeaderRow{
   display:flex;
@@ -343,6 +320,7 @@ body{
   gap: 10px;
   margin: 18px 0 10px;
 }
+
 .catHeaderTitle{
   font-weight: 1000;
   font-size: 22px;
@@ -352,15 +330,17 @@ body{
   padding-bottom: 4px;
   line-height: 1;
 }
+
 .seeMoreBtn{
   text-decoration:none;
   font-weight: 950;
   color: #0b2c1d;
-  background: rgba(117,216,75,0.85);
+  background: rgba(117,216,75,0.88);
   padding: 10px 14px;
-  border-radius: 14px;
+  border-radius: 16px;
   box-shadow: 0 10px 20px rgba(0,0,0,0.08);
 }
+
 .homeTwoGrid{
   display:grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -368,7 +348,7 @@ body{
 }
 
 /* =========================
-   Product card
+   ✅ Product Card
 ========================= */
 .pCard{
   background: var(--card);
@@ -377,8 +357,15 @@ body{
   overflow: hidden;
   box-shadow: var(--shadow);
 }
+
 .pImgWrap{ position: relative; background: #fff; }
-.pImg{ width: 100%; height: 160px; object-fit: cover; display:block; }
+
+.pImg{
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  display:block;
+}
 
 .pFav{
   position: absolute;
@@ -395,6 +382,7 @@ body{
   align-items:center;
   justify-content:center;
 }
+
 .pDots{
   position:absolute;
   left:0; right:0;
@@ -403,6 +391,7 @@ body{
   justify-content:center;
   gap: 6px;
 }
+
 .pDot{
   width: 8px;
   height: 8px;
@@ -414,6 +403,7 @@ body{
 .pDot.active{ background: rgba(0,0,0,0.85); }
 
 .pBody{ padding: 12px 12px 14px; }
+
 .pTitle{
   display:block;
   text-decoration:none;
@@ -424,8 +414,13 @@ body{
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+
 .pPriceRow{ display:flex; align-items:center; gap: 10px; }
-.pPrice{ font-weight: 1000; font-size: 18px; color: var(--ink); }
+.pPrice{
+  font-weight: 1000;
+  font-size: 18px;
+  color: var(--ink);
+}
 
 .pActions{
   margin-top: 12px;
@@ -434,6 +429,7 @@ body{
   justify-content: space-between;
   gap: 10px;
 }
+
 .btnSoft{
   flex: 1;
   border: none;
@@ -444,6 +440,7 @@ body{
   border-radius: 14px;
   cursor: pointer;
 }
+
 .btnPrimary{
   border: none;
   background: rgba(117,216,75,0.92);
@@ -455,7 +452,7 @@ body{
 }
 
 /* =========================
-   BottomNav
+   ✅ Bottom Nav
 ========================= */
 .bottomNav{
   position: fixed;
@@ -473,6 +470,7 @@ body{
   backdrop-filter: blur(14px);
   border-top: 1px solid rgba(0,0,0,0.10);
 }
+
 .bnItem{
   flex: 1;
   text-decoration: none;
@@ -486,9 +484,17 @@ body{
   justify-content:center;
   gap: 4px;
 }
+
 .bnItem.active{ color: var(--green); }
-.bnIcon{ position: relative; font-size: 20px; line-height: 1; }
+
+.bnIcon{
+  position: relative;
+  font-size: 20px;
+  line-height: 1;
+}
+
 .bnTxt{ font-size: 11px; }
+
 .bnBadge{
   position:absolute;
   top: -8px;
