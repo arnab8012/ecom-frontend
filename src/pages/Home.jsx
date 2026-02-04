@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "../api/api";
 import ProductCard from "../components/ProductCard";
+import HomeCategories from "../components/HomeCategories";
 
 export default function Home() {
   const nav = useNavigate();
@@ -44,6 +45,12 @@ export default function Home() {
     return () => (alive = false);
   }, []);
 
+  // ✅ bannerUrls length বদলালে slide reset (jump/blink কমে)
+  useEffect(() => {
+    setSlide(0);
+  }, [bannerUrls.length]);
+
+  // ✅ slider interval
   useEffect(() => {
     if (bannerUrls.length <= 1) return;
     const id = setInterval(() => {
@@ -76,7 +83,7 @@ export default function Home() {
         <div className="welcomeBadge">✨ Premium</div>
       </div>
 
-      {/* ✅ Banner with DEMO curve (no extra heroCurve div) */}
+      {/* Banner */}
       {bannerUrls.length > 0 && (
         <div className="heroBannerWrap">
           <div className="heroBanner">
@@ -89,7 +96,7 @@ export default function Home() {
             >
               {bannerUrls.map((url, i) => (
                 <div
-                  key={i}
+                  key={url || i} // ✅ better than only index
                   className="bannerSlide"
                   style={{ width: `${100 / bannerUrls.length}%` }}
                 >
@@ -125,29 +132,8 @@ export default function Home() {
             </Link>
           </div>
 
-          <div className="catRow">
-            {cats.map((c) => (
-              <button
-                key={c._id}
-                className="catItem"
-                type="button"
-                onClick={() => nav(`/shop?category=${c._id}`)}
-              >
-                <div className="catIcon">
-                  <img
-                    src={c.image || "https://via.placeholder.com/160"}
-                    alt={c.name}
-                    loading="lazy"
-                    onError={(e) => {
-                      e.currentTarget.onerror = null;
-                      e.currentTarget.src = "https://via.placeholder.com/160";
-                    }}
-                  />
-                </div>
-                <div className="catName">{c.name}</div>
-              </button>
-            ))}
-          </div>
+          {/* ✅ memo component (blink/jitter fix) */}
+          <HomeCategories cats={cats} />
         </div>
       )}
 
