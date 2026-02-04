@@ -614,3 +614,9 @@ body{
     gap: 12px;
   }
 }
+
+.topLogo{
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+}
