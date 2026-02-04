@@ -1,67 +1,322 @@
 html, body, #root { height: 100%; }
-* { box-sizing: border-box; }
 
+:root { --pink:#002fff; --dark:#111; --bg:#f7f7fb; }
+
+*{ box-sizing:border-box; }
+
+/* ✅ ONE body only */
 body{
-  margin:0;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
-  background:#f7f7fb;
-  color:#0b1220;
-  padding-bottom: 78px; /* bottom nav space */
+margin:0;
+font-family:system-ui, -apple-system, Segoe UI, Roboto;
+color:#111;
+background:
+radial-gradient(900px 500px at 10% 10%, rgba(0,47,255,.10), transparent 60%),
+radial-gradient(900px 500px at 90% 20%, rgba(255,47,134,.10), transparent 60%),
+radial-gradient(800px 500px at 50% 90%, rgba(0,200,255,.08), transparent 60%),
+#f7f7fb;
+
+/* bottom nav fixed তাই content যেন নিচে লুকায় না যায় */
+padding-bottom: 72px;
 }
 
-.container{
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 16px;
+/* =========================
+✅ NAVBAR (glass)
+========================= */
+.nav{
+position: sticky;
+top: 0;
+z-index: 10;
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+padding: 10px 16px;
+
+background: rgba(255,255,255,0.65);
+backdrop-filter: blur(12px);
+-webkit-backdrop-filter: blur(12px);
+
+border-bottom: 1px solid rgba(0,0,0,0.08);
 }
 
-/* keep bottom nav ok */
+.brand{ font-weight:900; text-decoration:none; color:#111; }
+
+.navRight{
+display:flex;
+align-items:center;
+flex-wrap:wrap;
+gap:0;
+position: relative;
+}
+
+.navLink{ text-decoration:none; color:#333; font-weight:600; }
+
+.navItem{
+display:flex;
+flex-direction:column;
+align-items:center;
+text-decoration:none;
+color:#333;
+font-weight:800;
+font-size:12px;
+gap:2px;
+}
+.navItem.active{ color: var(--pink); }
+
+.navIcon{
+font-size:18px;
+line-height:1;
+}
+
+.navDivider{
+display:block;
+width:1px;
+height:34px;
+background: rgba(0,0,0,0.15);
+margin: 0 10px;
+}
+
+.langBtn{
+border: 1px solid rgba(0,0,0,0.12);
+background: rgba(255,255,255,0.75);
+padding: 8px 10px;
+border-radius: 999px;
+font-weight: 900;
+cursor: pointer;
+}
+
+/* ✅ Navbar Search */
+.navSearchWrap{
+display:flex;
+align-items:center;
+gap:8px;
+flex:1;
+max-width: 520px;
+margin: 0 12px;
+}
+
+.navSearch{
+width:100%;
+padding:10px 14px;
+border-radius:999px;
+border:1px solid rgba(0,0,0,0.12);
+outline:none;
+font-weight:800;
+background: rgba(255,255,255,0.80);
+}
+
+.navSearchBtn{
+border:none;
+background: var(--pink);
+color:#fff;
+padding:10px 14px;
+border-radius:999px;
+font-weight:900;
+cursor:pointer;
+}
+
+@media (max-width: 800px){
+.nav{ flex-wrap:wrap; gap:10px; }
+.navSearchWrap{
+order: 3;
+width:100%;
+max-width:none;
+margin: 0;
+}
+}
+
+/* =========================
+✅ TOP 3-LINE MENU (dropdown styles - থাকলেও button না দিলে দেখাবে না)
+========================= */
+.menuBtn{
+border: 1px solid rgba(0,0,0,0.12);
+background: rgba(255,255,255,0.75);
+width: 44px;
+height: 44px;
+border-radius: 14px;
+font-size: 20px;
+font-weight: 900;
+cursor: pointer;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.menuDrop{
+position: absolute;
+top: 56px;
+right: 12px;
+width: 260px;
+padding: 12px;
+border-radius: 16px;
+z-index: 9999;
+box-shadow: 0 18px 40px rgba(0,0,0,.12);
+}
+
+.menuLangRow{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:10px;
+margin-bottom: 10px;
+}
+
+.menuLangTxt{
+font-weight: 900;
+color:#111;
+}
+
+.menuGrid{
+display:grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 10px;
+}
+
+.mItem{
+text-decoration:none;
+color:#333;
+font-weight: 900;
+font-size: 11px;
+
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:4px;
+
+padding: 10px 6px;
+border-radius: 14px;
+background: rgba(255,255,255,0.60);
+border: 1px solid rgba(0,0,0,0.08);
+}
+
+.mItem.active{
+color: var(--pink);
+border-color: rgba(0,47,255,0.25);
+}
+
+.mIcon{
+position: relative;
+font-size: 20px;
+line-height: 1;
+}
+
+.mTxt{
+font-size: 11px;
+}
+
+.mBadge{
+position: absolute;
+top: -6px;
+right: -10px;
+
+min-width: 18px;
+height: 18px;
+padding: 0 6px;
+
+border-radius: 999px;
+background: var(--pink);
+color: #fff;
+
+font-size: 11px;
+font-weight: 900;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+@media (max-width: 800px){
+.menuDrop{
+right: 10px;
+width: 290px;
+}
+}
+
+/* ✅ Bottom Mobile Navigation */
 .bottomNav{
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 99;
-  display:flex;
-  justify-content: space-around;
-  align-items: center;
-  height: 66px;
-  background: rgba(255,255,255,0.90);
-  backdrop-filter: blur(14px);
-  border-top: 1px solid rgba(0,0,0,0.10);
+position: fixed;
+bottom: 0;
+left: 0;
+right: 0;
+z-index: 99;
+
+display: none; /* desktop এ hide */
+justify-content: space-around;
+align-items: center;
+
+height: 64px;
+background: rgba(255,255,255,0.85);
+backdrop-filter: blur(14px);
+border-top: 1px solid rgba(0,0,0,0.1);
 }
 
-.bnItem{
-  flex: 1;
-  text-decoration: none;
-  color: #111;
-  font-weight: 700;
-  font-size: 11px;
-  display:flex;
-  flex-direction: column;
-  align-items:center;
-  justify-content:center;
-  gap: 4px;
+.bItem{
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+gap:2px;
+
+text-decoration:none;
+color:#444;
+font-size:11px;
+font-weight:800;
 }
 
-.bnItem.active{ color: #0f5f5c; }
-
-.bnIcon{ position: relative; font-size: 20px; line-height: 1; }
-.bnTxt{ font-size: 11px; }
-
-.bnBadge{
-  position:absolute;
-  top: -8px;
-  right: -10px;
-  min-width: 18px;
-  height: 18px;
-  padding: 0 6px;
-  border-radius: 999px;
-  background: #75d84b;
-  color: #0b2c1d;
-  font-size: 11px;
-  font-weight: 800;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+.bIcon{
+font-size:20px;
 }
+
+.bItem.active{
+color: var(--pink);
+}
+
+@media (max-width: 800px){
+.bottomNav{
+display:flex;
+}
+}
+
+/* =========================
+✅ COMMON UI
+========================= */
+.container{ max-width:1100px; margin:0 auto; padding:18px; }
+
+.hero{ background:linear-gradient(90deg, #fff, #ffe6f2); border:1px solid #eee; padding:16px; border-radius:16px; }
+
+.cats{ display:flex; gap:10px; flex-wrap:wrap; margin:16px 0; }
+.chip{
+border:1px solid #eee; background:#fff; padding:8px 12px; border-radius:999px;
+cursor:pointer; font-weight:700;
+}
+.chip.active{ border-color:var(--pink); color:var(--pink); }
+
+.grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px; }
+.card{ background:#fff; border:1px solid #eee; border-radius:16px; overflow:hidden; box-shadow:0 8px 20px rgba(0,0,0,.04); }
+.cardImg{ width:100%; height:160px; object-fit:cover; }
+.cardBody{ padding:12px; display:flex; flex-direction:column; gap:10px; }
+.cardTitle{ font-weight:800; }
+.priceRow{ display:flex; gap:10px; align-items:center; }
+.price{ font-weight:900; }
+.cut{ color:#999; text-decoration:line-through; }
+
+.btnPink, .btnPinkFull{
+background:var(--pink); color:#fff; border:none; border-radius:14px;
+padding:9px 14px; font-weight:900; cursor:pointer; text-decoration:none; display:inline-block;
+}
+.btnPinkFull{ width:100%; text-align:center; }
+
+.btnDark, .btnDarkFull{
+background:var(--dark); color:#fff; border:none; border-radius:14px;
+padding:9px 14px; font-weight:900; cursor:pointer; text-decoration:none; display:inline-block;
+}
+.btnDarkFull{ width:100%; }
+
+.btnGhost{
+background:#fff; border:1px solid #ddd; border-radius:14px; padding:8px 14px;
+cursor:pointer; font-weight:800; text-decoration:none; color:#111;
+}
+
+.box{ background:#fff; border:1px solid #eee; border-radius:16px; padding:14px; margin-top:14px; }
+.rowBetween{ display:flex; justify-content:space-between; align-items:center; gap:10px; }
+.center{ text-align:ce
