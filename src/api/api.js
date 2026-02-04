@@ -1,16 +1,23 @@
-const BASE = import.meta.env.VITE_API_BASE || "http://localhost:5000";
+const BASE =
+  import.meta.env.VITE_API_BASE || "http://localhost:5000";
 
 function getToken() {
   return localStorage.getItem("token") || "";
 }
+
 function getAdminToken() {
   return localStorage.getItem("admin_token") || "";
 }
 
 async function jsonFetch(url, opts) {
-  const r = await fetch(url, opts);
-  const data = await r.json().catch(() => ({}));
-  return data;
+  try {
+    const r = await fetch(url, opts);
+    const data = await r.json().catch(() => ({}));
+    return data;
+  } catch (e) {
+    console.error("API ERROR:", url, e);
+    return { ok: false, message: "Network error" };
+  }
 }
 
 export const api = {
@@ -53,13 +60,6 @@ export const api = {
       method: "DELETE",
       headers: token ? { Authorization: `Bearer ${token}` } : {},
     });
-  },
-
-  postAuth(path, body, token) {
-    return api.post(path, body, token);
-  },
-  putAuth(path, body, token) {
-    return api.put(path, body, token);
   },
 
   token: getToken,
