@@ -1,42 +1,39 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
 import { useEffect, useMemo, useState } from "react";
+import { useAuth } from "../context/AuthContext";
 
 export default function Navbar() {
   const nav = useNavigate();
   const { pathname } = useLocation();
   const { user } = useAuth();
 
-  // hide navbar on admin pages
+  // ✅ Hide navbar on admin pages
   if (pathname.startsWith("/admin")) return null;
 
-  // language
+  // ✅ language
   const [lang, setLang] = useState(() => localStorage.getItem("lang") || "en");
-  useEffect(() => {
-    localStorage.setItem("lang", lang);
-  }, [lang]);
+  useEffect(() => localStorage.setItem("lang", lang), [lang]);
 
-  const t = useMemo(() => {
-    return lang === "bn"
-      ? { ph: "পণ্য খুঁজুন..." }
-      : { ph: "Search products..." };
-  }, [lang]);
-
-  // search
+  // ✅ navbar search (go shop)
   const [q, setQ] = useState("");
-
   const doSearch = (e) => {
     e.preventDefault();
     const text = q.trim();
     if (!text) return;
-    nav("/shop?q=" + encodeURIComponent(text));
+    nav(`/shop?q=${encodeURIComponent(text)}`);
   };
 
+  const avatarLink = user ? "/profile" : "/login";
+  const avatarIcon = user ? "👤" : "🔑";
+
+  const LOGO = "/logo.png";
+
   return (
-    <header className="topbar">
+    <div className="topbar">
       <div className="topbarInner">
         {/* Brand */}
-        <Link to="/" className="topBrand">
+        <Link className="topBrand" to="/">
+          <img className="topLogo" src={LOGO} alt="logo" onError={(e) => (e.currentTarget.style.display = "none")} />
           <span className="topTitle">The Curious Empire</span>
         </Link>
 
@@ -46,9 +43,9 @@ export default function Navbar() {
             className="topSearchInput"
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder={t.ph}
+            placeholder={lang === "bn" ? "পণ্য খুঁজুন..." : "Search products..."}
           />
-          <button type="submit" className="topSearchBtn">
+          <button className="topSearchBtn" type="submit" aria-label="search">
             🔍
           </button>
         </form>
@@ -56,22 +53,19 @@ export default function Navbar() {
         {/* Right */}
         <div className="topRight">
           <button
-            type="button"
             className="topLang"
-            onClick={() => setLang(lang === "en" ? "bn" : "en")}
+            type="button"
+            onClick={() => setLang((x) => (x === "en" ? "bn" : "en"))}
+            title="Language"
           >
             {lang === "en" ? "EN" : "BN"}
           </button>
 
-          <button
-            type="button"
-            className="topAvatarCircle"
-            onClick={() => nav(user ? "/profile" : "/login")}
-          >
-            {user ? "👤" : "🔑"}
-          </button>
+          <Link className="topAvatarBtn" to={avatarLink} title="Account">
+            <div className="topAvatarCircle">{avatarIcon}</div>
+          </Link>
         </div>
       </div>
-    </header>
+    </div>
   );
 }
