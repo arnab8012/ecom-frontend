@@ -3,74 +3,78 @@ import { useAuth } from "../context/AuthContext";
 import { useEffect, useMemo, useState } from "react";
 
 export default function Navbar() {
-  const nav = useNavigate();
-  const { pathname } = useLocation();
-  const { user } = useAuth();
+const nav = useNavigate();
+const { pathname } = useLocation();
 
-  // hide on admin
-  if (pathname.startsWith("/admin")) return null;
+const { user } = useAuth();
 
-  // language
-  const [lang, setLang] = useState(() => localStorage.getItem("lang") || "en");
-  useEffect(() => localStorage.setItem("lang", lang), [lang]);
+// ✅ Hide navbar on admin pages (optional)
+if (pathname.startsWith("/admin")) return null;
 
-  const t = useMemo(() => {
-    const dict = {
-      en: { ph: "Search products..." },
-      bn: { ph: "পণ্য খুঁজুন..." },
-    };
-    return dict[lang] || dict.en;
-  }, [lang]);
+// ✅ language
+const [lang, setLang] = useState(() => localStorage.getItem("lang") || "en");
+useEffect(() => localStorage.setItem("lang", lang), [lang]);
 
-  const [q, setQ] = useState("");
+const t = useMemo(() => {
+const dict = {
+en: { search: "Search", ph: "Search products..." },
+bn: { search: "খুঁজুন", ph: "পণ্য খুঁজুন..." },
+};
+return dict[lang] || dict.en;
+}, [lang]);
 
-  const doSearch = (e) => {
-    e.preventDefault();
-    const text = q.trim();
-    if (!text) return;
-    nav(`/shop?q=${encodeURIComponent(text)}`);
-  };
+// ✅ navbar search (go shop)
+const [q, setQ] = useState("");
+const doSearch = (e) => {
+e.preventDefault();
+const text = q.trim();
+if (!text) return;
+nav(/shop?q=${encodeURIComponent(text)});
+};
 
-  return (
-    <header className="topbar">
-      <div className="topbarInner">
-        {/* Left: brand (optional small) */}
-        <Link to="/" className="topBrand" aria-label="home">
-          <span className="topBrandDot" />
-        </Link>
+// ✅ Brand logo
+const LOGO = "/logo.png";
 
-        {/* Center: pill search */}
-        <form className="pillSearch" onSubmit={doSearch}>
-          <input
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder={t.ph}
-            aria-label="search"
-          />
-          <button type="submit" aria-label="search-btn">
-            🔍
-          </button>
-        </form>
+return (
+<div className="nav glassNav">
+{/* ✅ Brand */}
+<Link className="brand" to="/" style={{ display: "flex", alignItems: "center", gap: 10 }}>
+<img
+src={LOGO}
+alt="logo"
+style={{ width: 36, height: 36, borderRadius: 10, objectFit: "cover" }}
+onError={(e) => {
+e.currentTarget.style.display = "none";
+}}
+/>
+<span style={{ fontWeight: 900, color: "#111" }}>The Curious Empire</span>
+</Link>
 
-        {/* Right: EN + profile */}
-        <button
-          type="button"
-          className="langCircle"
-          onClick={() => setLang((x) => (x === "en" ? "bn" : "en"))}
-          title="Language"
-        >
-          {lang === "en" ? "EN" : "BN"}
-        </button>
+{/* ✅ Search */}  
+  <form className="navSearchWrap" onSubmit={doSearch}>  
+    <input  
+      className="navSearch"  
+      value={q}  
+      onChange={(e) => setQ(e.target.value)}  
+      placeholder={t.ph}  
+    />  
+    <button className="navSearchBtn" type="submit">  
+      {t.search}  
+    </button>  
+  </form>  
 
-        <button
-          type="button"
-          className="keyCircle"
-          onClick={() => nav(user ? "/profile" : "/login")}
-          title={user ? "Profile" : "Login"}
-        >
-          {user ? "👤" : "🔑"}
-        </button>
-      </div>
-    </header>
-  );
+  {/* ✅ Right side (ONLY language now) */}  
+  <div className="navRight">  
+    <button  
+      className="langBtn"  
+      type="button"  
+      onClick={() => setLang((x) => (x === "en" ? "bn" : "en"))}  
+      title="Language"  
+    >  
+      {lang === "en" ? "EN" : "BN"}  
+    </button>  
+  </div>  
+</div>
+
+);
 }
