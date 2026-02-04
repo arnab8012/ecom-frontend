@@ -63,66 +63,59 @@ export default function Home() {
   }, [allProducts]);
 
   const take = (arr, n) => (Array.isArray(arr) ? arr.slice(0, n) : []);
+
+  // ✅ ছোট helper: ক্যাটাগরি টাইটেল uppercase এর মতো দেখাতে
   const titleText = (name) => String(name || "").toUpperCase();
 
   return (
     <div className="container homeWrap" style={{ paddingBottom: 90 }}>
-      {/* ✅ FULL HERO IMAGE AREA (the whole orange-marked section) */}
-      <div className="heroGreenShell">
-        {/* ✅ banner fills whole hero */}
-        {bannerUrls.length > 0 && (
-          <div className="heroBannerWrap">
-            <div className="heroBanner">
-              <div
-                className="bannerTrack"
-                style={{
-                  width: `${bannerUrls.length * 100}%`,
-                  transform: `translateX(-${slide * (100 / bannerUrls.length)}%)`,
-                }}
-              >
-                {bannerUrls.map((url, i) => (
-                  <div
-                    key={i}
-                    className="bannerSlide"
-                    style={{ width: `${100 / bannerUrls.length}%` }}
-                  >
-                    <img className="bannerImg" src={url} alt="banner" />
-                  </div>
-                ))}
-              </div>
-
-              {/* ✅ dots */}
-              {bannerUrls.length > 1 && (
-                <div className="bannerDots">
-                  {bannerUrls.map((_, i) => (
-                    <button
-                      key={i}
-                      className={`dot ${i === slide ? "active" : ""}`}
-                      onClick={() => setSlide(i)}
-                      type="button"
-                      aria-label={`banner-${i}`}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* ✅ welcome overlay */}
-        <div className="welcomeBar">
-          <div className="welcomeLeft">
-            <div className="welcomeTitle">The Curious Empire</div>
-            <div className="welcomeSub">Premium Shopping Experience</div>
-          </div>
-          <div className="welcomeBadge">✨ Premium</div>
+      {/* ✅ Slim welcome bar (optional, তোমার আগেরটা রাখা) */}
+      <div className="welcomeBar glass">
+        <div className="welcomeLeft">
+          <div className="welcomeTitle">The Curious Empire</div>
+          <div className="welcomeSub">Premium Shopping Experience</div>
         </div>
-
-        {/* ✅ ONE SINGLE CURVE ONLY */}
-        <div className="heroGreenCurve" aria-hidden="true" />
+        <div className="welcomeBadge">✨ Premium</div>
       </div>
 
-      {/* ✅ Categories */}
+      {/* ✅ Banner */}
+      {bannerUrls.length > 0 && (
+        <div className="bannerBox glass bannerSlim" style={{ marginBottom: 14 }}>
+          <div
+            className="bannerTrack"
+            style={{
+              width: `${bannerUrls.length * 100}%`,
+              transform: `translateX(-${slide * (100 / bannerUrls.length)}%)`,
+            }}
+          >
+            {bannerUrls.map((url, i) => (
+              <div
+                key={i}
+                className="bannerSlide"
+                style={{ width: `${100 / bannerUrls.length}%` }}
+              >
+                <img className="bannerImg" src={url} alt="banner" />
+              </div>
+            ))}
+          </div>
+
+          {bannerUrls.length > 1 && (
+            <div className="bannerDots">
+              {bannerUrls.map((_, i) => (
+                <button
+                  key={i}
+                  className={`dot ${i === slide ? "active" : ""}`}
+                  onClick={() => setSlide(i)}
+                  type="button"
+                  aria-label={`banner-${i}`}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ✅ Categories slider (তোমার আগেরটা রাখা) */}
       {cats.length > 0 && (
         <div className="homeSection">
           <div className="secTop">
@@ -139,16 +132,17 @@ export default function Home() {
                 className="catItem"
                 type="button"
                 onClick={() => nav(`/shop?category=${c._id}`)}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  padding: 0,
+                  cursor: "pointer",
+                }}
               >
-                <div className="catIcon">
+                <div className="catIcon glass">
                   <img
-                    src={c.image || "https://via.placeholder.com/160"}
+                    src={c.image || "https://via.placeholder.com/80"}
                     alt={c.name}
-                    loading="lazy"
-                    onError={(e) => {
-                      e.currentTarget.onerror = null;
-                      e.currentTarget.src = "https://via.placeholder.com/160";
-                    }}
                   />
                 </div>
                 <div className="catName">{c.name}</div>
@@ -160,22 +154,66 @@ export default function Home() {
 
       {loading && <p style={{ padding: "12px 0" }}>Loading...</p>}
 
-      {/* ✅ Products grouped by category — 2 column like demo */}
+      {/* ✅ Products grouped by category — ঠিক স্ক্রিনশটের মতো (Title left + See More right + 2 column) */}
       {cats.map((c) => {
         const list = byCat.get(c._id) || [];
         if (!list.length) return null;
 
         return (
-          <div className="homeSection" key={c._id} style={{ marginTop: 18 }}>
-            <div className="catHeaderRow">
-              <div className="catHeaderTitle">{titleText(c.name)}</div>
+          <div
+            className="homeSection"
+            key={c._id}
+            style={{ marginTop: 18 }}
+          >
+            {/* Header row like screenshot */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 12,
+                marginBottom: 10,
+              }}
+            >
+              <div
+                style={{
+                  fontWeight: 900,
+                  fontSize: 20,
+                  letterSpacing: 0.6,
+                  textTransform: "uppercase",
+                  borderBottom: "3px solid rgba(0,0,0,0.8)",
+                  paddingBottom: 4,
+                  lineHeight: 1,
+                }}
+              >
+                {titleText(c.name)}
+              </div>
 
-              <Link to={`/shop?category=${c._id}`} className="seeMoreBtn">
+              <Link
+                to={`/shop?category=${c._id}`}
+                style={{
+                  textDecoration: "none",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                  padding: "10px 14px",
+                  borderRadius: 12,
+                  fontWeight: 800,
+                }}
+                className="seeMoreBtn"
+              >
                 See More →
               </Link>
             </div>
 
-            <div className="homeTwoGrid">
+            {/* ✅ 2 column grid */}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+                gap: 12,
+              }}
+            >
               {take(list, 4).map((p) => (
                 <div key={p._id} style={{ width: "100%" }}>
                   <ProductCard p={p} />
