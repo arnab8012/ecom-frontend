@@ -528,3 +528,130 @@ body{
   align-items:center;
   justify-content:center;
 }
+
+/* =========================
+   ✅ CART (fix huge image)
+========================= */
+.cartList{
+  display:flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cartItem{
+  display:flex;
+  gap: 12px;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 16px;
+  padding: 10px;
+  box-shadow: 0 10px 22px rgba(0,0,0,0.05);
+}
+
+.cartThumb{
+  width: 92px;
+  height: 92px;
+  flex: 0 0 92px;
+  border-radius: 14px;
+  overflow:hidden;
+  border: 1px solid rgba(0,0,0,0.06);
+  background: #fff;
+  display:block;
+}
+
+.cartThumb img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display:block;
+}
+
+.cartInfo{
+  flex:1;
+  min-width: 0;
+}
+
+.cartTitle{
+  display:block;
+  text-decoration:none;
+  color:#111;
+  font-weight: 950;
+  margin-bottom: 6px;
+  overflow:hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.cartMeta{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  font-weight: 900;
+}
+
+.cartPrice{ color:#0b1220; }
+.cartLine{ color: rgba(0,0,0,0.55); font-weight: 800; }
+
+.cartActions{
+  margin-top: 10px;
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.qtyBox{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  background: rgba(0,0,0,0.04);
+  border-radius: 999px;
+  padding: 6px 10px;
+}
+
+.qtyBtn{
+  border:none;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  cursor:pointer;
+  font-weight: 1000;
+  background: rgba(117,216,75,0.25);
+}
+
+.qtyNum{
+  min-width: 18px;
+  text-align:center;
+  font-weight: 1000;
+}
+
+.btnDanger{
+  border:none;
+  cursor:pointer;
+  font-weight: 950;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(255,0,0,0.10);
+  color: #b00020;
+}
+
+.cartSummary{
+  margin-top: 14px;
+  background: rgba(255,255,255,0.9);
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 16px;
+  padding: 12px;
+}
+
+.sumRow{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  font-weight: 950;
+  margin-bottom: 10px;
+}
+
+.sumBtns{
+  display:flex;
+  gap: 10px;
+}
