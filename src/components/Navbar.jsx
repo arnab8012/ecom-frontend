@@ -24,7 +24,7 @@ export default function Navbar() {
   };
 
   const avatarLink = user ? "/profile" : "/login";
-  const avatarIcon = user ? "👤" : "🔑";
+  const avatarIcon = user ? "👤" ;
 
   // ✅ IMPORTANT: public/logo.png ফাইলে রাখলে "/logo.png" কাজ করবে
   const LOGO = "/logo.png";
@@ -70,10 +70,6 @@ export default function Navbar() {
           >
             {lang === "en" ? "EN" : "BN"}
           </button>
-
-          <Link className="topAvatarBtn" to={avatarLink} title="Account">
-            <div className="topAvatarCircle">{avatarIcon}</div>
-          </Link>
         </div>
       </div>
     </header>
