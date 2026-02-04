@@ -24,7 +24,7 @@ export default function Navbar() {
   };
 
   const avatarLink = user ? "/profile" : "/login";
-  const avatarIcon = user ? "👤" ;
+  const avatarIcon = user ? "👤" : "🔑";
 
   // ✅ IMPORTANT: public/logo.png ফাইলে রাখলে "/logo.png" কাজ করবে
   const LOGO = "/logo.png";
