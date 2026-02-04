@@ -12,17 +12,14 @@ export default function Navbar() {
 
   // language
   const [lang, setLang] = useState(() => localStorage.getItem("lang") || "en");
-  useEffect(() => {
-    localStorage.setItem("lang", lang);
-  }, [lang]);
+  useEffect(() => localStorage.setItem("lang", lang), [lang]);
 
   const t = useMemo(() => {
-    return (
-      {
-        en: { ph: "Search products..." },
-        bn: { ph: "পণ্য খুঁজুন..." },
-      }[lang] || { ph: "Search products..." }
-    );
+    const dict = {
+      en: { ph: "Search products..." },
+      bn: { ph: "পণ্য খুঁজুন..." },
+    };
+    return dict[lang] || dict.en;
   }, [lang]);
 
   const [q, setQ] = useState("");
@@ -34,54 +31,45 @@ export default function Navbar() {
     nav(`/shop?q=${encodeURIComponent(text)}`);
   };
 
-  const LOGO = "/logo.png";
-
   return (
     <header className="topbar">
       <div className="topbarInner">
-        {/* Brand */}
-        <Link to="/" className="topBrand">
-          <img
-            className="topLogo"
-            src={LOGO}
-            alt="logo"
-            onError={(e) => (e.currentTarget.style.display = "none")}
-          />
-          <span className="topTitle">The Curious Empire</span>
+        {/* Left: brand (optional small) */}
+        <Link to="/" className="topBrand" aria-label="home">
+          <span className="topBrandDot" />
         </Link>
 
-        {/* Search */}
-        <form className="topSearch" onSubmit={doSearch}>
+        {/* Center: pill search */}
+        <form className="pillSearch" onSubmit={doSearch}>
           <input
-            className="topSearchInput"
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder={t.ph}
+            aria-label="search"
           />
-          <button type="submit" className="topSearchBtn" aria-label="search">
+          <button type="submit" aria-label="search-btn">
             🔍
           </button>
         </form>
 
-        {/* Right */}
-        <div className="topRight">
-          <button
-            type="button"
-            className="topLang"
-            onClick={() => setLang(lang === "en" ? "bn" : "en")}
-            title="Language"
-          >
-            {lang === "en" ? "EN" : "BN"}
-          </button>
+        {/* Right: EN + profile */}
+        <button
+          type="button"
+          className="langCircle"
+          onClick={() => setLang((x) => (x === "en" ? "bn" : "en"))}
+          title="Language"
+        >
+          {lang === "en" ? "EN" : "BN"}
+        </button>
 
-          <Link
-            to={user ? "/profile" : "/login"}
-            className="topAvatarBtn"
-            title={user ? "Profile" : "Login"}
-          >
-            <span className="topAvatarCircle">{user ? "👤" : "🔑"}</span>
-          </Link>
-        </div>
+        <button
+          type="button"
+          className="keyCircle"
+          onClick={() => nav(user ? "/profile" : "/login")}
+          title={user ? "Profile" : "Login"}
+        >
+          {user ? "👤" : "🔑"}
+        </button>
       </div>
     </header>
   );
