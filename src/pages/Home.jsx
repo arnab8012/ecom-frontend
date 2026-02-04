@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "../api/api";
 import ProductCard from "../components/ProductCard";
-import HomeCategories from "../components/HomeCategories";
 
 export default function Home() {
   const nav = useNavigate();
@@ -16,9 +15,58 @@ export default function Home() {
 
   const bannerUrls = useMemo(() => {
     const arr = Array.isArray(banners) ? banners : [];
-    return arr.map((b) => (typeof b === "string" ? b : b?.url)).filter(Boolean);
+    return arr
+      .map((b) => (typeof b === "string" ? b : b?.url))
+      .filter(Boolean);
   }, [banners]);
 
+  // ✅ group products by category
+  const byCat = useMemo(() => {
+    const map = new Map();
+    for (const p of allProducts || []) {
+      const cid = p?.category?._id || "uncat";
+      if (!map.has(cid)) map.set(cid, []);
+      map.get(cid).push(p);
+    }
+    return map;
+  }, [allProducts]);
+
+  // ✅ helper
+  const take = (arr, n) => (Array.isArray(arr) ? arr.slice(0, n) : []);
+  const titleText = (name) => String(name || "").toUpperCase();
+
+  // ✅ url resolve helper (relative -> backend BASE)
+  const resolveUrl = (u) => {
+    if (!u) return "";
+    const url = String(u);
+
+    // already absolute
+    if (url.startsWith("http://") || url.startsWith("https://")) return url;
+
+    // if url like "/uploads/..." or "uploads/..."
+    const clean = url.startsWith("/") ? url : `/${url}`;
+    return `${api.BASE}${clean}`;
+  };
+
+  // ✅ category image fallback
+  const getCatImg = (c) => {
+    // try common fields
+    const raw =
+      c?.image || c?.imageUrl || c?.img || c?.photo || c?.icon || "";
+
+    if (raw) return resolveUrl(raw);
+
+    // fallback: first product image from this category
+    const list = byCat.get(c?._id) || [];
+    const p0 = list[0];
+    const pImg =
+      (Array.isArray(p0?.images) && p0.images[0]) || p0?.image || "";
+
+    const resolved = resolveUrl(pImg);
+    return resolved || "https://via.placeholder.com/160";
+  };
+
+  // ✅ load all data once
   useEffect(() => {
     let alive = true;
 
@@ -32,9 +80,15 @@ export default function Home() {
         ]);
 
         if (!alive) return;
-        if (c?.ok) setCats(c.categories || []);
-        if (r?.ok) setBanners(r.banners || []);
-        if (p?.ok) setAllProducts(p.products || []);
+
+        if (c?.ok) setCats(Array.isArray(c.categories) ? c.categories : []);
+        else setCats([]);
+
+        if (r?.ok) setBanners(Array.isArray(r.banners) ? r.banners : []);
+        else setBanners([]);
+
+        if (p?.ok) setAllProducts(Array.isArray(p.products) ? p.products : []);
+        else setAllProducts([]);
       } catch (e) {
         console.log("Home Load Error", e);
       } finally {
@@ -42,15 +96,12 @@ export default function Home() {
       }
     })();
 
-    return () => (alive = false);
+    return () => {
+      alive = false;
+    };
   }, []);
 
-  // ✅ bannerUrls length বদলালে slide reset (jump/blink কমে)
-  useEffect(() => {
-    setSlide(0);
-  }, [bannerUrls.length]);
-
-  // ✅ slider interval
+  // ✅ auto slide
   useEffect(() => {
     if (bannerUrls.length <= 1) return;
     const id = setInterval(() => {
@@ -59,18 +110,10 @@ export default function Home() {
     return () => clearInterval(id);
   }, [bannerUrls.length]);
 
-  const byCat = useMemo(() => {
-    const map = new Map();
-    for (const p of allProducts || []) {
-      const cid = p?.category?._id || "uncat";
-      if (!map.has(cid)) map.set(cid, []);
-      map.get(cid).push(p);
-    }
-    return map;
-  }, [allProducts]);
-
-  const take = (arr, n) => (Array.isArray(arr) ? arr.slice(0, n) : []);
-  const titleText = (name) => String(name || "").toUpperCase();
+  // ✅ keep slide valid
+  useEffect(() => {
+    if (slide >= bannerUrls.length) setSlide(0);
+  }, [bannerUrls.length, slide]);
 
   return (
     <div className="container homeWrap" style={{ paddingBottom: 90 }}>
@@ -96,7 +139,7 @@ export default function Home() {
             >
               {bannerUrls.map((url, i) => (
                 <div
-                  key={url || i} // ✅ better than only index
+                  key={i}
                   className="bannerSlide"
                   style={{ width: `${100 / bannerUrls.length}%` }}
                 >
@@ -132,8 +175,30 @@ export default function Home() {
             </Link>
           </div>
 
-          {/* ✅ memo component (blink/jitter fix) */}
-          <HomeCategories cats={cats} />
+          <div className="catRow">
+            {cats.map((c) => (
+              <button
+                key={c._id}
+                className="catItem"
+                type="button"
+                onClick={() => nav(`/shop?category=${c._id}`)}
+              >
+                <div className="catIcon">
+                  <img
+                    src={getCatImg(c)}
+                    alt={c?.name || "category"}
+                    loading="lazy"
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = "https://via.placeholder.com/160";
+                    }}
+                  />
+                </div>
+
+                <div className="catName">{c.name}</div>
+              </button>
+            ))}
+          </div>
         </div>
       )}
 
