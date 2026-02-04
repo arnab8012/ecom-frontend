@@ -1,470 +1,30 @@
 html, body, #root { height: 100%; }
-
-:root{
-  --bg: #f7f7fb;
-  --ink:#0b1220;
-  --muted:#6b7280;
-
-  --green:#0f5f5c;   /* demo navbar teal */
-  --accent:#75d84b;  /* demo green */
-  --accent2:#77b7ff; /* demo title blue */
-
-  --card:#ffffff;
-  --line: rgba(0,0,0,0.08);
-  --shadow: 0 14px 30px rgba(0,0,0,0.06);
-}
-
-*{ box-sizing:border-box; }
+* { box-sizing: border-box; }
 
 body{
   margin:0;
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
-  color: var(--ink);
-  background: var(--bg);
+  background:#f7f7fb;
+  color:#0b1220;
   padding-bottom: 78px; /* bottom nav space */
 }
 
-/* =========================
-   ✅ NAVBAR (DEMO)
-========================= */
-.topbar{
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  background: var(--green);
-  padding: 12px 14px;
-}
-
-.topbarInner{
-  max-width: 1100px;
-  margin: 0 auto;
-  display:flex;
-  align-items:center;
-  gap: 12px;
-}
-
-.topBrand{
-  text-decoration:none;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  width: 42px;
-  height: 42px;
-}
-
-.topBrandDot{
-  width: 10px;
-  height: 10px;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.85);
-  display:inline-block;
-}
-
-.pillSearch{
-  flex: 1;
-  display:flex;
-  align-items:center;
-  gap: 8px;
-  max-width: 520px;
-  margin: 0 auto;
-
-  background: rgba(255,255,255,0.92);
-  border-radius: 999px;
-  padding: 8px 12px;
-}
-
-.pillSearch input{
-  border:none;
-  outline:none;
-  flex:1;
-  background: transparent;
-  font-weight: 800;
-  color: #111;
-}
-
-.pillSearch button{
-  border:none;
-  background: transparent;
-  cursor:pointer;
-  font-size: 18px;
-}
-
-.langCircle, .keyCircle{
-  border:none;
-  width: 42px;
-  height: 42px;
-  border-radius: 999px;
-  cursor: pointer;
-  background: rgba(255,255,255,0.18);
-  color: #fff;
-  font-weight: 900;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-/* =========================
-   ✅ LAYOUT
-========================= */
 .container{
   max-width: 1100px;
   margin: 0 auto;
   padding: 16px;
 }
-.homeWrap{ padding-top: 6px; }
-.homeSection{ margin-top: 18px; }
 
-.box{
-  background:#fff;
-  border:1px solid var(--line);
-  border-radius: 16px;
-  padding: 14px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.04);
-}
-
-/* =========================
-   ✅ Welcome Bar
-========================= */
-.welcomeBar{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap: 10px;
-  padding: 12px 14px;
-  border-radius: 18px;
-  background: rgba(255,255,255,0.82);
-  border: 1px solid var(--line);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.04);
-  margin-top: 10px;
-}
-
-.welcomeTitle{
-  font-weight: 1000;
-  font-size: 16px;
-}
-.welcomeSub{
-  margin-top: 2px;
-  font-size: 12px;
-  color: var(--muted);
-  font-weight: 700;
-}
-.welcomeBadge{
-  font-size: 12px;
-  font-weight: 900;
-  padding: 8px 12px;
-  border-radius: 999px;
-  background: rgba(117,216,75,0.16);
-  border: 1px solid rgba(117,216,75,0.25);
-}
-
-/* =========================
-   ✅ CURVED BANNER (CORRECT)
-   sides up, middle down
-========================= */
-.curvedBanner{
-  margin-top: 12px;
-  border-radius: 22px;
-  overflow: hidden;
-  position: relative;
-  height: 240px;
-  box-shadow: var(--shadow);
-  background: transparent;
-}
-
-.bannerTrack{
-  height: 100%;
-  display:flex;
-  transition: transform 500ms ease;
-}
-
-.bannerSlide{
-  height: 100%;
-  flex: 0 0 auto;
-}
-
-.curvedBanner img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block;
-}
-
-/* overlay curve (no white border) */
-.curveSvg{
-  position:absolute;
-  left:-6%;
-  right:-6%;
-  bottom:-2px;
-  height: 78px;
-  width:auto;
-  z-index: 3;
-  pointer-events:none;
-  filter: drop-shadow(0 -18px 24px rgba(0,0,0,0.10));
-}
-.curveSvg path{
-  fill: var(--bg);
-}
-
-/* dots */
-.bannerDots{
-  position:absolute;
-  left:0; right:0;
-  bottom: 18px;
-  display:flex;
-  justify-content:center;
-  gap:8px;
-  z-index: 6;
-}
-.dot{
-  width: 10px;
-  height: 10px;
-  border-radius: 999px;
-  border:none;
-  cursor:pointer;
-  background: rgba(255,255,255,0.55);
-  box-shadow: 0 6px 14px rgba(0,0,0,0.12);
-}
-.dot.active{ background: rgba(255,255,255,0.95); }
-
-@media (max-width: 800px){
-  .curvedBanner{ height: 210px; }
-  .curveSvg{ height: 72px; }
-}
-
-/* =========================
-   ✅ Section header (demo style)
-========================= */
-.secTop{
-  display:flex;
-  align-items:flex-end;
-  justify-content: space-between;
-  gap: 10px;
-  margin: 16px 0 10px;
-}
-
-.secTitle{
-  margin: 0;
-  font-size: 34px;
-  font-weight: 1000;
-  color: var(--accent2);
-  letter-spacing: 0.3px;
-}
-
-.seeMore{
-  text-decoration:none;
-  font-weight: 900;
-  color: rgba(117,216,75,0.95);
-}
-
-/* =========================
-   ✅ Categories row
-========================= */
-.catRow{
-  display:flex;
-  gap: 14px;
-  overflow-x: auto;
-  padding: 6px 2px 10px;
-}
-
-.catRow::-webkit-scrollbar{ height: 6px; }
-.catRow::-webkit-scrollbar-thumb{
-  background: rgba(0,0,0,0.14);
-  border-radius: 99px;
-}
-
-.catItem{
-  min-width: 120px;
-  text-align: left;
-  border: none;
-  background: transparent;
-  padding: 0;
-  cursor: pointer;
-}
-
-.catIcon{
-  width: 120px;
-  height: 82px;
-  border-radius: 18px;
-  background: rgba(255,255,255,0.96);
-  border: 1px solid rgba(0,0,0,0.06);
-  box-shadow: 0 12px 26px rgba(0,0,0,0.06);
-  overflow:hidden;
-}
-
-.catIcon img{
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.catName{
-  margin-top: 8px;
-  font-weight: 950;
-  color: var(--ink);
-  font-size: 13px;
-  line-height: 1.15;
-  max-width: 120px;
-  overflow:hidden;
-  display:-webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-}
-
-/* =========================
-   ✅ Category product header row
-========================= */
-.catHeaderRow{
-  display:flex;
-  align-items:center;
-  justify-content: space-between;
-  gap: 10px;
-  margin: 18px 0 10px;
-}
-
-.catHeaderTitle{
-  font-weight: 1000;
-  font-size: 22px;
-  letter-spacing: 0.6px;
-  text-transform: uppercase;
-  border-bottom: 3px solid rgba(0,0,0,0.85);
-  padding-bottom: 4px;
-  line-height: 1;
-}
-
-.seeMoreBtn{
-  text-decoration:none;
-  font-weight: 950;
-  color: #0b2c1d;
-  background: rgba(117,216,75,0.88);
-  padding: 10px 14px;
-  border-radius: 16px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.08);
-}
-
-.homeTwoGrid{
-  display:grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
-}
-
-/* =========================
-   ✅ Product Card
-========================= */
-.pCard{
-  background: var(--card);
-  border: 1px solid rgba(0,0,0,0.06);
-  border-radius: 18px;
-  overflow: hidden;
-  box-shadow: var(--shadow);
-}
-
-.pImgWrap{ position: relative; background: #fff; }
-
-.pImg{
-  width: 100%;
-  height: 160px;
-  object-fit: cover;
-  display:block;
-}
-
-.pFav{
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 36px;
-  height: 36px;
-  border-radius: 999px;
-  border: none;
-  cursor: pointer;
-  background: rgba(255,255,255,0.92);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.10);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.pDots{
-  position:absolute;
-  left:0; right:0;
-  bottom: 10px;
-  display:flex;
-  justify-content:center;
-  gap: 6px;
-}
-
-.pDot{
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  border: none;
-  cursor: pointer;
-  background: rgba(0,0,0,0.35);
-}
-.pDot.active{ background: rgba(0,0,0,0.85); }
-
-.pBody{ padding: 12px 12px 14px; }
-
-.pTitle{
-  display:block;
-  text-decoration:none;
-  color: var(--ink);
-  font-weight: 950;
-  margin-bottom: 8px;
-  overflow:hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-.pPriceRow{ display:flex; align-items:center; gap: 10px; }
-.pPrice{
-  font-weight: 1000;
-  font-size: 18px;
-  color: var(--ink);
-}
-
-.pActions{
-  margin-top: 12px;
-  display:flex;
-  align-items:center;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.btnSoft{
-  flex: 1;
-  border: none;
-  background: rgba(117,216,75,0.18);
-  color: #174a2a;
-  font-weight: 950;
-  padding: 10px 12px;
-  border-radius: 14px;
-  cursor: pointer;
-}
-
-.btnPrimary{
-  border: none;
-  background: rgba(117,216,75,0.92);
-  color: #0b2c1d;
-  font-weight: 1000;
-  padding: 10px 14px;
-  border-radius: 14px;
-  cursor: pointer;
-}
-
-/* =========================
-   ✅ Bottom Nav
-========================= */
+/* keep bottom nav ok */
 .bottomNav{
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
   z-index: 99;
-
   display:flex;
   justify-content: space-around;
   align-items: center;
-
   height: 66px;
   background: rgba(255,255,255,0.90);
   backdrop-filter: blur(14px);
@@ -475,9 +35,8 @@ body{
   flex: 1;
   text-decoration: none;
   color: #111;
-  font-weight: 900;
+  font-weight: 700;
   font-size: 11px;
-
   display:flex;
   flex-direction: column;
   align-items:center;
@@ -485,14 +44,9 @@ body{
   gap: 4px;
 }
 
-.bnItem.active{ color: var(--green); }
+.bnItem.active{ color: #0f5f5c; }
 
-.bnIcon{
-  position: relative;
-  font-size: 20px;
-  line-height: 1;
-}
-
+.bnIcon{ position: relative; font-size: 20px; line-height: 1; }
 .bnTxt{ font-size: 11px; }
 
 .bnBadge{
@@ -503,10 +57,10 @@ body{
   height: 18px;
   padding: 0 6px;
   border-radius: 999px;
-  background: rgba(117,216,75,0.92);
+  background: #75d84b;
   color: #0b2c1d;
   font-size: 11px;
-  font-weight: 1000;
+  font-weight: 800;
   display:flex;
   align-items:center;
   justify-content:center;
