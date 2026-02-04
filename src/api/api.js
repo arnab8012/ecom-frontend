@@ -1,31 +1,67 @@
-const BASE =
-  import.meta.env.VITE_API_BASE?.replace(/\/$/, "") ||
-  "http://localhost:5000";
+const BASE = import.meta.env.VITE_API_BASE || "http://localhost:5000";
 
-async function request(path, opts = {}) {
-  const url = path.startsWith("http") ? path : `${BASE}${path}`;
+function getToken() {
+  return localStorage.getItem("token") || "";
+}
+function getAdminToken() {
+  return localStorage.getItem("admin_token") || "";
+}
 
-  const res = await fetch(url, {
-    ...opts,
-    headers: {
-      "Content-Type": "application/json",
-      ...(opts.headers || {}),
-    },
-    credentials: "include",
-  });
-
-  let data = null;
-  try {
-    data = await res.json();
-  } catch {
-    data = { ok: false, message: "Invalid JSON response" };
-  }
+async function jsonFetch(url, opts) {
+  const r = await fetch(url, opts);
+  const data = await r.json().catch(() => ({}));
   return data;
 }
 
 export const api = {
-  get: (path) => request(path),
-  post: (path, body) => request(path, { method: "POST", body: JSON.stringify(body) }),
-  put: (path, body) => request(path, { method: "PUT", body: JSON.stringify(body) }),
-  del: (path) => request(path, { method: "DELETE" }),
+  BASE,
+
+  get(path) {
+    return jsonFetch(`${BASE}${path}`);
+  },
+
+  getAuth(path, token) {
+    return jsonFetch(`${BASE}${path}`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+  },
+
+  post(path, body, token) {
+    return jsonFetch(`${BASE}${path}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: JSON.stringify(body || {}),
+    });
+  },
+
+  put(path, body, token) {
+    return jsonFetch(`${BASE}${path}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: JSON.stringify(body || {}),
+    });
+  },
+
+  delete(path, token) {
+    return jsonFetch(`${BASE}${path}`, {
+      method: "DELETE",
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+  },
+
+  postAuth(path, body, token) {
+    return api.post(path, body, token);
+  },
+  putAuth(path, body, token) {
+    return api.put(path, body, token);
+  },
+
+  token: getToken,
+  adminToken: getAdminToken,
 };
