@@ -138,18 +138,7 @@ body{
 }
 
 /* ✅ ellipse overlay: bottom থেকে উপরে curve কাটবে */
-.heroBanner::after{
-  content:"";
-  position:absolute;
-  left:-18%;
-  right:-18%;
-  bottom:-70px;          /* নিচে নামানো */
-  height: 140px;         /* ellipse বড় */
-  background: var(--bg); /* page bg দিয়ে কাটবে */
-  border-radius: 50%;
-  z-index: 1;
-  pointer-events:none;
-}
+.heroBanner::after{ display:none; }
 
 .bannerTrack{
   height: 100%;
