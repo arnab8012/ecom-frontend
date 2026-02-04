@@ -633,6 +633,11 @@ body{
   gap: 12px;
 }
 
+.topLogo{
+  height: 48px;
+  width: auto;
+}
+
 /* ✅ LOGO বড় করে */
 .topBrand{
   flex: 0 0 auto;
@@ -666,6 +671,15 @@ body{
   .topLogo{
     height: 44px;
   }
+  .topSearchInput{
+    max-width: 240px;
+  }
+}
+@media (max-width: 520px){
+  .topLogo{
+    height: 56px;     /* 🔥 mobile এও বড় */
+  }
+
   .topSearchInput{
     max-width: 240px;
   }
