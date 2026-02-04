@@ -1,108 +1,52 @@
-import { useEffect, useMemo, useState } from "react";
-import { useLocation, Link } from "react-router-dom";
-import { api } from "../api/api";
-import ProductCard from "../components/ProductCard";
+import { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
-export default function Shop() {
-  const { search } = useLocation();
-  const params = useMemo(() => new URLSearchParams(search), [search]);
+export default function Login() {
+  const nav = useNavigate();
+  const loc = useLocation();
+  const { login } = useAuth();
 
-  const category = params.get("category") || "";
-  const q = (params.get("q") || "").trim();
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const [all, setAll] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      const r = await login(phone, password); // তোমার context অনুযায়ী
+      if (r?.ok === false) throw new Error(r.message || "Login failed");
 
-  // "See more" limit
-  const [limit, setLimit] = useState(12);
-
-  useEffect(() => {
-    let alive = true;
-
-    (async () => {
-      try {
-        setLoading(true);
-
-        const url = category
-          ? `/api/products?category=${encodeURIComponent(category)}`
-          : "/api/products";
-
-        const r = await api.get(url);
-        if (!alive) return;
-
-        if (r?.ok) setAll(Array.isArray(r.products) ? r.products : []);
-        else setAll([]);
-      } finally {
-        if (alive) setLoading(false);
-      }
-    })();
-
-    return () => {
-      alive = false;
-    };
-  }, [category]);
-
-  const filtered = useMemo(() => {
-    const text = q.toLowerCase();
-    if (!text) return all;
-
-    return (all || []).filter((p) => {
-      const title = String(p?.title || "").toLowerCase();
-      const desc = String(p?.description || "").toLowerCase();
-      const catName = String(p?.category?.name || "").toLowerCase();
-      return title.includes(text) || desc.includes(text) || catName.includes(text);
-    });
-  }, [all, q]);
-
-  const visible = useMemo(() => filtered.slice(0, limit), [filtered, limit]);
-  const canMore = visible.length < filtered.length;
-
-  useEffect(() => {
-    setLimit(12);
-  }, [q, category]);
+      // ✅ যদি আগে private পেজ থেকে আসো, সেখানেই ফেরত যাবে
+      const back = loc.state?.from || "/profile";
+      nav(back, { replace: true });
+    } catch (err) {
+      alert(err.message || "Login failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="container">
-      {/* Header row */}
-      <div className="shopHead">
-        <div>
-          <div className="shopTitle">Products</div>
-          <div className="shopSub">
-            {q ? (
-              <>
-                Search: <b>{q}</b> —{" "}
-              </>
-            ) : null}
-            Showing {visible.length} / {filtered.length}
-          </div>
+    <div className="container" style={{ maxWidth: 520 }}>
+      <h2 style={{ marginTop: 8 }}>Login</h2>
+
+      <form onSubmit={onSubmit} className="box" style={{ marginTop: 10 }}>
+        <label className="lbl">Phone</label>
+        <input value={phone} onChange={(e) => setPhone(e.target.value)} />
+
+        <label className="lbl" style={{ marginTop: 10 }}>Password</label>
+        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+
+        <button className="btnPrimary" disabled={loading} style={{ marginTop: 14 }}>
+          {loading ? "Loading..." : "Login"}
+        </button>
+
+        <div style={{ marginTop: 10 }}>
+          No account? <Link to="/register">Register</Link>
         </div>
-
-        <Link className="btnSoftLink" to="/">
-          ← Back
-        </Link>
-      </div>
-
-      {loading ? (
-        <div className="softBox">Loading...</div>
-      ) : filtered.length === 0 ? (
-        <div className="softBox">No products found</div>
-      ) : (
-        <>
-          <div className="shopGrid">
-            {visible.map((p) => (
-              <ProductCard key={p._id} p={p} />
-            ))}
-          </div>
-
-          {canMore ? (
-            <div className="shopMoreWrap">
-              <button className="btnPrimary" type="button" onClick={() => setLimit((x) => x + 12)}>
-                See more
-              </button>
-            </div>
-          ) : null}
-        </>
-      )}
+      </form>
     </div>
   );
 }
