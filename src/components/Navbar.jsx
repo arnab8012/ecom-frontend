@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 
 export default function Navbar() {
@@ -26,24 +26,34 @@ export default function Navbar() {
   const avatarLink = user ? "/profile" : "/login";
   const avatarIcon = user ? "👤" : "🔑";
 
+  // ✅ IMPORTANT: public/logo.png ফাইলে রাখলে "/logo.png" কাজ করবে
   const LOGO = "/logo.png";
 
   return (
-    <div className="topbar">
+    <header className="topbar">
       <div className="topbarInner">
         {/* Brand */}
-        <Link className="topBrand" to="/">
-          <img className="topLogo" src={LOGO} alt="logo" onError={(e) => (e.currentTarget.style.display = "none")} />
+        <Link className="topBrand" to="/" aria-label="Home">
+          <img
+            className="topLogo"
+            src={LOGO}
+            alt="logo"
+            loading="lazy"
+            onError={(e) => {
+              e.currentTarget.style.display = "none";
+            }}
+          />
           <span className="topTitle">The Curious Empire</span>
         </Link>
 
         {/* Search */}
-        <form className="topSearch" onSubmit={doSearch}>
+        <form className="topSearch" onSubmit={doSearch} role="search">
           <input
             className="topSearchInput"
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder={lang === "bn" ? "পণ্য খুঁজুন..." : "Search products..."}
+            aria-label="Search products"
           />
           <button className="topSearchBtn" type="submit" aria-label="search">
             🔍
@@ -66,6 +76,6 @@ export default function Navbar() {
           </Link>
         </div>
       </div>
-    </div>
+    </header>
   );
 }
