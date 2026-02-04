@@ -91,6 +91,17 @@ export default function Shop() {
           <div className="shopGrid">
             {visible.map((p) => (
               <ProductCard key={p._id} p={p} />
+     /* SHOP GRID: always 2 columns */
+.shopGrid{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+/* mobile এ spacing ঠিক রাখার জন্য */
+@media (max-width: 420px){
+  .shopGrid{ gap: 12px; }
+}
             ))}
           </div>
 
