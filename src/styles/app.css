@@ -525,3 +525,13 @@ body{
   background: rgba(255,0,0,0.10);
   color: #b00020;
 }
+
+.catItem{
+  min-width: 120px;
+  text-align: left;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  flex: 0 0 auto;   /* ✅ scroll row stable */
+}
