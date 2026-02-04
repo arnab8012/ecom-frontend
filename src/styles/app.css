@@ -4,11 +4,9 @@ html, body, #root { height: 100%; }
   --bg: #f7f7fb;
   --ink:#0b1220;
   --muted:#6b7280;
-
   --green:#0f5f5c;
   --accent:#75d84b;
   --accent2:#77b7ff;
-
   --card:#ffffff;
   --line: rgba(0,0,0,0.08);
   --shadow: 0 14px 30px rgba(0,0,0,0.06);
@@ -21,113 +19,7 @@ body{
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
   color: var(--ink);
   background: var(--bg);
-  padding-bottom: 78px; /* bottom nav space */
-}
-
-/* =========================
-   TOPBAR (demo)
-========================= */
-.topbar{
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  background: var(--green);
-  padding: 10px 12px;
-}
-
-.topbarInner{
-  max-width: 1100px;
-  margin: 0 auto;
-  display:flex;
-  align-items:center;
-  gap: 10px;
-}
-
-.topBrand{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  text-decoration:none;
-  color:#fff;
-  font-weight:900;
-  min-width: 170px;
-}
-
-.topLogo{
-  width:34px;
-  height:34px;
-  border-radius: 10px;
-  object-fit: cover;
-}
-
-.topTitle{
-  font-weight: 900;
-  letter-spacing: 0.2px;
-  white-space: nowrap;
-}
-
-.topSearch{
-  flex: 1;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.topSearchInput{
-  width: min(520px, 100%);
-  height: 38px;
-  border-radius: 999px;
-  border: none;
-  outline: none;
-  padding: 0 14px;
-  font-weight: 800;
-  background: rgba(255,255,255,0.92);
-}
-
-.topSearchBtn{
-  width: 40px;
-  height: 40px;
-  margin-left: -42px;
-  border-radius: 999px;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  font-size: 18px;
-}
-
-.topRight{
-  display:flex;
-  align-items:center;
-  gap: 10px;
-}
-
-.topLang{
-  border: none;
-  background: rgba(255,255,255,0.18);
-  color: #fff;
-  height: 38px;
-  padding: 0 12px;
-  border-radius: 999px;
-  font-weight: 900;
-  cursor: pointer;
-}
-
-.topAvatarBtn{ text-decoration:none; }
-.topAvatarCircle{
-  width: 38px;
-  height: 38px;
-  border-radius: 999px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background: rgba(255,255,255,0.18);
-  color:#fff;
-  font-size: 18px;
-}
-
-@media (max-width: 800px){
-  .topTitle{ display:none; }
-  .topBrand{ min-width: 60px; }
+  padding-bottom: 78px;
 }
 
 /* =========================
@@ -141,6 +33,50 @@ body{
 
 .homeWrap{ padding-top: 6px; }
 .homeSection{ margin-top: 18px; }
+
+/* =========================
+   ✅ TOPBAR (তোমার Navbar class গুলা আলাদা হলে ignore)
+========================= */
+.nav.glassNav{
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  background: var(--green);
+  padding: 10px 12px;
+}
+
+.nav .brand span{ color:#fff !important; }
+
+.navSearchWrap{
+  flex:1;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.navSearch{
+  width: 100%;
+  height: 38px;
+  border-radius: 999px;
+  border: none;
+  outline: none;
+  padding: 0 14px;
+  font-weight: 800;
+  background: rgba(255,255,255,0.92);
+}
+
+.navSearchBtn{
+  height: 38px;
+  border-radius: 999px;
+  border:none;
+  padding: 0 14px;
+  font-weight: 900;
+  cursor:pointer;
+  background: rgba(255,255,255,0.18);
+  color:#fff;
+}
 
 /* =========================
    Welcome bar
@@ -181,89 +117,57 @@ body{
 }
 
 /* =========================
-   ✅ BANNER (DEMO CURVE)
-   Goal:
-   - curve UPWARD (concave cut)
-   - left/right curve more
-   - NO white border/seam
-   - dots stay visible
+   ✅ Banner DEMO curve (FIXED, NO white line)
+   - curve হবে নিচ থেকে উপরে উঠে (concave)
 ========================= */
 .heroBannerWrap{
   position: relative;
   margin-top: 12px;
 }
 
-/* keep shadow on wrapper so banner itself has no border seam */
-.heroBannerWrap{
-  filter: drop-shadow(0 14px 30px rgba(0,0,0,0.06));
-}
-
+/* border বাদ — যাতে white seam না দেখা যায় */
 .heroBanner{
   position: relative;
-  height: 240px;
-  overflow: hidden;
-  background: #fff;
   border-radius: 18px;
-
-  /* IMPORTANT: no border */
-  border: none;
-
-  /* ✅ This is the key: cut shape via mask (best seam-free) */
-  -webkit-mask-image:
-    radial-gradient(140px 70px at 12% 100%, transparent 58%, #000 60%),
-    radial-gradient(140px 70px at 88% 100%, transparent 58%, #000 60%),
-    linear-gradient(#000, #000);
-  -webkit-mask-composite: source-over;
-  -webkit-mask-repeat: no-repeat;
-
-  mask-image:
-    radial-gradient(140px 70px at 12% 100%, transparent 58%, #000 60%),
-    radial-gradient(140px 70px at 88% 100%, transparent 58%, #000 60%),
-    linear-gradient(#000, #000);
-  mask-composite: add;
-  mask-repeat: no-repeat;
+  overflow: hidden;
+  background: transparent;
+  height: 240px;
+  box-shadow: var(--shadow);
 }
 
-/* fallback for browsers that don't support mask well */
-@supports not (mask-image: radial-gradient(#000,#000)) {
-  .heroBanner::after{
-    content:"";
-    position:absolute;
-    left:-12%;
-    right:-12%;
-    bottom:-36px;
-    height: 88px;
-    background: var(--bg);
-    border-top-left-radius: 100% 95px;
-    border-top-right-radius: 100% 95px;
-    pointer-events:none;
-  }
+/* ✅ ellipse overlay: bottom থেকে উপরে curve কাটবে */
+.heroBanner::after{
+  content:"";
+  position:absolute;
+  left:-18%;
+  right:-18%;
+  bottom:-70px;          /* নিচে নামানো */
+  height: 140px;         /* ellipse বড় */
+  background: var(--bg); /* page bg দিয়ে কাটবে */
+  border-radius: 50%;
+  z-index: 1;
+  pointer-events:none;
 }
 
 .bannerTrack{
   height: 100%;
   display:flex;
   transition: transform 500ms ease;
+  position: relative;
+  z-index: 0;
 }
 
 .bannerSlide{ height:100%; flex: 0 0 auto; }
-.bannerImg{
-  width:100%;
-  height:100%;
-  object-fit: cover;
-  display:block;
-}
+.bannerImg{ width:100%; height:100%; object-fit: cover; display:block; }
 
-/* dots above image but still inside */
 .bannerDots{
   position:absolute;
   left:0; right:0;
-  bottom: 14px;
+  bottom: 18px;
   display:flex;
   justify-content:center;
   gap:8px;
-  z-index: 5;
-  pointer-events: auto;
+  z-index: 2; /* overlay এর উপর */
 }
 
 .dot{
@@ -278,18 +182,10 @@ body{
 .dot.active{ background: rgba(255,255,255,0.95); }
 
 @media (max-width: 800px){
-  .heroBanner{
-    height: 200px;
-
-    -webkit-mask-image:
-      radial-gradient(120px 60px at 12% 100%, transparent 58%, #000 60%),
-      radial-gradient(120px 60px at 88% 100%, transparent 58%, #000 60%),
-      linear-gradient(#000, #000);
-
-    mask-image:
-      radial-gradient(120px 60px at 12% 100%, transparent 58%, #000 60%),
-      radial-gradient(120px 60px at 88% 100%, transparent 58%, #000 60%),
-      linear-gradient(#000, #000);
+  .heroBanner{ height: 200px; }
+  .heroBanner::after{
+    bottom:-62px;
+    height: 124px;
   }
 }
 
@@ -319,14 +215,13 @@ body{
 }
 
 /* =========================
-   Categories row (NO BLINK)
+   Categories row
 ========================= */
 .catRow{
   display:flex;
   gap: 14px;
   overflow-x: auto;
   padding: 6px 2px 10px;
-  scroll-behavior: smooth;
 }
 
 .catRow::-webkit-scrollbar{ height: 6px; }
@@ -342,7 +237,6 @@ body{
   background: transparent;
   padding: 0;
   cursor: pointer;
-  flex: 0 0 auto;
 }
 
 .catIcon{
@@ -362,7 +256,6 @@ body{
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display:block;
 }
 
 .catName{
@@ -416,7 +309,7 @@ body{
 }
 
 /* =========================
-   Product Card (uses your pCard classes)
+   Product Card
 ========================= */
 .pCard{
   background: var(--card);
@@ -465,11 +358,7 @@ body{
 }
 
 .pPriceRow{ display:flex; align-items:center; gap: 10px; }
-.pPrice{
-  font-weight: 1000;
-  font-size: 18px;
-  color: var(--ink);
-}
+.pPrice{ font-weight: 1000; font-size: 18px; color: var(--ink); }
 
 .pActions{
   margin-top: 12px;
@@ -526,7 +415,6 @@ body{
   color: #111;
   font-weight: 900;
   font-size: 11px;
-
   display:flex;
   flex-direction: column;
   align-items:center;
@@ -541,8 +429,6 @@ body{
   font-size: 20px;
   line-height: 1;
 }
-
-.bnTxt{ font-size: 11px; }
 
 .bnBadge{
   position:absolute;
@@ -562,13 +448,9 @@ body{
 }
 
 /* =========================
-   ✅ CART (fix huge image)
+   ✅ CART (fix huge image issue)
 ========================= */
-.cartList{
-  display:flex;
-  flex-direction: column;
-  gap: 12px;
-}
+.cartList{ display:flex; flex-direction: column; gap: 12px; }
 
 .cartItem{
   display:flex;
@@ -588,7 +470,6 @@ body{
   overflow:hidden;
   border: 1px solid rgba(0,0,0,0.06);
   background: #fff;
-  display:block;
 }
 
 .cartThumb img{
@@ -598,10 +479,7 @@ body{
   display:block;
 }
 
-.cartInfo{
-  flex:1;
-  min-width: 0;
-}
+.cartInfo{ flex:1; min-width:0; }
 
 .cartTitle{
   display:block;
@@ -614,23 +492,8 @@ body{
   text-overflow: ellipsis;
 }
 
-.cartMeta{
-  display:flex;
-  align-items:center;
-  gap: 10px;
-  font-weight: 900;
-}
-
-.cartPrice{ color:#0b1220; }
-.cartLine{ color: rgba(0,0,0,0.55); font-weight: 800; }
-
-.cartActions{
-  margin-top: 10px;
-  display:flex;
-  align-items:center;
-  justify-content: space-between;
-  gap: 10px;
-}
+.cartMeta{ display:flex; gap: 10px; font-weight: 900; }
+.cartActions{ margin-top: 10px; display:flex; gap: 10px; align-items:center; }
 
 .qtyBox{
   display:flex;
@@ -651,11 +514,7 @@ body{
   background: rgba(117,216,75,0.25);
 }
 
-.qtyNum{
-  min-width: 18px;
-  text-align:center;
-  font-weight: 1000;
-}
+.qtyNum{ min-width: 18px; text-align:center; font-weight: 1000; }
 
 .btnDanger{
   border:none;
@@ -665,25 +524,4 @@ body{
   border-radius: 12px;
   background: rgba(255,0,0,0.10);
   color: #b00020;
-}
-
-.cartSummary{
-  margin-top: 14px;
-  background: rgba(255,255,255,0.9);
-  border: 1px solid rgba(0,0,0,0.08);
-  border-radius: 16px;
-  padding: 12px;
-}
-
-.sumRow{
-  display:flex;
-  align-items:center;
-  justify-content: space-between;
-  font-weight: 950;
-  margin-bottom: 10px;
-}
-
-.sumBtns{
-  display:flex;
-  gap: 10px;
 }
