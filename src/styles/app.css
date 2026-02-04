@@ -709,3 +709,5 @@ body{
   .topbar{ min-height: 78px !important; }
   .topLogo{ height: 60px !important; width: 60px !important; }
 }
+
+.topbar{ outline: 4px solid red !important; }
