@@ -1,10 +1,9 @@
-const BASE = import.meta.env.VITE_API_BASE || "http://localhost:5000";
-console.log("API BASE =", BASE);
+const BASE_RAW = import.meta.env.VITE_API_BASE || "http://localhost:5000";
+const BASE = String(BASE_RAW).replace(/\/$/, ""); // শেষের / remove
 
 function getToken() {
   return localStorage.getItem("token") || "";
 }
-
 function getAdminToken() {
   return localStorage.getItem("admin_token") || "";
 }
@@ -12,11 +11,20 @@ function getAdminToken() {
 async function jsonFetch(url, opts) {
   try {
     const r = await fetch(url, opts);
-    const data = await r.json().catch(() => ({}));
+
+    // অনেক সময় 404/500 এ json না আসলে error হয়
+    const text = await r.text();
+    let data = {};
+    try {
+      data = text ? JSON.parse(text) : {};
+    } catch {
+      data = { ok: false, message: text || "Non-JSON response" };
+    }
+
+    // response ok না হলেও data ফেরত দাও
     return data;
   } catch (e) {
-    console.error("API ERROR:", url, e);
-    return { ok: false, message: "Network error" };
+    return { ok: false, message: e?.message || "Network error" };
   }
 }
 
