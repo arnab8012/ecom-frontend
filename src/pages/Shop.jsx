@@ -91,11 +91,6 @@ export default function Shop() {
           <div className="shopGrid">
             {visible.map((p) => (
               <ProductCard key={p._id} p={p} />
-
-/* mobile এ spacing ঠিক রাখার জন্য */
-@media (max-width: 420px){
-  .shopGrid{ gap: 12px; }
-}
             ))}
           </div>
 
