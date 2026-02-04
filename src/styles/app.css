@@ -120,21 +120,20 @@ body{
    ✅ Banner DEMO curve (FIXED, NO white line)
    - curve হবে নিচ থেকে উপরে উঠে (concave)
 ========================= */
-.heroBannerWrap{
-  position: relative;
-  margin-top: 12px;
-  margin-left: -16px;   /* ✅ container padding কাটবে */
-  margin-right: -16px;
-}
-
-/* border বাদ — যাতে white seam না দেখা যায় */
 .heroBanner{
   position: relative;
   border-radius: 18px;
   overflow: hidden;
-  background: transparent;
+  background: #000;
   height: 240px;
   box-shadow: var(--shadow);
+}
+
+.bannerImg{
+  width:100%;
+  height:100%;
+  object-fit: cover;
+  display:block;
 }
 
 /* ✅ ellipse overlay: bottom থেকে উপরে curve কাটবে */
