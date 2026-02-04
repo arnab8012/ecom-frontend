@@ -129,53 +129,46 @@ body{
 .homeWrap{ padding-top: 6px; }
 .homeSection{ margin-top: 18px; }
 
-/* ✅ HERO full-bleed inside padded container (no side gaps) */
-.heroFullBleed{
-  margin-left: -16px;
-  margin-right: -16px;
+/* =========================
+   BIG GREEN HERO (like screenshot-2)
+========================= */
+.heroGreenShell{
+  background: var(--green);
+  border-radius: 22px;
+  padding: 14px 14px 34px; /* bottom space for curve */
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.heroGreenShell::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  opacity: .10;
+  background-image:
+    radial-gradient(circle at 20% 30%, #fff 0 2px, transparent 3px),
+    radial-gradient(circle at 80% 60%, #fff 0 2px, transparent 3px);
+  background-size: 120px 120px;
+  pointer-events:none;
+}
+
+.heroGreenCurve{
+  position:absolute;
+  left: -8%;
+  right: -8%;
+  bottom: -28px;
+  height: 90px;
+  background: var(--bg);
+  border-top-left-radius: 100% 90px;
+  border-top-right-radius: 100% 90px;
+  box-shadow: 0 -18px 28px rgba(0,0,0,0.16);
+  pointer-events:none;
 }
 
 /* =========================
-   HERO: FULL IMAGE + SINGLE U CURVE
+   Welcome
 ========================= */
-.heroGreenShell{
-  position: relative;
-  overflow: hidden;
-  background: var(--green);
-  box-shadow: var(--shadow);
-  border-radius: 0;       /* ✅ no side rounding => full width look */
-  min-height: 300px;
-}
-
-/* Banner fills whole hero */
-.heroBannerWrap{
-  position: relative;
-  margin-top: 0;
-}
-.heroBanner{
-  position: relative;
-  height: 300px;
-  border-radius: 0;
-  overflow: hidden;
-  box-shadow: none;
-  background: transparent;
-}
-
-/* slider track */
-.bannerTrack{
-  height: 100%;
-  display:flex;
-  transition: transform 500ms ease;
-}
-.bannerSlide{ height:100%; flex: 0 0 auto; }
-.bannerImg{
-  width:100%;
-  height:100%;
-  object-fit: cover;
-  display:block;
-}
-
-/* Welcome overlay */
 .welcomeBar{
   display:flex;
   justify-content:space-between;
@@ -183,17 +176,10 @@ body{
   gap: 10px;
   padding: 10px 12px;
   border-radius: 16px;
-  background: rgba(255,255,255,0.72);
+  background: rgba(255,255,255,0.75);
   border: 1px solid var(--line);
   box-shadow: 0 10px 25px rgba(0,0,0,0.04);
-}
-.heroGreenShell .welcomeBar{
-  position:absolute;
-  top: 14px;
-  left: 14px;
-  right: 14px;
-  z-index: 7;
-  backdrop-filter: blur(10px);
+  margin-top: 10px;
 }
 .welcomeTitle{ font-weight: 1000; font-size: 16px; }
 .welcomeSub{ margin-top: 2px; font-size: 12px; color: var(--muted); font-weight: 700; }
@@ -206,16 +192,61 @@ body{
   border: 1px solid rgba(117,216,75,0.25);
 }
 
-/* Dots on image (not on any white strip) */
+/* =========================
+   Banner (U-curve cut like demo)
+========================= */
+.heroBannerWrap{
+  position: relative;
+  margin-top: 12px;
+}
+
+.heroBanner{
+  position: relative;
+  height: 240px;
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  background: transparent;
+}
+
+.bannerTrack{
+  height: 100%;
+  display:flex;
+  transition: transform 500ms ease;
+}
+
+.bannerSlide{ height:100%; flex: 0 0 auto; }
+.bannerImg{
+  width:100%;
+  height:100%;
+  object-fit: cover;
+  display:block;
+}
+
+.bannerUCut{
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  bottom: -2px;
+  height: 64px;
+  background: var(--bg);
+  border-top-left-radius: 100% 64px;
+  border-top-right-radius: 100% 64px;
+  box-shadow: 0 -14px 24px rgba(0,0,0,0.10);
+  z-index: 2;
+  pointer-events: none;
+}
+
 .bannerDots{
   position:absolute;
   left:0; right:0;
-  bottom: 22px;   /* ✅ above curve */
+  bottom: 14px;
   display:flex;
   justify-content:center;
   gap:8px;
-  z-index: 7;
+  z-index: 5;
 }
+
 .dot{
   width: 10px;
   height: 10px;
@@ -227,29 +258,13 @@ body{
 }
 .dot.active{ background: rgba(255,255,255,0.95); }
 
-/* ✅ SINGLE U curve (only cut, no extra white bar) */
-.heroGreenCurve{
-  position:absolute;
-  left:-12%;
-  right:-12%;
-  bottom:-1px;
-  height: 90px;
-  background: var(--bg);
-  border-top-left-radius: 100% 90px;
-  border-top-right-radius: 100% 90px;
-  pointer-events:none;
-  z-index: 6;
-}
-
 @media (max-width: 800px){
-  .heroGreenShell{ min-height: 270px; }
-  .heroBanner{ height: 270px; }
-  .heroGreenCurve{
-    height: 76px;
-    border-top-left-radius: 100% 76px;
-    border-top-right-radius: 100% 76px;
+  .heroBanner{ height: 200px; }
+  .bannerUCut{
+    height: 54px;
+    border-top-left-radius: 100% 54px;
+    border-top-right-radius: 100% 54px;
   }
-  .bannerDots{ bottom: 18px; }
 }
 
 /* =========================
