@@ -600,3 +600,17 @@ body{
 @media (max-width: 520px){
   .topSearchInput{ max-width: 240px; }
 }
+
+/* SHOP GRID: always 2 columns */
+.shopGrid{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+/* mobile spacing */
+@media (max-width: 420px){
+  .shopGrid{
+    gap: 12px;
+  }
+}
