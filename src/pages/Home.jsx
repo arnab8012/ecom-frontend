@@ -69,7 +69,7 @@ export default function Home() {
     <div className="container homeWrap" style={{ paddingBottom: 90 }}>
       {/* ✅ welcome bar */}
       <div className="welcomeBar">
-        <div className="welcomeLeft">
+        <div>
           <div className="welcomeTitle">The Curious Empire</div>
           <div className="welcomeSub">Premium Shopping Experience</div>
         </div>
@@ -78,57 +78,54 @@ export default function Home() {
 
       {/* ✅ Banner (DEMO curve: sides up, middle down) */}
       {bannerUrls.length > 0 && (
-        <div className="heroBannerWrap">
-          <div className="heroBanner">
-            <div
-              className="bannerTrack"
-              style={{
-                width: `${bannerUrls.length * 100}%`,
-                transform: `translateX(-${slide * (100 / bannerUrls.length)}%)`,
-              }}
-            >
-              {bannerUrls.map((url, i) => (
-                <div
+        <div className="curvedBanner">
+          <div
+            className="bannerTrack"
+            style={{
+              width: `${bannerUrls.length * 100}%`,
+              transform: `translateX(-${slide * (100 / bannerUrls.length)}%)`,
+            }}
+          >
+            {bannerUrls.map((url, i) => (
+              <div
+                key={i}
+                className="bannerSlide"
+                style={{ width: `${100 / bannerUrls.length}%` }}
+              >
+                <img src={url} alt="banner" />
+              </div>
+            ))}
+          </div>
+
+          {/* dots */}
+          {bannerUrls.length > 1 && (
+            <div className="bannerDots">
+              {bannerUrls.map((_, i) => (
+                <button
                   key={i}
-                  className="bannerSlide"
-                  style={{ width: `${100 / bannerUrls.length}%` }}
-                >
-                  <img className="bannerImg" src={url} alt="banner" />
-                </div>
+                  className={`dot ${i === slide ? "active" : ""}`}
+                  onClick={() => setSlide(i)}
+                  type="button"
+                  aria-label={`banner-${i}`}
+                />
               ))}
             </div>
+          )}
 
-            {/* ✅ Dots */}
-            {bannerUrls.length > 1 && (
-              <div className="bannerDots">
-                {bannerUrls.map((_, i) => (
-                  <button
-                    key={i}
-                    className={`dot ${i === slide ? "active" : ""}`}
-                    onClick={() => setSlide(i)}
-                    type="button"
-                    aria-label={`banner-${i}`}
-                  />
-                ))}
-              </div>
-            )}
-
-            {/* ✅ Wave overlay (this makes the correct curve) */}
-            <svg
-              className="bannerWave"
-              viewBox="0 0 1440 160"
-              preserveAspectRatio="none"
-              aria-hidden="true"
-            >
-              {/* top edge dips down in middle, sides up */}
-              <path
-                d="M0,20 C 360,140 1080,140 1440,20 L1440,160 L0,160 Z"
-                className="bannerWavePath"
-              />
-            </svg>
-          </div>
+          {/* ✅ Correct curve overlay */}
+          <svg
+            className="curveSvg"
+            viewBox="0 0 1440 160"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+          >
+            {/* sides up, middle down */}
+            <path d="M0,20 C 360,150 1080,150 1440,20 L1440,160 L0,160 Z" />
+          </svg>
         </div>
       )}
+
+      {loading ? <div className="box">Loading...</div> : null}
 
       {/* ✅ Categories */}
       {cats.length > 0 && (
@@ -150,12 +147,12 @@ export default function Home() {
               >
                 <div className="catIcon">
                   <img
-                    src={c.image || "https://via.placeholder.com/160"}
+                    src={c.image || "https://via.placeholder.com/240x160"}
                     alt={c.name}
                     loading="lazy"
                     onError={(e) => {
                       e.currentTarget.onerror = null;
-                      e.currentTarget.src = "https://via.placeholder.com/160";
+                      e.currentTarget.src = "https://via.placeholder.com/240x160";
                     }}
                   />
                 </div>
@@ -166,9 +163,7 @@ export default function Home() {
         </div>
       )}
 
-      {loading && <p style={{ padding: "12px 0" }}>Loading...</p>}
-
-      {/* ✅ Products grouped by category — 2 column */}
+      {/* ✅ Products grouped by category */}
       {cats.map((c) => {
         const list = byCat.get(c._id) || [];
         if (!list.length) return null;
@@ -185,9 +180,7 @@ export default function Home() {
 
             <div className="homeTwoGrid">
               {take(list, 4).map((p) => (
-                <div key={p._id} style={{ width: "100%" }}>
-                  <ProductCard p={p} />
-                </div>
+                <ProductCard key={p._id} p={p} />
               ))}
             </div>
           </div>
