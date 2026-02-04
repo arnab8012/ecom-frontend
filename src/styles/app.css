@@ -123,6 +123,8 @@ body{
 .heroBannerWrap{
   position: relative;
   margin-top: 12px;
+  margin-left: -16px;   /* ✅ container padding কাটবে */
+  margin-right: -16px;
 }
 
 /* border বাদ — যাতে white seam না দেখা যায় */
