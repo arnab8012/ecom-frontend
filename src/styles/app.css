@@ -135,16 +135,33 @@ body{
   margin-right: -16px;
 }
 
-/* ✅ Banner container */
-.heroBanner{
+/* =========================
+   HERO: FULL IMAGE + SINGLE U CURVE
+========================= */
+.heroGreenShell{
   position: relative;
-  height: 270px;     /* চাইলে বাড়াবে/কমাবে */
   overflow: hidden;
-  border-radius: 22px;   /* চাইলে কমাও */
+  background: var(--green);
   box-shadow: var(--shadow);
+  border-radius: 0;       /* ✅ no side rounding => full width look */
+  min-height: 300px;
 }
 
-/* slider */
+/* Banner fills whole hero */
+.heroBannerWrap{
+  position: relative;
+  margin-top: 0;
+}
+.heroBanner{
+  position: relative;
+  height: 300px;
+  border-radius: 0;
+  overflow: hidden;
+  box-shadow: none;
+  background: transparent;
+}
+
+/* slider track */
 .bannerTrack{
   height: 100%;
   display:flex;
@@ -158,11 +175,42 @@ body{
   display:block;
 }
 
-/* ✅ Dots */
+/* Welcome overlay */
+.welcomeBar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.72);
+  border: 1px solid var(--line);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.04);
+}
+.heroGreenShell .welcomeBar{
+  position:absolute;
+  top: 14px;
+  left: 14px;
+  right: 14px;
+  z-index: 7;
+  backdrop-filter: blur(10px);
+}
+.welcomeTitle{ font-weight: 1000; font-size: 16px; }
+.welcomeSub{ margin-top: 2px; font-size: 12px; color: var(--muted); font-weight: 700; }
+.welcomeBadge{
+  font-size: 12px;
+  font-weight: 900;
+  padding: 8px 10px;
+  border-radius: 999px;
+  background: rgba(117,216,75,0.16);
+  border: 1px solid rgba(117,216,75,0.25);
+}
+
+/* Dots on image (not on any white strip) */
 .bannerDots{
   position:absolute;
   left:0; right:0;
-  bottom: 18px;
+  bottom: 22px;   /* ✅ above curve */
   display:flex;
   justify-content:center;
   gap:8px;
@@ -179,33 +227,31 @@ body{
 }
 .dot.active{ background: rgba(255,255,255,0.95); }
 
-/* ✅ Curve (U-shape) — banner-এর নিচে */
-.bannerCurve{
+/* ✅ SINGLE U curve (only cut, no extra white bar) */
+.heroGreenCurve{
   position:absolute;
-  left:-10%;
-  right:-10%;
+  left:-12%;
+  right:-12%;
   bottom:-1px;
-
-  height: 70px;                  /* ✅ curve কম/বেশি */
+  height: 90px;
   background: var(--bg);
-
-  border-top-left-radius: 100% 70px;
-  border-top-right-radius: 100% 70px;
-
-  z-index: 6;
+  border-top-left-radius: 100% 90px;
+  border-top-right-radius: 100% 90px;
   pointer-events:none;
+  z-index: 6;
 }
 
-/* mobile */
 @media (max-width: 800px){
-  .heroBanner{ height: 220px; }
-  .bannerCurve{
-    height: 55px;
-    border-top-left-radius: 100% 55px;
-    border-top-right-radius: 100% 55px;
+  .heroGreenShell{ min-height: 270px; }
+  .heroBanner{ height: 270px; }
+  .heroGreenCurve{
+    height: 76px;
+    border-top-left-radius: 100% 76px;
+    border-top-right-radius: 100% 76px;
   }
-  .bannerDots{ bottom: 14px; }
+  .bannerDots{ bottom: 18px; }
 }
+
 /* =========================
    Section head
 ========================= */
@@ -443,117 +489,4 @@ body{
   display:flex;
   align-items:center;
   justify-content:center;
-}
-
-/* =========================
-   Product Card V2 (Like sample)
-========================= */
-.pCardV2{
-  position: relative;
-  background: #fff;
-  border-radius: 18px;
-  border: 1px solid rgba(0,0,0,0.06);
-  box-shadow: var(--shadow);
-  overflow: hidden;
-  padding-bottom: 56px; /* space for curved bar */
-}
-
-.pTopLink{
-  display: block;
-  text-decoration: none;
-  color: inherit;
-  padding: 14px 14px 0;
-}
-
-.pThumb{
-  height: 140px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-.pThumbImg{
-  width: 100%;
-  height: 100%;
-  object-fit: contain; /* ✅ grocery style */
-  display:block;
-}
-.pThumbPh{
-  width:100%;
-  height:100%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color: #999;
-}
-
-.pInfo{
-  padding: 10px 0 8px;
-}
-.pName{
-  font-weight: 950;
-  font-size: 14px;
-  line-height: 1.2;
-}
-.pMeta{
-  margin-top: 6px;
-  color: var(--muted);
-  font-weight: 800;
-  font-size: 12px;
-}
-
-.pPriceBig{
-  padding: 6px 0 10px;
-  text-align: left;
-  font-weight: 1000;
-  letter-spacing: 0.2px;
-}
-.pWhole{
-  font-size: 28px;
-  margin-right: 2px;
-}
-.pFrac{
-  font-size: 14px;
-  vertical-align: top;
-  opacity: 0.95;
-}
-
-/* ✅ bottom curved bar */
-.pBottomCurve{
-  position: absolute;
-  left: 12px;
-  right: 12px;
-  bottom: 10px;
-  height: 44px;
-  background: rgba(15, 95, 92, 0.10);
-  border-radius: 999px;
-
-  /* curved shape */
-  border-top-left-radius: 100% 44px;
-  border-top-right-radius: 100% 44px;
-}
-
-/* ✅ plus button */
-.pPlusBtn{
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: 14px;
-
-  width: 44px;
-  height: 44px;
-  border-radius: 999px;
-
-  border: none;
-  cursor: pointer;
-
-  background: rgba(15, 95, 92, 0.16);
-  color: #0f5f5c;
-  font-weight: 1000;
-  font-size: 28px;
-  line-height: 1;
-
-  box-shadow: 0 10px 18px rgba(0,0,0,0.10);
-}
-.pPlusBtn:active{
-  transform: translateX(-50%) scale(0.98);
 }
