@@ -1,34 +1,40 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { api } from "../api/api";
 
-const AuthContext = createContext();
+const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [booting, setBooting] = useState(true);
 
   useEffect(() => {
-    const boot = async () => {
+    let alive = true;
+
+    (async () => {
       try {
         const t = api.token();
 
-        // ✅ FIX: token না থাকলেও booting false হবে
+        // ✅ token না থাকলেও boot শেষ হবে
         if (!t) {
-          setUser(null);
+          if (alive) setUser(null);
           return;
         }
 
         const r = await api.getAuth("/api/auth/me", t);
-        if (r?.ok) setUser(r.user);
+        if (!alive) return;
+
+        if (r?.ok) setUser(r.user || null);
         else setUser(null);
       } catch {
-        setUser(null);
+        if (alive) setUser(null);
       } finally {
-        setBooting(false);
+        if (alive) setBooting(false);
       }
-    };
+    })();
 
-    boot();
+    return () => {
+      alive = false;
+    };
   }, []);
 
   const login = async (phone, password) => {
@@ -36,7 +42,7 @@ export function AuthProvider({ children }) {
     if (!r?.ok) return r;
 
     localStorage.setItem("token", r.token);
-    setUser(r.user);
+    setUser(r.user || null);
     return { ok: true };
   };
 
@@ -45,7 +51,7 @@ export function AuthProvider({ children }) {
     if (!r?.ok) return r;
 
     if (r.token) localStorage.setItem("token", r.token);
-    if (r.user) setUser(r.user);
+    setUser(r.user || null);
 
     return { ok: true };
   };
