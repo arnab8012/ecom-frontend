@@ -124,6 +124,7 @@ body{
   border-radius: 18px;
   overflow: hidden;
   background: #000;
+  width:100%;
   height: 240px;
   box-shadow: var(--shadow);
 }
@@ -131,7 +132,7 @@ body{
 .bannerImg{
   width:100%;
   height:100%;
-  object-fit: none;
+  object-fit: cover;
   display:block;
 }
 
@@ -286,7 +287,7 @@ body{
   font-weight: 950;
   color: #0b2c1d;
   background: rgba(117,216,75,0.85);
-  padding: 10px 14px;
+  padding: 8px 12px;
   border-radius: 14px;
   box-shadow: 0 10px 20px rgba(0,0,0,0.08);
 }
@@ -312,7 +313,7 @@ body{
 
 .pImg{
   width: 100%;
-  height: 150px;
+  height: 140px;
   object-fit: cover;
   display:block;
 }
@@ -392,7 +393,7 @@ body{
   justify-content: space-around;
   align-items: center;
 
-  height: 66px;
+  height: 55px;
   background: rgba(255,255,255,0.90);
   backdrop-filter: blur(14px);
   border-top: 1px solid rgba(0,0,0,0.10);
@@ -596,7 +597,7 @@ body{
 }
 
 /* ✅ Mobile: search আরও ছোট + বাইরে যাবে না */
-@media (max-width: 520px){
+@media (max-width: 420px){
   .topSearchInput{ max-width: 240px; }
 }
 
