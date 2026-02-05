@@ -8,11 +8,14 @@ function getAdminToken() {
   return localStorage.getItem("admin_token") || "";
 }
 
-async function jsonFetch(url, opts) {
+async function jsonFetch(url, opts = {}) {
   try {
-    const r = await fetch(url, opts);
+    const r = await fetch(url, {
+      ...opts,
+      // ✅ future-proof (cookie auth থাকলেও কাজ করবে)
+      credentials: "include",
+    });
 
-    // অনেক সময় 404/500 এ json না আসলে error হয়
     const text = await r.text();
     let data = {};
     try {
@@ -21,7 +24,11 @@ async function jsonFetch(url, opts) {
       data = { ok: false, message: text || "Non-JSON response" };
     }
 
-    // response ok না হলেও data ফেরত দাও
+    // ✅ HTTP status hint add
+    if (!r.ok && data && typeof data === "object" && !("status" in data)) {
+      data.status = r.status;
+    }
+
     return data;
   } catch (e) {
     return { ok: false, message: e?.message || "Network error" };
@@ -32,11 +39,13 @@ export const api = {
   BASE,
 
   get(path) {
-    return jsonFetch(`${BASE}${path}`);
+    return jsonFetch(`${BASE}${path}`, { method: "GET" });
   },
 
+  // ✅ GET auth
   getAuth(path, token) {
     return jsonFetch(`${BASE}${path}`, {
+      method: "GET",
       headers: token ? { Authorization: `Bearer ${token}` } : {},
     });
   },
