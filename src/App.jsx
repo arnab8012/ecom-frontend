@@ -22,7 +22,9 @@ import AdminOrders from "./pages/admin/AdminOrders";
 import AdminCategories from "./pages/admin/AdminCategories";
 import AdminBanners from "./pages/admin/AdminBanners";
 
+// ✅ Private route (তোমার existing file)
 import PrivateRoute from "./components/PrivateRoute";
+
 import BottomNav from "./components/BottomNav";
 
 import "./styles/app.css";
@@ -34,7 +36,7 @@ export default function App() {
 
       <div style={{ paddingBottom: 80 }}>
         <Routes>
-          {/* Public */}
+          {/* ================== Public ================== */}
           <Route path="/" element={<Home />} />
           <Route path="/shop" element={<Shop />} />
           <Route path="/product/:id" element={<ProductDetails />} />
@@ -43,7 +45,7 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
-          {/* Private */}
+          {/* ================== Private ================== */}
           <Route
             path="/checkout"
             element={
@@ -62,6 +64,17 @@ export default function App() {
             }
           />
 
+          {/* ✅ Priyo route fix: BottomNav এ /priyo থাকলে এটা লাগবে */}
+          <Route
+            path="/priyo"
+            element={
+              <PrivateRoute>
+                <Favorites />
+              </PrivateRoute>
+            }
+          />
+
+          {/* ✅ kept as well: যদি কোথাও /favorites ব্যবহার হয় */}
           <Route
             path="/favorites"
             element={
@@ -89,7 +102,7 @@ export default function App() {
             }
           />
 
-          {/* Admin */}
+          {/* ================== Admin ================== */}
           <Route path="/admin/login" element={<AdminLogin />} />
 
           <Route
@@ -137,11 +150,13 @@ export default function App() {
             }
           />
 
-          {/* Fallback */}
+          {/* ================== Fallback ================== */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
 
+      {/* ✅ BottomNav সব পেজে থাকবে, কিন্তু Navbar আগেই /admin এ hide হচ্ছে
+          BottomNav যদি admin এও দেখা যায়, BottomNav.jsx এর ভিতরে admin hide করতে হবে */}
       <BottomNav />
     </>
   );
