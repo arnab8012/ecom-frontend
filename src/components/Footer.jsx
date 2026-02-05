@@ -99,6 +99,17 @@ export default function Footer() {
           </span>
         </div>
       </div>
+{/* Developer credit */}
+<div className="footerDev">
+  <img
+    src="/dev.png"
+    alt="Developer"
+    className="footerDevImg"
+  />
+  <span className="footerDevText">
+    THIS WEBSITE DEVELOPED BY <strong>ARNAB CHOWDHURY (TONY)</strong>
+  </span>
+</div>
     </footer>
   );
 }
