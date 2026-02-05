@@ -12,16 +12,18 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [slide, setSlide] = useState(0);
 
-  // helper: relative image হলে BASE যোগ করবে
+  // ✅ helper: relative image হলে BASE যোগ করবে
   const absUrl = (u) => {
     if (!u) return "";
     const s = String(u);
     if (s.startsWith("http://") || s.startsWith("https://")) return s;
+    // "/uploads/.." বা "uploads/.." দুইটাই handle
     return `${api.BASE}${s.startsWith("/") ? "" : "/"}${s}`;
   };
 
   const bannerUrls = useMemo(() => {
-    return (Array.isArray(banners) ? banners : [])
+    const arr = Array.isArray(banners) ? banners : [];
+    return arr
       .map((b) => (typeof b === "string" ? b : b?.url))
       .map((u) => absUrl(u))
       .filter(Boolean);
@@ -64,6 +66,15 @@ export default function Home() {
     return () => clearInterval(id);
   }, [bannerUrls.length]);
 
+  // ✅ banners change হলে slide out-of-range হলে reset
+  useEffect(() => {
+    if (bannerUrls.length === 0) {
+      setSlide(0);
+      return;
+    }
+    if (slide >= bannerUrls.length) setSlide(0);
+  }, [bannerUrls.length, slide]);
+
   const byCat = useMemo(() => {
     const map = new Map();
     for (const p of allProducts || []) {
@@ -75,23 +86,27 @@ export default function Home() {
   }, [allProducts]);
 
   const take = (arr, n) => (Array.isArray(arr) ? arr.slice(0, n) : []);
+  const titleText = (name) => String(name || "").toUpperCase();
 
   return (
     <div className="container homeWrap" style={{ paddingBottom: 90 }}>
-      {/* ===== Banner ===== */}
+      {/* ✅ Full width banner (admin uploaded) + overlay */}
       {bannerUrls.length > 0 && (
         <div className="homeBanner">
           <img
-            src={bannerUrls[slide]}
+            src={bannerUrls[slide] || bannerUrls[0]}
             alt="The Curious Empire Banner"
             className="bannerImg"
+            loading="lazy"
           />
 
+          {/* overlay text top-left */}
           <div className="bannerOverlay">
             <h1>The Curious Empire</h1>
             <p>Premium Shopping Experience</p>
           </div>
 
+          {/* dots */}
           {bannerUrls.length > 1 && (
             <div className="bannerDots">
               {bannerUrls.map((_, i) => (
@@ -100,6 +115,7 @@ export default function Home() {
                   className={`dot ${i === slide ? "active" : ""}`}
                   onClick={() => setSlide(i)}
                   type="button"
+                  aria-label={`banner-${i}`}
                 />
               ))}
             </div>
@@ -107,7 +123,7 @@ export default function Home() {
         </div>
       )}
 
-      {/* ===== Categories ===== */}
+      {/* Categories */}
       {cats.length > 0 && (
         <div className="homeSection">
           <div className="secTop">
@@ -118,33 +134,45 @@ export default function Home() {
           </div>
 
           <div className="catRow">
-            {cats.map((c) => (
-              <button
-                key={c._id}
-                className="catItem"
-                onClick={() => nav(`/shop?category=${c._id}`)}
-              >
-                <div className="catIcon">
-                  <img src={absUrl(c.image)} alt={c.name} />
-                </div>
-                <div className="catName">{c.name}</div>
-              </button>
-            ))}
+            {cats.map((c) => {
+              const imgUrl = absUrl(c?.image) || "https://via.placeholder.com/160";
+              return (
+                <button
+                  key={c._id}
+                  className="catItem"
+                  type="button"
+                  onClick={() => nav(`/shop?category=${c._id}`)}
+                >
+                  <div className="catIcon">
+                    <img
+                      src={imgUrl}
+                      alt={c.name}
+                      loading="lazy"
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = "https://via.placeholder.com/160";
+                      }}
+                    />
+                  </div>
+                  <div className="catName">{c.name}</div>
+                </button>
+              );
+            })}
           </div>
         </div>
       )}
 
-      {loading && <p>Loading...</p>}
+      {loading && <p style={{ padding: "12px 0" }}>Loading...</p>}
 
-      {/* ===== Products ===== */}
+      {/* Products by category */}
       {cats.map((c) => {
         const list = byCat.get(c._id) || [];
         if (!list.length) return null;
 
         return (
-          <div className="homeSection" key={c._id}>
+          <div className="homeSection" key={c._id} style={{ marginTop: 18 }}>
             <div className="catHeaderRow">
-              <div className="catHeaderTitle">{c.name}</div>
+              <div className="catHeaderTitle">{titleText(c.name)}</div>
               <Link to={`/shop?category=${c._id}`} className="seeMoreBtn">
                 See More →
               </Link>
@@ -152,7 +180,9 @@ export default function Home() {
 
             <div className="homeTwoGrid">
               {take(list, 2).map((p) => (
-                <ProductCard key={p._id} p={p} />
+                <div key={p._id} style={{ width: "100%" }}>
+                  <ProductCard p={p} />
+                </div>
               ))}
             </div>
           </div>
