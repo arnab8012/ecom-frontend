@@ -14,7 +14,7 @@ export function AuthProvider({ children }) {
       try {
         const t = api.token();
 
-        // ✅ token না থাকলেও boot শেষ হবে (এখানেই setBooting false)
+        // ✅ token না থাকলে boot শেষ
         if (!t) {
           if (alive) {
             setUser(null);
@@ -26,9 +26,10 @@ export function AuthProvider({ children }) {
         const r = await api.getAuth("/api/auth/me", t);
         if (!alive) return;
 
-        if (r?.ok) setUser(r.user || null);
-        else {
-          // token invalid হলে token remove করলে বারবার সমস্যা হবে না
+        if (r?.ok) {
+          setUser(r.user || null);
+        } else {
+          // ✅ token invalid হলে token remove
           localStorage.removeItem("token");
           setUser(null);
         }
