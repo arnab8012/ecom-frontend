@@ -155,10 +155,10 @@ export default function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
-<Footer />
-<BottomNav />
+
       {/* ✅ BottomNav সব পেজে থাকবে, কিন্তু Navbar আগেই /admin এ hide হচ্ছে
           BottomNav যদি admin এও দেখা যায়, BottomNav.jsx এর ভিতরে admin hide করতে হবে */}
+       <Footer />
       <BottomNav />
     </>
   );
