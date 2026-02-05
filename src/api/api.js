@@ -1,4 +1,12 @@
-const BASE_RAW = import.meta.env.VITE_API_BASE || "http://localhost:5000";
+// ✅ Prod এ localhost থাকলে "NetworkError when attempting to fetch resource" হবেই
+// তাই env না থাকলে PROD এ Render backend ধরছি।
+
+const PROD_FALLBACK = "https://ecom-backend-rqj0.onrender.com";
+
+const BASE_RAW =
+  import.meta.env.VITE_API_BASE ||
+  (import.meta.env.PROD ? PROD_FALLBACK : "http://localhost:5000");
+
 const BASE = String(BASE_RAW).replace(/\/$/, ""); // শেষের / remove
 
 function getToken() {
@@ -42,7 +50,6 @@ export const api = {
     return jsonFetch(`${BASE}${path}`, { method: "GET" });
   },
 
-  // ✅ GET auth
   getAuth(path, token) {
     return jsonFetch(`${BASE}${path}`, {
       method: "GET",
