@@ -1,28 +1,75 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "./Footer.css";
 import logo from "../assets/logo.png"; // তোমার logo path ঠিক থাকলে
 
 export default function Footer() {
+  const { pathname } = useLocation();
+
+  // ✅ admin panel এ footer দেখাবে না
+  if (pathname.startsWith("/admin")) return null;
+
   return (
     <footer className="siteFooter">
       <div className="footerCard">
         {/* Top brand row */}
         <div className="footerBrand">
           <div className="footerLogoWrap">
-            <img className="footerLogo" src={logo} alt="The Curious Empire" />
+            <img
+              className="footerLogo"
+              src={logo}
+              alt="The Curious Empire"
+              loading="lazy"
+              onError={(e) => {
+                e.currentTarget.style.display = "none";
+              }}
+            />
           </div>
 
           <div className="footerBrandText">
             <h3 className="footerTitle">The Curious Empire</h3>
+
             <p className="footerDesc">
-              ✨ Premium Shopping Experience — Unique products delivered with quality & care.
+              ✨ Premium Shopping Experience — Unique products delivered with
+              quality & care.
             </p>
 
             <div className="footerSocial">
-              <a className="socBtn" href="#" aria-label="Facebook">f</a>
-              <a className="socBtn" href="#" aria-label="YouTube">▶</a>
-              <a className="socBtn" href="#" aria-label="Instagram">⌁</a>
-              <a className="socBtn" href="#" aria-label="TikTok">♪</a>
+              <a
+                className="socBtn"
+                href="https://facebook.com"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Facebook"
+              >
+                f
+              </a>
+              <a
+                className="socBtn"
+                href="https://youtube.com"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="YouTube"
+              >
+                ▶
+              </a>
+              <a
+                className="socBtn"
+                href="https://instagram.com"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Instagram"
+              >
+                ⌁
+              </a>
+              <a
+                className="socBtn"
+                href="https://tiktok.com"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="TikTok"
+              >
+                ♪
+              </a>
             </div>
           </div>
         </div>
@@ -47,7 +94,9 @@ export default function Footer() {
         </div>
 
         <div className="footerBottom">
-          <span>© {new Date().getFullYear()} The Curious Empire. All rights reserved.</span>
+          <span>
+            © {new Date().getFullYear()} The Curious Empire. All rights reserved.
+          </span>
         </div>
       </div>
     </footer>
