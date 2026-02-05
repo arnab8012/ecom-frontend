@@ -99,6 +99,14 @@
   opacity: .8;
 }
 
+.footerWrap {
+  margin-top: 20px;
+  padding: 18px 14px 90px; /* নিচে BottomNav থাকলে জায়গা */
+  background: #0b1c2d;
+  color: #fff;
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
+}
 /* Mobile */
 @media (max-width: 420px){
   .footerGrid{ grid-template-columns: 1fr; }
