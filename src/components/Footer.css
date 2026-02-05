@@ -117,3 +117,35 @@
     padding: 28px 40px 90px;
   }
 }
+/* Developer credit section */
+.footerDev{
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; /* 👉 ডান দিকে */
+  gap: 10px;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px dashed rgba(255,255,255,0.18);
+}
+
+.footerDevImg{
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255,255,255,0.35);
+}
+
+.footerDevText{
+  font-size: 13px;
+  color: rgba(255,255,255,0.75);
+  text-align: right;
+}
+
+/* Mobile friendly */
+@media (max-width: 480px){
+  .footerDev{
+    justify-content: center; /* মোবাইলে center */
+    text-align: center;
+  }
+}
