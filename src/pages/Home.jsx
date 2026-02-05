@@ -78,52 +78,40 @@ export default function Home() {
   const titleText = (name) => String(name || "").toUpperCase();
 
   return (
-    <div className="container homeWrap" style={{ paddingBottom: 90 }}>
-      {/* welcome bar */}
-      <div className="welcomeBar">
-        <div className="welcomeLeft">
-          <div className="welcomeTitle">The Curious Empire</div>
-          <div className="welcomeSub">Premium Shopping Experience</div>
+  <div className="container homeWrap" style={{ paddingBottom: 90 }}>
+ {/* ✅ Full width banner (admin uploaded) + overlay */}
+    {bannerUrls.length > 0 && (
+      <div className="homeBanner">
+        <img
+          src={bannerUrls[slide] || bannerUrls[0]}
+          alt="The Curious Empire Banner"
+          className="bannerImg"
+          loading="lazy"
+        />
+
+        {/* overlay text top-left */}
+        <div className="bannerOverlay">
+          <h1>The Curious Empire</h1>
+          <p>Premium Shopping Experience</p>
         </div>
 
-      {/* Banner */}
-      {bannerUrls.length > 0 && (
-        <div className="heroBannerWrap">
-          <div className="heroBanner">
-            <div
-              className="bannerTrack"
-              style={{
-                width: `${bannerUrls.length * 100}%`,
-                transform: `translateX(-${slide * (100 / bannerUrls.length)}%)`,
-              }}
-            >
-              {bannerUrls.map((url, i) => (
-                <div
-                  key={i}
-                  className="bannerSlide"
-                  style={{ width: `${100 / bannerUrls.length}%` }}
-                >
-                  <img className="bannerImg" src={url} alt="banner" />
-                </div>
-              ))}
-            </div>
-
-            {bannerUrls.length > 1 && (
-              <div className="bannerDots">
-                {bannerUrls.map((_, i) => (
-                  <button
-                    key={i}
-                    className={`dot ${i === slide ? "active" : ""}`}
-                    onClick={() => setSlide(i)}
-                    type="button"
-                    aria-label={`banner-${i}`}
-                  />
-                ))}
-              </div>
-            )}
+        {/* dots */}
+        {bannerUrls.length > 1 && (
+          <div className="bannerDots">
+            {bannerUrls.map((_, i) => (
+              <button
+                key={i}
+                className={`dot ${i === slide ? "active" : ""}`}
+                onClick={() => setSlide(i)}
+                type="button"
+                aria-label={`banner-${i}`}
+              />
+            ))}
           </div>
-        </div>
-      )}
+        )}
+      </div>
+    )}
+
 
       {/* Categories */}
       {cats.length > 0 && (
