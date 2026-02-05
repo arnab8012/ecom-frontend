@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import "./Footer.css";
-import logo from "../assets/logo.png"; // তোমার logo path ঠিক থাকলে
+import logo from "../assets/logo.png";
 
 export default function Footer() {
   const { pathname } = useLocation();
@@ -29,8 +29,7 @@ export default function Footer() {
             <h3 className="footerTitle">The Curious Empire</h3>
 
             <p className="footerDesc">
-              ✨ Premium Shopping Experience — Unique products delivered with
-              quality & care.
+              ✨ Premium Shopping Experience — Unique products delivered with quality & care.
             </p>
 
             <div className="footerSocial">
@@ -93,23 +92,29 @@ export default function Footer() {
           </div>
         </div>
 
+        {/* Copyright */}
         <div className="footerBottom">
           <span>
             © {new Date().getFullYear()} The Curious Empire. All rights reserved.
           </span>
         </div>
+
+        {/* ✅ Developer credit (এটা footerCard এর ভিতরে রাখতে হবে) */}
+        <div className="footerDev">
+          <img
+            src="/dev.png"
+            alt="Developer"
+            className="footerDevImg"
+            loading="lazy"
+            onError={(e) => {
+              e.currentTarget.style.display = "none";
+            }}
+          />
+          <span className="footerDevText">
+            THIS WEBSITE DEVELOPED BY <strong>ARNAB CHOWDHURY (TONY)</strong>
+          </span>
+        </div>
       </div>
-{/* Developer credit */}
-<div className="footerDev">
-  <img
-    src="/dev.png"
-    alt="Developer"
-    className="footerDevImg"
-  />
-  <span className="footerDevText">
-    THIS WEBSITE DEVELOPED BY <strong>ARNAB CHOWDHURY (TONY)</strong>
-  </span>
-</div>
     </footer>
   );
 }
