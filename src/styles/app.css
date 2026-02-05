@@ -120,6 +120,14 @@ body{
    - admin uploaded bannerUrls ব্যবহার করলে এই class গুলো লাগবে
    - বাম/ডান পুরোটা, নিচে shadow, fade shadow
 ========================================================= */
+.homeWrap{ position: relative; }
+
+/* container padding ভেঙে full width দেখাবে */
+.homeBanner{
+  margin-left: -16px;
+  margin-right: -16px;
+  border-radius: 0;          /* চাইলে 18px রাখতে পারো */
+}
 .homeBanner{
   position: relative;
   width: 100%;
