@@ -121,6 +121,7 @@ body{
    - বাম/ডান পুরোটা, নিচে shadow, fade shadow
 ========================================================= */
 .homeWrap{ position: relative; }
+.homeBanner{ border-radius: 0; }
 
 /* =========================
    ✅ FULL WIDTH HOME BANNER (edge-to-edge)
