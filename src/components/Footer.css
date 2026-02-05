@@ -2,20 +2,20 @@
 .siteFooter{
   width: 100%;
   margin: 0;
-  padding: 0;                 /* ✅ remove outer padding */
-  background: #07101d;        /* ✅ same dark bg to avoid white */
+  padding: 0;
+  background: #07101d;
 }
 
 /* Dark card becomes full width */
 .footerCard{
   width: 100%;
-  max-width: 100%;            /* ✅ no max width */
-  margin: 0;                  /* ✅ no center gap */
-  border-radius: 0;           /* ✅ full edge-to-edge */
+  max-width: 100%;
+  margin: 0;
+  border-radius: 0;
   background: radial-gradient(1200px 600px at 20% 20%, #0c2242 0%, #07101d 55%, #050a12 100%);
   color: #eaf1ff;
-  padding: 22px 16px 90px;    /* ✅ bottom padding so BottomNav doesn't cover */
-  box-shadow: none;           /* ✅ remove floating card look */
+  padding: 22px 16px 110px; /* ✅ bottom একটু বেশি দিলাম যাতে dev credit + BottomNav cover না হয় */
+  box-shadow: none;
 }
 
 /* Layout */
@@ -107,23 +107,13 @@
   font-size: 14px;
 }
 
-/* Desktop: two columns */
-@media (min-width: 900px){
-  .footerGrid{
-    grid-template-columns: 1fr 1fr;
-    gap: 28px;
-  }
-  .footerCard{
-    padding: 28px 40px 90px;
-  }
-}
-/* Developer credit section */
+/* ✅ Developer credit section */
 .footerDev{
   display: flex;
   align-items: center;
-  justify-content: flex-end; /* 👉 ডান দিকে */
+  justify-content: flex-end; /* ডান দিকে */
   gap: 10px;
-  margin-top: 18px;
+  margin-top: 14px;
   padding-top: 14px;
   border-top: 1px dashed rgba(255,255,255,0.18);
 }
@@ -142,10 +132,24 @@
   text-align: right;
 }
 
+/* Desktop */
+@media (min-width: 900px){
+  .footerGrid{
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+  }
+  .footerCard{
+    padding: 28px 40px 120px;
+  }
+}
+
 /* Mobile friendly */
 @media (max-width: 480px){
   .footerDev{
-    justify-content: center; /* মোবাইলে center */
+    justify-content: center;
+    text-align: center;
+  }
+  .footerDevText{
     text-align: center;
   }
 }
