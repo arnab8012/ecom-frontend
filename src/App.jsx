@@ -22,13 +22,11 @@ import AdminOrders from "./pages/admin/AdminOrders";
 import AdminCategories from "./pages/admin/AdminCategories";
 import AdminBanners from "./pages/admin/AdminBanners";
 
-// ✅ Private route (তোমার existing file)
 import PrivateRoute from "./components/PrivateRoute";
-
 import BottomNav from "./components/BottomNav";
+import Footer from "./components/Footer";
 
 import "./styles/app.css";
-import Footer from "./components/Footer";
 
 export default function App() {
   return (
@@ -65,7 +63,7 @@ export default function App() {
             }
           />
 
-          {/* ✅ Priyo route fix: BottomNav এ /priyo থাকলে এটা লাগবে */}
+          {/* ✅ Priyo route fix */}
           <Route
             path="/priyo"
             element={
@@ -75,7 +73,7 @@ export default function App() {
             }
           />
 
-          {/* ✅ kept as well: যদি কোথাও /favorites ব্যবহার হয় */}
+          {/* ✅ kept: /favorites থাকলে */}
           <Route
             path="/favorites"
             element={
@@ -156,9 +154,8 @@ export default function App() {
         </Routes>
       </div>
 
-      {/* ✅ BottomNav সব পেজে থাকবে, কিন্তু Navbar আগেই /admin এ hide হচ্ছে
-          BottomNav যদি admin এও দেখা যায়, BottomNav.jsx এর ভিতরে admin hide করতে হবে */}
-       <Footer />
+      {/* Footer + BottomNav */}
+      <Footer />
       <BottomNav />
     </>
   );
