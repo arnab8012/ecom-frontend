@@ -1,3 +1,5 @@
+// src/pages/Home.jsx
+
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "../api/api";
@@ -53,7 +55,9 @@ export default function Home() {
       }
     })();
 
-    return () => (alive = false);
+    return () => {
+      alive = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -62,6 +66,12 @@ export default function Home() {
       setSlide((s) => (s + 1) % bannerUrls.length);
     }, 3500);
     return () => clearInterval(id);
+  }, [bannerUrls.length]);
+
+  // ✅ banners change হলে slide out-of-range হলে reset
+  useEffect(() => {
+    if (slide >= bannerUrls.length) setSlide(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bannerUrls.length]);
 
   const byCat = useMemo(() => {
@@ -78,40 +88,39 @@ export default function Home() {
   const titleText = (name) => String(name || "").toUpperCase();
 
   return (
-  <div className="container homeWrap" style={{ paddingBottom: 90 }}>
- {/* ✅ Full width banner (admin uploaded) + overlay */}
-    {bannerUrls.length > 0 && (
-      <div className="homeBanner">
-        <img
-          src={bannerUrls[slide] || bannerUrls[0]}
-          alt="The Curious Empire Banner"
-          className="bannerImg"
-          loading="lazy"
-        />
+    <div className="container homeWrap" style={{ paddingBottom: 90 }}>
+      {/* ✅ Full width banner (admin uploaded) + overlay */}
+      {bannerUrls.length > 0 && (
+        <div className="homeBanner">
+          <img
+            src={bannerUrls[slide] || bannerUrls[0]}
+            alt="The Curious Empire Banner"
+            className="bannerImg"
+            loading="lazy"
+          />
 
-        {/* overlay text top-left */}
-        <div className="bannerOverlay">
-          <h1>The Curious Empire</h1>
-          <p>Premium Shopping Experience</p>
-        </div>
-
-        {/* dots */}
-        {bannerUrls.length > 1 && (
-          <div className="bannerDots">
-            {bannerUrls.map((_, i) => (
-              <button
-                key={i}
-                className={`dot ${i === slide ? "active" : ""}`}
-                onClick={() => setSlide(i)}
-                type="button"
-                aria-label={`banner-${i}`}
-              />
-            ))}
+          {/* overlay text top-left */}
+          <div className="bannerOverlay">
+            <h1>The Curious Empire</h1>
+            <p>Premium Shopping Experience</p>
           </div>
-        )}
-      </div>
-    )}
 
+          {/* dots */}
+          {bannerUrls.length > 1 && (
+            <div className="bannerDots">
+              {bannerUrls.map((_, i) => (
+                <button
+                  key={i}
+                  className={`dot ${i === slide ? "active" : ""}`}
+                  onClick={() => setSlide(i)}
+                  type="button"
+                  aria-label={`banner-${i}`}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Categories */}
       {cats.length > 0 && (
@@ -181,3 +190,4 @@ export default function Home() {
     </div>
   );
 }
+```0
