@@ -31,7 +31,6 @@ body{
   padding: 16px;
 }
 
-.homeWrap{ padding-top: 6px; }
 .homeSection{ margin-top: 18px; }
 
 /* =========================
@@ -120,7 +119,6 @@ body{
    - admin uploaded bannerUrls ব্যবহার করলে এই class গুলো লাগবে
    - বাম/ডান পুরোটা, নিচে shadow, fade shadow
 ========================================================= */
-.homeWrap{ position: relative; }
 .homeBanner{ border-radius: 0; }
 
 /* =========================
