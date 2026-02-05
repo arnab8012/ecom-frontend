@@ -85,8 +85,6 @@ export default function Home() {
           <div className="welcomeTitle">The Curious Empire</div>
           <div className="welcomeSub">Premium Shopping Experience</div>
         </div>
-        <div className="welcomeBadge">✨ Premium</div>
-      </div>
 
       {/* Banner */}
       {bannerUrls.length > 0 && (
