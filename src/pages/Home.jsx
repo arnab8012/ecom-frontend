@@ -93,32 +93,44 @@ export default function Home() {
       {/* ✅ Full width banner (admin uploaded) + overlay */}
     {bannerUrls.length > 0 && (
   <div className="homeBanner">
-    <img
-      src={bannerUrls[slide] || bannerUrls[0]}
-      alt="The Curious Empire Banner"
-      className="bannerImg"
-      loading="lazy"
-    />
-
-    <div className="bannerOverlay">
-      <h1>The Curious Empire</h1>
-      <p>Premium Shopping Experience</p>
-    </div>
-
-    {bannerUrls.length > 1 && (
-      <div className="bannerDots">
-        {bannerUrls.map((_, i) => (
-          <button
-            key={i}
-            className={`dot ${i === slide ? "active" : ""}`}
-            onClick={() => setSlide(i)}
-            type="button"
-            aria-label={`banner-${i}`}
-          />
-        ))}
+  <div
+    className="bannerSlideTrack"
+    style={{
+      transform: `translateX(-${slide * 100}%)`,
+    }}
+  >
+    {bannerUrls.map((url, i) => (
+      <div className="bannerSlide" key={i}>
+        <img
+          src={url}
+          alt="The Curious Empire Banner"
+          className="bannerImg"
+          loading="lazy"
+        />
       </div>
-    )}
+    ))}
   </div>
+
+  {/* overlay */}
+  <div className="bannerOverlay">
+    <h1>The Curious Empire</h1>
+    <p>Premium Shopping Experience</p>
+  </div>
+
+  {/* dots */}
+  {bannerUrls.length > 1 && (
+    <div className="bannerDots">
+      {bannerUrls.map((_, i) => (
+        <button
+          key={i}
+          className={`dot ${i === slide ? "active" : ""}`}
+          onClick={() => setSlide(i)}
+          type="button"
+        />
+      ))}
+    </div>
+  )}
+</div>
 )}
 
       {/* Categories */}
