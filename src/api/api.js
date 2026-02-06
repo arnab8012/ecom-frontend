@@ -1,8 +1,11 @@
-// ✅ Prod এ localhost থাকলে "NetworkError when attempting to fetch resource" হবেই
-// তাই env না থাকলে PROD এ Render backend ধরছি।
+// src/api/api.js
 
-const PROD_FALLBACK = "https://ecom-backend-rqj0.onrender.com";
+// ✅ PROD এ localhost থাকলে Network error হবে
+// ✅ তাই env না থাকলে PROD এ Render backend ধরছি।
+const PROD_FALLBACK = "https://ecom-backend-rql0.onrender.com";
 
+// ✅ VITE_API_BASE দিলে সেটাই নেবে
+// ✅ না দিলে: PROD -> fallback, DEV -> localhost
 const BASE_RAW =
   import.meta.env.VITE_API_BASE ||
   (import.meta.env.PROD ? PROD_FALLBACK : "http://localhost:5000");
