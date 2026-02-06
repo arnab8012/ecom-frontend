@@ -1637,3 +1637,99 @@ body{
   padding-top: 10px;
   border-top: 1px solid rgba(0,0,0,0.10);
 }
+
+/* =========================
+   SETTINGS – PREMIUM LOOK
+========================= */
+
+/* settings main box */
+.container .box{
+  background: rgba(255,255,255,0.78);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow:
+    0 14px 34px rgba(0,0,0,0.10),
+    inset 0 1px 0 rgba(255,255,255,0.6);
+}
+
+/* title row */
+.container h2{
+  font-weight: 1000;
+  letter-spacing: .3px;
+}
+
+/* muted labels */
+.muted{
+  font-size: 13px;
+  font-weight: 800;
+  color: rgba(11,18,32,0.55);
+}
+
+/* name / phone value */
+.container .box div[style*="font-weight: 800"]{
+  font-size: 16px;
+  color: #0b1220;
+}
+
+/* row buttons spacing */
+.container .rowBetween{
+  align-items: center;
+}
+
+/* EDIT PROFILE button (green premium) */
+.btnPink{
+  height: 42px;
+  padding: 0 16px;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+
+  font-weight: 1000;
+  color: #0b2c1d;
+
+  background: linear-gradient(
+    90deg,
+    rgba(117,216,75,0.95),
+    rgba(119,183,255,0.85)
+  );
+
+  box-shadow: 0 12px 26px rgba(0,0,0,0.14);
+  transition: transform .08s ease, box-shadow .2s ease, filter .2s ease;
+}
+
+.btnPink:hover{
+  filter: brightness(1.05);
+  box-shadow: 0 16px 36px rgba(0,0,0,0.18);
+}
+
+.btnPink:active{
+  transform: translateY(1px);
+}
+
+/* LOGOUT button (soft glass) */
+.btnGhost{
+  height: 42px;
+  padding: 0 16px;
+  border-radius: 14px;
+  cursor: pointer;
+
+  font-weight: 900;
+  color: #0b1220;
+
+  background: rgba(255,255,255,0.6);
+  border: 1px solid rgba(0,0,0,0.12);
+  backdrop-filter: blur(6px);
+
+  transition: background .2s ease, box-shadow .2s ease, transform .08s ease;
+}
+
+.btnGhost:hover{
+  background: rgba(255,255,255,0.85);
+  box-shadow: 0 10px 22px rgba(0,0,0,0.12);
+}
+
+.btnGhost:active{
+  transform: translateY(1px);
+}
