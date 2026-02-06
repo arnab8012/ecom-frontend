@@ -40,6 +40,7 @@ export default function Navbar() {
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder={lang === "bn" ? "পণ্য খুঁজুন..." : "Search products"}
+         autoComplete="off"
           />
           <button className="topSearchBtn" type="submit">🔍</button>
         </form>
