@@ -91,7 +91,7 @@ export default function Home() {
   const titleText = (name) => String(name || "").toUpperCase();
 
   return (
-    <div className="homeWrap">
+    <div className="homeWrap"
     style={{ paddingBottom: 90 }}>
       {/* ✅ Full width banner (admin uploaded) + overlay */}
     {bannerUrls.length > 0 && (
