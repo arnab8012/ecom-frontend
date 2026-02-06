@@ -30,7 +30,7 @@ export default function Navbar() {
           <span className="topTitle">The Curious Empire</span>
         </Link>
 
-        <form className="topSearch" onSubmit={doSearch} role="search">
+        <form className="topSearch" onSubmit={doSearch}>
   <div className="topSearchLine">
     <input
       className="topSearchInputLine"
@@ -38,9 +38,7 @@ export default function Navbar() {
       onChange={(e) => setQ(e.target.value)}
       placeholder={lang === "bn" ? "পণ্য খুঁজুন..." : "Search"}
     />
-    <button className="topSearchIconBtn" type="submit" aria-label="Search">
-      🔍
-    </button>
+    <button className="topSearchIconBtn" type="submit">🔍</button>
   </div>
 </form>
 
