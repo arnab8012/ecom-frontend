@@ -1,3 +1,5 @@
+// src/pages/Cart.jsx
+
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
@@ -22,21 +24,23 @@ export default function Cart() {
   };
 
   return (
-    <div className="container">
-      <div className="rowBetween" style={{ marginBottom: 12 }}>
-        <h2 style={{ margin: 0 }}>Cart</h2>
-        <button className="btnGhost" type="button" onClick={() => nav(-1)}>
+    <div className="container cartPage">
+      <div className="rowBetween cartHead" style={{ marginBottom: 12 }}>
+        <h2 className="cartTitleH" style={{ margin: 0 }}>
+          Cart
+        </h2>
+        <button className="btnGhost cartBackBtn" type="button" onClick={() => nav(-1)}>
           ← Back
         </button>
       </div>
 
       {!list.length ? (
-        <div className="box">
+        <div className="box cartEmpty">
           Your cart is empty. <Link to="/shop">Go to shop</Link>
         </div>
       ) : (
         <>
-          <div className="cartList">
+          <div className="cartList cartListPremium">
             {list.map((x) => {
               const id = x?._id || x?.id;
               const title = x?.title || "Product";
@@ -50,8 +54,8 @@ export default function Cart() {
               const qty = Number(x?.qty) || 1;
 
               return (
-                <div className="cartItem" key={id}>
-                  <Link to={`/product/${id}`} className="cartThumb">
+                <div className="cartItem cartItemPremium" key={id}>
+                  <Link to={`/product/${id}`} className="cartThumb cartThumbPremium">
                     <img
                       src={img}
                       alt={title}
@@ -61,28 +65,32 @@ export default function Cart() {
                     />
                   </Link>
 
-                  <div className="cartInfo">
-                    <Link to={`/product/${id}`} className="cartTitle">
+                  <div className="cartInfo cartInfoPremium">
+                    <Link to={`/product/${id}`} className="cartTitle cartTitleLinkPremium">
                       {title}
                     </Link>
 
-                    <div className="cartMeta">
-                      <span className="cartPrice">৳ {price}</span>
-                      <span className="cartLine">× {qty} = ৳ {price * qty}</span>
+                    <div className="cartMeta cartMetaPremium">
+                      <span className="cartPrice cartPricePremium">৳ {price}</span>
+                      <span className="cartLine cartLinePremium">× {qty} = ৳ {price * qty}</span>
                     </div>
 
-                    <div className="cartActions">
-                      <div className="qtyBox">
-                        <button type="button" onClick={() => dec(id)} className="qtyBtn">
+                    <div className="cartActions cartActionsPremium">
+                      <div className="qtyBox qtyBoxPremium">
+                        <button type="button" onClick={() => dec(id)} className="qtyBtn qtyBtnPremium">
                           −
                         </button>
-                        <span className="qtyNum">{qty}</span>
-                        <button type="button" onClick={() => inc(id)} className="qtyBtn">
+                        <span className="qtyNum qtyNumPremium">{qty}</span>
+                        <button type="button" onClick={() => inc(id)} className="qtyBtn qtyBtnPremium">
                           +
                         </button>
                       </div>
 
-                      <button type="button" className="btnDanger" onClick={() => remove(id)}>
+                      <button
+                        type="button"
+                        className="btnDanger btnDangerPremium"
+                        onClick={() => remove(id)}
+                      >
                         Remove
                       </button>
                     </div>
@@ -92,18 +100,18 @@ export default function Cart() {
             })}
           </div>
 
-          <div className="cartSummary">
-            <div className="sumRow">
+          <div className="cartSummary cartSummaryPremium">
+            <div className="sumRow sumRowPremium">
               <span>Subtotal</span>
               <b>৳ {subtotal}</b>
             </div>
 
-            <div className="sumBtns">
-              <button className="btnSoft" type="button" onClick={clear}>
+            <div className="sumBtns sumBtnsPremium">
+              <button className="btnSoft cartClearBtn" type="button" onClick={clear}>
                 Clear Cart
               </button>
 
-              <button className="btnPrimary" type="button" onClick={goCheckout}>
+              <button className="btnPrimary cartCheckoutBtn" type="button" onClick={goCheckout}>
                 Checkout
               </button>
             </div>
