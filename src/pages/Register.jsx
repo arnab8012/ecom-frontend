@@ -16,14 +16,31 @@ export default function Register() {
 
   const submit = async (e) => {
     e.preventDefault();
+
+    const name = fullName.trim();
+    const ph = phone.trim();
+
+    if (!name) return alert("Full Name required");
+    if (!ph) return alert("Phone Number required");
+    if (!password) return alert("Password required");
     if (password !== confirm) return alert("Password mismatch");
 
-    setLoading(true);
-    const r = await register({ fullName, phone, password, gender });
-    setLoading(false);
+    try {
+      setLoading(true);
 
-    if (r.ok) nav("/profile");
-    else alert(r.message || "Register failed");
+      const r = await register({ fullName: name, phone: ph, password, gender });
+
+      if (r?.ok) {
+        // ✅ register ok -> profile
+        nav("/profile", { replace: true });
+      } else {
+        alert(r?.message || "Register failed");
+      }
+    } catch (err) {
+      alert(err?.message || "Register failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -34,38 +51,72 @@ export default function Register() {
 
         <form onSubmit={submit}>
           <label className="lbl">Full Name</label>
-          <input className="input" value={fullName} onChange={(e) => setFullName(e.target.value)} />
+          <input
+            className="input"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            placeholder="Your name"
+          />
 
           <label className="lbl">Phone Number</label>
-          <input className="input" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="01XXXXXXXXX" />
+          <input
+            className="input"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder="01XXXXXXXXX"
+          />
 
           <div className="twoCol">
             <div>
               <label className="lbl">Password</label>
-              <input className="input" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+              <input
+                className="input"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+              />
             </div>
+
             <div>
               <label className="lbl">Confirm</label>
-              <input className="input" type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} />
+              <input
+                className="input"
+                type="password"
+                value={confirm}
+                onChange={(e) => setConfirm(e.target.value)}
+                placeholder="••••••••"
+              />
             </div>
           </div>
 
           <label className="lbl">Gender</label>
           <div className="rowBetween">
             <label className="radio">
-              <input type="radio" checked={gender === "MALE"} onChange={() => setGender("MALE")} />
+              <input
+                type="radio"
+                checked={gender === "MALE"}
+                onChange={() => setGender("MALE")}
+              />
               Male
             </label>
+
             <label className="radio">
-              <input type="radio" checked={gender === "FEMALE"} onChange={() => setGender("FEMALE")} />
+              <input
+                type="radio"
+                checked={gender === "FEMALE"}
+                onChange={() => setGender("FEMALE")}
+              />
               Female
             </label>
           </div>
 
-          <button className="btnPinkFull" disabled={loading}>{loading ? "Creating..." : "Create Account →"}</button>
+          <button className="btnPinkFull" disabled={loading}>
+            {loading ? "Creating..." : "Create Account →"}
+          </button>
         </form>
 
-        <div className="muted center">
+        <div className="muted center" style={{ marginTop: 10 }}>
           Already have an account? <Link to="/login">Log in</Link>
         </div>
       </div>
