@@ -1,24 +1,24 @@
-/* =========================
-   CATEGORY CHIPS (PREMIUM)
-========================= */
-
-.catHead{
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin: 18px 0 10px;
+/* ===== CATEGORIES ===== */
+.homeSection{
+  margin-bottom: 26px;
 }
 
-.catHead h2{
-  margin: 0;
-  font-size: 22px;
+.secTop{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.secTitle{
+  font-size: 20px;
   font-weight: 900;
 }
 
-.catSeeMore{
-  text-decoration: none;
-  font-weight: 800;
+.seeMore{
+  font-weight: 700;
   color: #0f5f5c;
+  text-decoration: none;
 }
 
 .catRow{
@@ -27,24 +27,22 @@
   gap: 10px;
 }
 
-.catChip{
-  padding: 9px 14px;
-  border-radius: 999px;
-  border: 1px solid rgba(0,0,0,0.12);
-  background: #fff;
-  font-weight: 700;
-  font-size: 13px;
-  cursor: pointer;
-  transition: 0.2s ease;
-}
-
-.catChip:hover{
-  transform: translateY(-1px);
-  box-shadow: 0 8px 18px rgba(0,0,0,0.10);
-}
-
-.catChipActive{
-  background: linear-gradient(135deg,#0f5f5c,#0b4e4b);
-  color: #fff;
+.catItem{
   border: none;
+  background: #fff;
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-weight: 700;
+  box-shadow: 0 6px 16px rgba(0,0,0,.08);
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.catItem:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(0,0,0,.12);
+}
+
+.catName{
+  white-space: nowrap;
 }
