@@ -8,6 +8,7 @@ export default function Navbar() {
   const { pathname } = useLocation();
   const { user } = useAuth();
 
+  // ✅ admin pages এ navbar দেখাবে না
   if (pathname.startsWith("/admin")) return null;
 
   const [lang, setLang] = useState(() => localStorage.getItem("lang") || "en");
@@ -24,25 +25,29 @@ export default function Navbar() {
   return (
     <header className="navSolid">
       <div className="navSolidInner">
-        <Link to="/" className="navSolidBrand" aria-label="Home">
-          <img src={logo} alt="The Curious Empire" />
+        <Link className="navBrand" to="/" aria-label="Home">
+          <img className="navLogo" src={logo} alt="The Curious Empire" />
+          <span className="navTitle">The Curious Empire</span>
         </Link>
 
-        <form className="navSolidSearch" onSubmit={doSearch} role="search">
+        <form className="navSearch" onSubmit={doSearch} role="search">
           <input
+            className="navSearchInput"
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder={lang === "bn" ? "পণ্য খুঁজুন..." : "Search products"}
           />
-          <button type="submit" aria-label="Search">🔍</button>
+          <button className="navSearchBtn" type="submit" aria-label="Search">
+            🔍
+          </button>
         </form>
 
         <button
-          className="navSolidLang"
+          className="navLang"
           type="button"
           onClick={() => setLang((x) => (x === "en" ? "bn" : "en"))}
         >
-          {lang.toUpperCase()}
+          {lang === "en" ? "EN" : "BN"}
         </button>
       </div>
     </header>
