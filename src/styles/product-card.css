@@ -55,49 +55,25 @@
   cursor: pointer;
 }
 
-/* body */
+
+
 .pBody{
-  padding: 10px;
-}
-
-.pTitle{
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-
-  font-size: 14px;
-  font-weight: 800;
-  line-height: 1.3;
-  margin: 0 0 8px;
-  color: #0b1220;
-  text-decoration: none;
-}
-
-.pPriceRow{
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-
-.pPrice{
-  font-weight: 900;
-  color: #0f5f5c;
+  padding: 12px 12px 14px; /* নিচের gap balanced */
 }
 
 /* actions */
 .pActions{
   display: flex;
-  gap: 8px;
+  gap: 10px;
+  margin-top: 10px;        /* ✅ fixed spacing */
 }
 
 .btnSoft,
 .btnPrimary{
   flex: 1;
+  height: 44px;            /* ✅ same height */
   border: none;
   border-radius: 999px;
-  padding: 9px 0;
   font-weight: 900;
   cursor: pointer;
   text-align: center;
@@ -105,14 +81,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  padding: 0;              /* ✅ extra padding remove */
+  line-height: 1;          /* ✅ text center */
 }
 
-.btnSoft{
-  background: #eef3f3;
-  color: #0b1220;
-}
-
-.btnPrimary{
-  background: #75d84b;
-  color: #000;
-}
+.btnSoft{ background: #e9eded; color: #0b1220; }
+.btnPrimary{ background: #75d84b; color: #000; }
