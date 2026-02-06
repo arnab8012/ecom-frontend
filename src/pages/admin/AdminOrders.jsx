@@ -36,7 +36,8 @@ function Inner() {
   }, []);
 
   const setStatus = async (id, status) => {
-    const rr = await api.putAuth(`/api/admin/orders/${id}/status`, { status }, t);
+    // ❌ api.putAuth নেই — ✅ তোমার api.put ব্যবহার করো
+    const rr = await api.put(`/api/admin/orders/${id}/status`, { status }, t);
     if (!rr?.ok) return alert(rr?.message || "Failed to update status");
     load();
   };
@@ -45,7 +46,9 @@ function Inner() {
     <div className="container">
       <div className="rowBetween">
         <h2>Admin Orders</h2>
-        <Link className="btnGhost" to="/admin">← Back</Link>
+        <Link className="btnGhost" to="/admin">
+          ← Back
+        </Link>
       </div>
 
       {loading ? (
@@ -103,7 +106,9 @@ function Inner() {
                   style={{ maxWidth: 220 }}
                 >
                   {STATUSES.map((s) => (
-                    <option key={s} value={s}>{s}</option>
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
                   ))}
                 </select>
               </div>
