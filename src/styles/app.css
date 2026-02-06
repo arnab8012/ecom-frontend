@@ -38,78 +38,121 @@ body{
 .homeSection{ margin-top: 18px; }
 
 /* =========================
-   TOPBAR / NAVBAR (তোমার Navbar class আলাদা হলে ignore)
+   TOPBAR / NAVBAR (FINAL FIX)
 ========================= */
-.nav.glassNav,
+
 .topbar{
   position: sticky;
   top: 0;
-  z-index: 60;
+  z-index: 999;
   background: var(--green);
   padding: 10px 12px;
 }
 
+/* inside layout */
 .topbarInner{
   max-width: 1100px;
   margin: 0 auto;
+
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
+/* Brand */
 .topBrand{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  text-decoration:none;
-  color:#fff;
-  font-weight:900;
-  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: #fff;
+  font-weight: 900;
   flex: 0 0 auto;
 }
 
-.topLogo{ height: 50px; width: auto; }
+.topLogo{
+  height: 46px;
+  width: auto;
+  display: block;
+}
 
+/* title hide on mobile (optional) */
+.topTitle{
+  display: none;
+  white-space: nowrap;
+}
+
+/* Search area */
 .topSearch{
   flex: 1;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.topSearchBox{
+  width: 100%;
+  max-width: 420px;
+  position: relative;
   min-width: 0;
 }
 
 .topSearchInput{
   width: 100%;
-  max-width: 360px;
-  height: 38px;
+  height: 40px;
   border-radius: 999px;
   border: none;
   outline: none;
-  padding: 0 14px;
+  padding: 0 44px 0 14px;  /* ✅ right padding icon space */
   font-weight: 800;
   background: rgba(255,255,255,0.92);
 }
 
 .topSearchBtn{
-  width: 30px;
-  height: 40px;
-  margin-left: -42px;
+  position: absolute;      /* ✅ no overlap hacks */
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: 34px;
+  height: 34px;
   border-radius: 999px;
   border: none;
-  background: transparent;
   cursor: pointer;
-  font-size: 18px;
+
+  background: rgba(0,0,0,0.06);
+  font-size: 16px;
+  display: grid;
+  place-items: center;
 }
 
+/* Right side */
 .topRight{
-  display:flex;
-  align-items:center;
+  display: flex;
+  align-items: center;
   gap: 10px;
   flex: 0 0 auto;
 }
 
+/* Language button */
+.topLang{
+  height: 36px;
+  min-width: 52px;
+  padding: 0 12px;
+
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.14);
+  color: #fff;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+/* Mobile tuning */
 @media (max-width: 420px){
-  .topSearchInput{ max-width: 240px; }
+  .topLogo{ height: 44px; }
+  .topSearchBox{ max-width: 250px; }
+  .topLang{ min-width: 46px; height: 34px; }
 }
 
 /* =========================
