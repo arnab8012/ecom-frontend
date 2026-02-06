@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { api } from "../api/api";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { api } from "../../api/api";
 
 export default function AdminLogin() {
   const nav = useNavigate();
+  const loc = useLocation();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -12,45 +14,51 @@ export default function AdminLogin() {
     e.preventDefault();
     setLoading(true);
 
-    const r = await api.post("/api/admin-auth/login", {
-      email,
-      password,
-    });
+    const r = await api.post("/api/admin-auth/login", { email, password });
 
     setLoading(false);
 
-    if (r.ok) {
-      localStorage.setItem("admin_token", r.token);
-      nav("/admin");
-    } else {
-      alert(r.message || "Login failed");
+    if (!r?.ok) {
+      alert(r?.message || "Admin login failed");
+      return;
     }
+
+    localStorage.setItem("admin_token", r.token);
+
+    const go = loc.state?.from || "/admin";
+    nav(go, { replace: true });
   };
 
   return (
-    <div style={{ maxWidth: 360, margin: "80px auto" }}>
-      <h2>Admin Login</h2>
+    <div className="authWrap">
+      <div className="authCard">
+        <h2 className="authTitle">Admin Login</h2>
 
-      <form onSubmit={submit}>
-        <input
-          placeholder="Admin Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={{ width: "100%", marginBottom: 10 }}
-        />
+        <form onSubmit={submit}>
+          <label className="lbl">Email</label>
+          <input
+            className="inp"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="admin email"
+            autoComplete="username"
+          />
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={{ width: "100%", marginBottom: 10 }}
-        />
+          <label className="lbl" style={{ marginTop: 12 }}>Password</label>
+          <input
+            className="inp"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="admin password"
+            autoComplete="current-password"
+          />
 
-        <button disabled={loading} style={{ width: "100%" }}>
-          {loading ? "Logging in..." : "Login"}
-        </button>
-      </form>
+          <button className="btn" disabled={loading} style={{ marginTop: 14 }}>
+            {loading ? "Logging in..." : "Login"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
