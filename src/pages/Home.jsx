@@ -92,7 +92,7 @@ export default function Home() {
 
   return (
     <div className="homeWrap">
-    <div className="container homeWrap"> style={{ paddingBottom: 90 }}>
+    style={{ paddingBottom: 90 }}>
       {/* ✅ Full width banner (admin uploaded) + overlay */}
     {bannerUrls.length > 0 && (
   <div className="homeBanner">
