@@ -1,3 +1,4 @@
+import "../styles/product-card.css";
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { api } from "../api/api";
