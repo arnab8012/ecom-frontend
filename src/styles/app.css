@@ -1,5 +1,5 @@
 /* =========================
-   RESET + THEME
+   RESET + THEME (FINAL)
 ========================= */
 html, body, #root { height: 100%; }
 
@@ -22,6 +22,7 @@ body{
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
   color: var(--ink);
   background: var(--bg);
+
   /* ✅ BottomNav fixed height safe area */
   padding-bottom: 90px;
 }
@@ -38,9 +39,9 @@ body{
 .homeSection{ margin-top: 18px; }
 
 /* =========================
-   TOPBAR / NAVBAR (FINAL FIX)
+   TOPBAR / NAVBAR (FINAL)
+   ✅ Search bar = underline style like your image
 ========================= */
-
 .topbar{
   position: sticky;
   top: 0;
@@ -49,7 +50,6 @@ body{
   padding: 10px 12px;
 }
 
-/* inside layout */
 .topbarInner{
   max-width: 1100px;
   margin: 0 auto;
@@ -76,13 +76,13 @@ body{
   display: block;
 }
 
-/* title hide on mobile (optional) */
+/* optional title */
 .topTitle{
   display: none;
   white-space: nowrap;
 }
 
-/* Search area */
+/* Search (underline style) */
 .topSearch{
   flex: 1;
   min-width: 0;
@@ -90,40 +90,48 @@ body{
   justify-content: center;
 }
 
-.topSearchBox{
+.topSearchLine{
   width: 100%;
   max-width: 420px;
-  position: relative;
-  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 6px 4px 10px;
+  border-bottom: 2px solid rgba(255,255,255,0.55);
 }
 
-.topSearchInput{
-  width: 100%;
-  height: 40px;
-  border-radius: 999px;
+.topSearchInputLine{
+  flex: 1;
+  min-width: 0;
+
+  height: 34px;
   border: none;
   outline: none;
-  padding: 0 44px 0 14px;  /* ✅ right padding icon space */
+
+  background: transparent;
+  color: #fff;
+  font-size: 18px;
   font-weight: 800;
-  background: rgba(255,255,255,0.92);
 }
 
-.topSearchBtn{
-  position: absolute;      /* ✅ no overlap hacks */
-  right: 6px;
-  top: 50%;
-  transform: translateY(-50%);
+.topSearchInputLine::placeholder{
+  color: rgba(255,255,255,0.70);
+  font-weight: 800;
+}
 
-  width: 34px;
-  height: 34px;
-  border-radius: 999px;
+.topSearchIconBtn{
   border: none;
+  background: transparent;
+  color: #fff;
   cursor: pointer;
 
-  background: rgba(0,0,0,0.06);
-  font-size: 16px;
+  width: 40px;
+  height: 40px;
   display: grid;
   place-items: center;
+  font-size: 18px;
+  opacity: 0.95;
 }
 
 /* Right side */
@@ -134,7 +142,6 @@ body{
   flex: 0 0 auto;
 }
 
-/* Language button */
 .topLang{
   height: 36px;
   min-width: 52px;
@@ -148,10 +155,10 @@ body{
   cursor: pointer;
 }
 
-/* Mobile tuning */
 @media (max-width: 420px){
   .topLogo{ height: 44px; }
-  .topSearchBox{ max-width: 250px; }
+  .topSearchLine{ max-width: 260px; }
+  .topSearchInputLine{ font-size: 16px; }
   .topLang{ min-width: 46px; height: 34px; }
 }
 
@@ -181,7 +188,7 @@ body{
   .twoCol{ grid-template-columns: 1fr; }
 }
 
-/* ✅ Page title + Back button layout fix (Cart/Favorites etc.) */
+/* ✅ Page title + Back button (Cart/Favorites etc.) */
 .pageTitleRow,
 .titleRow,
 .topRow{
@@ -206,7 +213,7 @@ body{
 }
 
 /* =========================
-   BUTTONS (single source of truth)
+   BUTTONS (FINAL)
 ========================= */
 .btnGhost{
   height: 42px;
@@ -234,11 +241,7 @@ body{
   cursor: pointer;
   font-weight: 1000;
   color: #0b2c1d;
-  background: linear-gradient(
-    90deg,
-    rgba(117,216,75,0.95),
-    rgba(119,183,255,0.85)
-  );
+  background: linear-gradient(90deg, rgba(117,216,75,0.95), rgba(119,183,255,0.85));
   box-shadow: 0 12px 26px rgba(0,0,0,0.14);
   transition: transform .08s ease, box-shadow .2s ease, filter .2s ease;
 }
@@ -248,7 +251,6 @@ body{
 }
 .btnPink:active{ transform: translateY(1px); }
 
-/* ✅ Single final primary full button (used everywhere incl AdminProducts add/update) */
 .btnPinkFull{
   width: 100%;
   height: 46px;
@@ -284,7 +286,7 @@ body{
 }
 
 /* =========================
-   INPUTS
+   INPUTS (FINAL)
 ========================= */
 .lbl{
   display:block;
@@ -426,13 +428,12 @@ body{
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
 }
-
 @media (max-width: 420px){
   .homeTwoGrid,.shopGrid{ gap: 12px; }
 }
 
 /* =========================
-   PRODUCT CARD (single final)
+   PRODUCT CARD (FINAL)
 ========================= */
 .pCard{
   background: rgba(255,255,255,0.82);
@@ -546,7 +547,7 @@ body{
 .btnPrimary:active{ transform: scale(0.99); }
 
 /* =========================
-   CART (prevent huge image, align qty)
+   CART (image + qty align)
 ========================= */
 .cartList{ display:flex; flex-direction: column; gap: 12px; }
 
@@ -590,7 +591,13 @@ body{
   text-overflow: ellipsis;
 }
 
-.cartMeta{ display:flex; flex-wrap:wrap; gap: 10px; font-weight: 900; color: rgba(15,81,50,0.70); }
+.cartMeta{
+  display:flex;
+  flex-wrap:wrap;
+  gap: 10px;
+  font-weight: 900;
+  color: rgba(15,81,50,0.70);
+}
 
 .cartActions{
   margin-top: 10px;
@@ -600,7 +607,6 @@ body{
   flex-wrap: wrap;
 }
 
-/* qty */
 .qtyBox{
   display:inline-flex;
   align-items:center;
@@ -643,9 +649,11 @@ body{
   right: 0;
   bottom: 0;
   z-index: 99;
+
   display:flex;
   justify-content: space-around;
   align-items: center;
+
   height: 60px;
   background: rgba(255,255,255,0.90);
   backdrop-filter: blur(14px);
