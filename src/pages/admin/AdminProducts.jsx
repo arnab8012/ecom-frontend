@@ -1,3 +1,5 @@
+// src/pages/admin/AdminProducts.jsx
+
 import { useEffect, useRef, useState } from "react";
 import { api } from "../../api/api";
 import AdminRoute from "../../components/AdminRoute";
@@ -20,7 +22,7 @@ function Inner() {
     compareAtPrice: 0,
     images: [], // urls array
     description: "",
-    variants: "Pink & Blue:4"
+    variants: "Pink & Blue:4",
   });
 
   const load = async () => {
@@ -29,7 +31,7 @@ function Inner() {
       setCats(c.categories || []);
       setForm((f) => ({
         ...f,
-        category: f.category || (c.categories?.[0]?._id || "")
+        category: f.category || (c.categories?.[0]?._id || ""),
       }));
     }
 
@@ -80,10 +82,17 @@ function Inner() {
       const res = await fetch(`${api.BASE}/api/admin/upload/product-images`, {
         method: "POST",
         headers: { Authorization: `Bearer ${t}` },
-        body: fd
+        body: fd,
       });
 
-      const data = await res.json();
+      // ✅ Render/Server কখনও non-json দিতে পারে, তাই safe parse
+      const text = await res.text();
+      let data = {};
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch {
+        data = { ok: false, message: text || "Non-JSON response" };
+      }
 
       if (!data?.ok) {
         alert(data?.message || "Upload failed");
@@ -94,10 +103,10 @@ function Inner() {
 
       setForm((f) => ({
         ...f,
-        images: [...(f.images || []), ...newUrls].slice(0, 5)
+        images: [...(f.images || []), ...newUrls].slice(0, 5),
       }));
     } catch (e) {
-      alert("Upload error");
+      alert(e?.message ? `Upload error: ${e.message}` : "Upload error");
     } finally {
       setUploading(false);
       if (fileRef.current) fileRef.current.value = "";
@@ -107,7 +116,7 @@ function Inner() {
   const removeImage = (idx) => {
     setForm((f) => ({
       ...f,
-      images: (f.images || []).filter((_, i) => i !== idx)
+      images: (f.images || []).filter((_, i) => i !== idx),
     }));
   };
 
@@ -125,7 +134,7 @@ function Inner() {
       compareAtPrice: 0,
       images: [],
       description: "",
-      variants: "Pink & Blue:4"
+      variants: "Pink & Blue:4",
     }));
     if (fileRef.current) fileRef.current.value = "";
   };
@@ -133,28 +142,31 @@ function Inner() {
   // ✅ Add + Update (same button)
   const saveProduct = async () => {
     if (uploading) return alert("Please wait for upload to finish");
-    if (!form.title.trim()) return alert("Title required");
+    if (!String(form.title || "").trim()) return alert("Title required");
     if (!form.category) return alert("Category required");
-    if (!Number(form.price)) return alert("Price required");
+
+    // ✅ Price allow 0? তুমি চাইলে 0 allow করা যায়
+    if (Number(form.price) <= 0) return alert("Price required");
     if (!form.images?.length) return alert("Please upload at least 1 image");
 
     setSaving(true);
     try {
       const payload = {
-        title: form.title.trim(),
+        title: String(form.title || "").trim(),
         category: form.category,
         price: Number(form.price || 0),
         compareAtPrice: Number(form.compareAtPrice || 0),
         images: form.images || [],
         description: form.description || "",
-        variants: parseVariants()
+        variants: parseVariants(),
       };
 
       const t = api.adminToken();
 
       // ✅ Edit mode
       if (form.id) {
-        const r = await api.putAuth(`/api/admin/products/${form.id}`, payload, t);
+        // ⚠️ তোমার api.js এ putAuth নেই, তাই api.put ব্যবহার
+        const r = await api.put(`/api/admin/products/${form.id}`, payload, t);
         if (!r?.ok) return alert(r?.message || "Update failed");
         alert("✅ Product updated");
       } else {
@@ -180,9 +192,10 @@ function Inner() {
       compareAtPrice: p.compareAtPrice || 0,
       images: Array.isArray(p.images) ? p.images : [],
       description: p.description || "",
-      variants: Array.isArray(p.variants) && p.variants.length
-        ? p.variants.map((v) => `${v.name}:${v.stock}`).join(",")
-        : "Pink & Blue:4"
+      variants:
+        Array.isArray(p.variants) && p.variants.length
+          ? p.variants.map((v) => `${v.name}:${v.stock}`).join(",")
+          : "Pink & Blue:4",
     });
 
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -190,7 +203,8 @@ function Inner() {
   };
 
   const onDelete = async (id) => {
-    if (!confirm("Delete this product?")) return;
+    const ok = window.confirm("Delete this product?");
+    if (!ok) return;
 
     const t = api.adminToken();
     const r = await api.delete(`/api/admin/products/${id}`, t);
@@ -207,14 +221,21 @@ function Inner() {
     <div className="container">
       <div className="rowBetween">
         <h2>Admin Products</h2>
-        <Link className="btnGhost" to="/admin">← Back</Link>
+        <Link className="btnGhost" to="/admin">
+          ← Back
+        </Link>
       </div>
 
       <div className="box">
         <div className="rowBetween" style={{ gap: 12 }}>
           <b>{form.id ? "Edit Product" : "Add Product"}</b>
           {form.id ? (
-            <button className="btnGhost" type="button" onClick={resetForm} disabled={uploading || saving}>
+            <button
+              className="btnGhost"
+              type="button"
+              onClick={resetForm}
+              disabled={uploading || saving}
+            >
               Cancel Edit
             </button>
           ) : null}
@@ -245,6 +266,8 @@ function Inner() {
             <label className="lbl">Price</label>
             <input
               className="input"
+              type="number"
+              inputMode="numeric"
               value={form.price}
               onChange={(e) => setForm({ ...form, price: e.target.value })}
             />
@@ -253,8 +276,12 @@ function Inner() {
             <label className="lbl">Compare At</label>
             <input
               className="input"
+              type="number"
+              inputMode="numeric"
               value={form.compareAtPrice}
-              onChange={(e) => setForm({ ...form, compareAtPrice: e.target.value })}
+              onChange={(e) =>
+                setForm({ ...form, compareAtPrice: e.target.value })
+              }
             />
           </div>
         </div>
@@ -276,14 +303,28 @@ function Inner() {
 
         {form.images?.length ? (
           <>
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 10 }}>
+            {/* ✅ FIX: preview image responsive + not full screen */}
+            <div
+              style={{
+                display: "flex",
+                gap: 10,
+                flexWrap: "wrap",
+                marginTop: 10,
+              }}
+            >
               {form.images.map((img, i) => (
                 <div key={i} style={{ position: "relative" }}>
                   <img
                     src={img}
                     alt=""
-                    width="100"
-                    style={{ borderRadius: 10, border: "1px solid #eee" }}
+                    style={{
+                      width: 110,
+                      height: 110,
+                      objectFit: "cover",
+                      borderRadius: 10,
+                      border: "1px solid #eee",
+                      display: "block",
+                    }}
                   />
                   <button
                     type="button"
@@ -295,7 +336,8 @@ function Inner() {
                       borderRadius: 999,
                       border: "none",
                       padding: "4px 8px",
-                      cursor: "pointer"
+                      cursor: "pointer",
+                      lineHeight: 1,
                     }}
                     title="Remove"
                   >
@@ -321,7 +363,9 @@ function Inner() {
           </div>
         )}
 
-        <label className="lbl">Variants (format: Name:Stock,Name2:Stock2)</label>
+        <label className="lbl">
+          Variants (format: Name:Stock,Name2:Stock2)
+        </label>
         <input
           className="input"
           value={form.variants}
@@ -341,7 +385,13 @@ function Inner() {
           onClick={saveProduct}
           disabled={uploading || saving}
         >
-          {uploading ? "Uploading..." : saving ? "Saving..." : form.id ? "Update Product" : "Add Product"}
+          {uploading
+            ? "Uploading..."
+            : saving
+            ? "Saving..."
+            : form.id
+            ? "Update Product"
+            : "Add Product"}
         </button>
       </div>
 
