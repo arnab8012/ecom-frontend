@@ -76,3 +76,9 @@
 .bannerDots .dot.active{
   background: #75d84b;
 }
+
+.container{
+  width: min(1100px, 100%);
+  margin: 0 auto;
+  padding: 0 12px;
+}
