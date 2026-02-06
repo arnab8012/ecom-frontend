@@ -14,43 +14,36 @@ export default function Navbar() {
   useEffect(() => localStorage.setItem("lang", lang), [lang]);
 
   const [q, setQ] = useState("");
-
   const doSearch = (e) => {
     e.preventDefault();
-    const text = q.trim();
-    if (!text) return;
-    nav(`/shop?q=${encodeURIComponent(text)}`);
+    if (!q.trim()) return;
+    nav(`/shop?q=${encodeURIComponent(q.trim())}`);
   };
 
   return (
-    <header className="topbar">
-      <div className="topbarInner">
-        <Link className="topBrand" to="/" aria-label="Home">
-          <img className="topLogo" src={logo} alt="The Curious Empire" />
-          <span className="topTitle">The Curious Empire</span>
+    <header className="navGlass">
+      <div className="navInner">
+
+        <Link to="/" className="navBrand">
+          <img src={logo} alt="The Curious Empire" />
         </Link>
 
-        <form className="topSearch" onSubmit={doSearch}>
-  <div className="topSearchLine">
-    <input
-      className="topSearchInputLine"
-      value={q}
-      onChange={(e) => setQ(e.target.value)}
-      placeholder={lang === "bn" ? "পণ্য খুঁজুন..." : "Search"}
-    />
-    <button className="topSearchIconBtn" type="submit">🔍</button>
-  </div>
-</form>
+        <form className="navSearch" onSubmit={doSearch}>
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder={lang === "bn" ? "পণ্য খুঁজুন" : "Search products"}
+          />
+          <button type="submit">🔍</button>
+        </form>
 
-        <div className="topRight">
-          <button
-            className="topLang"
-            type="button"
-            onClick={() => setLang((x) => (x === "en" ? "bn" : "en"))}
-          >
-            {lang === "en" ? "EN" : "BN"}
-          </button>
-        </div>
+        <button
+          className="navLang"
+          onClick={() => setLang((l) => (l === "en" ? "bn" : "en"))}
+        >
+          {lang.toUpperCase()}
+        </button>
+
       </div>
     </header>
   );
