@@ -82,3 +82,98 @@
     font-size: 18px;
   }
 }
+
+/* =========================
+   HOME PAGE LAYOUT FIX
+   (Right-side blank fix)
+========================= */
+
+/* তোমার wrapper: <div className="container homeWrap"> */
+.container.homeWrap{
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;          /* 🔥 এইটাই main fix */
+  padding: 0 12px;
+  padding-bottom: 90px;    /* inline style বাদ */
+}
+
+/* =========================
+   FULL WIDTH BANNER (inside container থেকেও full width)
+========================= */
+.homeBanner{
+  width: 100vw;
+  margin-left: calc(50% - 50vw);   /* full width + center */
+  position: relative;
+  overflow: hidden;
+  border-radius: 18px;
+  margin-top: 12px;
+  margin-bottom: 16px;
+}
+
+/* slide track */
+.bannerSlideTrack{
+  display: flex;
+  transition: transform 450ms ease;
+}
+
+/* each slide full width */
+.bannerSlide{
+  min-width: 100%;
+}
+
+.bannerImg{
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  display: block;
+}
+
+/* overlay */
+.bannerOverlay{
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  color: #fff;
+  text-shadow: 0 8px 18px rgba(0,0,0,0.45);
+}
+
+.bannerOverlay h1{
+  margin: 0;
+  font-size: 28px;
+  font-weight: 900;
+}
+
+.bannerOverlay p{
+  margin: 6px 0 0;
+  font-size: 14px;
+  font-weight: 600;
+  opacity: 0.95;
+}
+
+/* dots */
+.bannerDots{
+  position: absolute;
+  left: 14px;
+  bottom: 10px;
+  display: flex;
+  gap: 8px;
+}
+
+.dot{
+  width: 18px;
+  height: 6px;
+  border-radius: 999px;
+  border: 0;
+  background: rgba(255,255,255,0.45);
+  cursor: pointer;
+}
+
+.dot.active{
+  background: rgba(255,255,255,0.95);
+}
+
+/* mobile banner height */
+@media (max-width: 480px){
+  .bannerImg{ height: 190px; }
+  .bannerOverlay h1{ font-size: 22px; }
+}
