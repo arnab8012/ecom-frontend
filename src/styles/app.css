@@ -1,108 +1,99 @@
 /* =========================
-   RESET + THEME (FINAL CLEAN)
+   RESET + THEME (GLOBAL)
 ========================= */
 html, body, #root { height: 100%; }
 
 :root{
   --bg:#f7f7fb;
   --ink:#0b1220;
+  --muted:#6b7280;
   --green:#0f5f5c;
   --accent:#75d84b;
   --accent2:#77b7ff;
+  --card:#ffffff;
+  --line: rgba(0,0,0,0.08);
+  --shadow: 0 14px 30px rgba(0,0,0,0.06);
 }
 
-*{ box-sizing:border-box; }
+*{ box-sizing: border-box; }
 
 body{
-  margin:0;
+  margin: 0;
   font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial;
   background: var(--bg);
   color: var(--ink);
+
+  /* ✅ BottomNav fixed height safe area */
   padding-bottom: 90px;
+
+  /* ✅ Horizontal overflow fix (most important) */
+  overflow-x: hidden;
 }
 
-/* =========================
-   NAVBAR – FINAL FIX
-========================= */
-
-.topbar{
-  position: sticky;
-  top: 0;
-  z-index: 999;
-  background: linear-gradient(90deg,#0f5f5c,#0b4e4b);
-  padding: 8px 12px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.18);
-}
-
-.topbarInner{
-  max-width: 1100px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-/* 🔥 LOGO FIX (MOST IMPORTANT) */
-.topBrand{
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  text-decoration: none;
-  overflow: hidden;
-  max-width: 200px;
-}
-
-.topLogo{
-  height: 38px;          /* 🔥 FIXED HEIGHT */
-  width: auto;
-  max-width: 120px;      /* 🔥 LIMIT WIDTH */
-  object-fit: contain;   /* 🔥 PREVENT CROPPING */
+/* images/video default safe */
+img, video{
+  max-width: 100%;
+  height: auto;
   display: block;
 }
 
-/* TEXT */
-.topTitle{
-  font-weight: 900;
-  color: #fff;
-  font-size: 14px;
+/* =========================
+   GLOBAL LAYOUT
+========================= */
+.container{
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.homeSection{ margin-top: 18px; }
+
+/* =========================
+   COMMON UTIL (global use)
+========================= */
+.muted{
+  color: rgba(11,18,32,0.72);
+  font-weight: 800;
+  line-height: 1.45;
+  font-size: 13px;
+}
+
+.rowBetween{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 12px;
+}
+
+.twoCol{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 520px){
+  .twoCol{ grid-template-columns: 1fr; }
+}
+
+/* ✅ Page title + Back button (Cart/Favorites etc.) */
+.pageTitleRow,
+.titleRow,
+.topRow{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: nowrap;
+}
+.pageTitleRow h1,.pageTitleRow h2,
+.titleRow h1,.titleRow h2,
+.topRow h1,.topRow h2{
+  margin:0;
+  line-height:1.1;
+  font-size: 26px;
+  font-weight: 1000;
+}
+.pageTitleRow .backBtn,
+.titleRow .backBtn,
+.topRow .backBtn{
   white-space: nowrap;
-}
-
-/* SEARCH */
-.topSearch{
-  flex: 1;
-  display: flex;
-  justify-content: center;
-}
-
-.topSearchInput{
-  width: 100%;
-  max-width: 420px;
-  height: 40px;
-  border-radius: 999px;
-  border: none;
-  padding: 0 42px 0 14px;
-  font-weight: 700;
-}
-
-.topSearchBtn{
-  margin-left: -40px;
-  width: 32px;
-  height: 32px;
-  border-radius: 999px;
-  border: none;
-  background: #0f5f5c;
-  color: #fff;
-  cursor: pointer;
-}
-
-/* MOBILE */
-@media (max-width: 480px){
-  .topLogo{
-    height: 34px;
-    max-width: 100px;
-  }
-  .topTitle{
-    display: none; /* mobile clean look */
-  }
 }
