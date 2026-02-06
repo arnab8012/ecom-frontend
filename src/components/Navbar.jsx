@@ -1,15 +1,19 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import logo from "../assets/logo.png";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function Navbar() {
-  const { pathname } = useLocation();
   const nav = useNavigate();
-  const [q, setQ] = useState("");
+  const { pathname } = useLocation();
+  const { lang } = useLanguage();
 
+  // ❌ Admin panel এ navbar দেখাবে না
   if (pathname.startsWith("/admin")) return null;
 
-  const onSearch = (e) => {
+  const [q, setQ] = useState("");
+
+  const doSearch = (e) => {
     e.preventDefault();
     if (!q.trim()) return;
     nav(`/shop?q=${encodeURIComponent(q.trim())}`);
@@ -18,24 +22,27 @@ export default function Navbar() {
   return (
     <header className="topbar">
       <div className="topbarInner">
-        {/* LOGO */}
+        {/* BRAND */}
         <Link to="/" className="topBrand">
-          <img src={logo} alt="The Curious Empire" />
-          <span>The Curious Empire</span>
+          <img
+            src={logo}
+            alt="The Curious Empire"
+            className="topLogo"
+            loading="eager"
+          />
+          <span className="topTitle">The Curious Empire</span>
         </Link>
 
         {/* SEARCH */}
-        <form className="topSearch" onSubmit={onSearch}>
+        <form className="topSearch" onSubmit={doSearch}>
           <input
-            placeholder="Search products"
+            className="topSearchInput"
             value={q}
             onChange={(e) => setQ(e.target.value)}
+            placeholder={lang === "bn" ? "পণ্য খুঁজুন..." : "Search products"}
           />
-          <button type="submit">🔍</button>
+          <button className="topSearchBtn" type="submit">🔍</button>
         </form>
-
-        {/* LANG */}
-        <button className="langBtn">EN</button>
       </div>
     </header>
   );
