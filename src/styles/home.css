@@ -1,179 +1,78 @@
-/* ===== HOME LAYOUT ===== */
-.homeWrap{
-  width: 100%;
-  margin: 0;
-  padding: 0;
-}
-
-/* যদি কোথাও .container ব্যবহার করো এবং সেটা চেপে যায় */
-.container{
-  width: 100%;
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 12px;
-}
-
-/* ===== BANNER ===== */
+/* ===== HOME BANNER ===== */
 .homeBanner{
-  width: 100%;
   position: relative;
+  width: 100%;
+  height: 220px;
+  border-radius: 22px;
   overflow: hidden;
-  border-radius: 18px;
-  margin: 12px auto 16px;
-  max-width: 1100px;
+  margin-bottom: 22px;
+  background: #000;
 }
 
-/* slides track */
 .bannerSlideTrack{
   display: flex;
-  width: 100%;
-  transition: transform .5s ease;
+  height: 100%;
+  transition: transform .6s ease;
 }
 
-/* each slide must be full width */
 .bannerSlide{
   min-width: 100%;
-}
-
-/* image */
-.bannerImg{
-  width: 100%;
-  height: 340px;
-  object-fit: cover;
-  display: block;
-}
-
-/* ===== OVERLAY TEXT ===== */
-.bannerOverLay{
-  position: absolute;
-  left: 14px;
-  bottom: 14px;
-  background: rgba(0,0,0,.35);
-  backdrop-filter: blur(6px);
-  padding: 12px 14px;
-  border-radius: 14px;
-  color: #fff;
-  max-width: calc(100% - 28px);
-}
-
-.bannerOverLay h1{
-  margin: 0 0 4px;
-  font-size: 22px;
-  font-weight: 900;
-}
-
-.bannerOverLay p{
-  margin: 0;
-  opacity: .9;
-  font-size: 14px;
-  font-weight: 600;
-}
-
-/* MOBILE */
-@media (max-width: 520px){
-  .homeBanner{
-    border-radius: 14px;
-    margin: 10px 10px 14px;
-  }
-  .bannerImg{
-    height: 240px;
-  }
-  .bannerOverLay h1{
-    font-size: 18px;
-  }
-}
-
-/* =========================
-   HOME PAGE LAYOUT FIX
-   (Right-side blank fix)
-========================= */
-
-/* তোমার wrapper: <div className="container homeWrap"> */
-.container.homeWrap{
-  width: 100%;
-  max-width: 1100px;
-  margin: 0 auto;          /* 🔥 এইটাই main fix */
-  padding: 0 12px;
-  padding-bottom: 90px;    /* inline style বাদ */
-}
-
-/* =========================
-   FULL WIDTH BANNER (inside container থেকেও full width)
-========================= */
-.homeBanner{
-  width: 100vw;
-  margin-left: calc(50% - 50vw);   /* full width + center */
-  position: relative;
-  overflow: hidden;
-  border-radius: 18px;
-  margin-top: 12px;
-  margin-bottom: 16px;
-}
-
-/* slide track */
-.bannerSlideTrack{
-  display: flex;
-  transition: transform 450ms ease;
-}
-
-/* each slide full width */
-.bannerSlide{
-  min-width: 100%;
+  height: 100%;
 }
 
 .bannerImg{
   width: 100%;
-  height: 260px;
+  height: 100%;
   object-fit: cover;
-  display: block;
 }
 
 /* overlay */
 .bannerOverlay{
   position: absolute;
-  left: 14px;
-  bottom: 14px;
-  color: #fff;
-  text-shadow: 0 8px 18px rgba(0,0,0,0.45);
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 18px;
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,.55),
+    rgba(0,0,0,.15),
+    transparent
+  );
 }
 
 .bannerOverlay h1{
   margin: 0;
-  font-size: 28px;
+  font-size: 20px;
   font-weight: 900;
+  color: #fff;
 }
 
 .bannerOverlay p{
-  margin: 6px 0 0;
-  font-size: 14px;
+  margin: 4px 0 0;
+  font-size: 13px;
   font-weight: 600;
-  opacity: 0.95;
+  color: #e5e7eb;
 }
 
 /* dots */
 .bannerDots{
   position: absolute;
-  left: 14px;
   bottom: 10px;
+  right: 12px;
   display: flex;
-  gap: 8px;
+  gap: 6px;
 }
 
-.dot{
-  width: 18px;
-  height: 6px;
-  border-radius: 999px;
-  border: 0;
-  background: rgba(255,255,255,0.45);
-  cursor: pointer;
+.bannerDots .dot{
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,.4);
 }
 
-.dot.active{
-  background: rgba(255,255,255,0.95);
-}
-
-/* mobile banner height */
-@media (max-width: 480px){
-  .bannerImg{ height: 190px; }
-  .bannerOverlay h1{ font-size: 22px; }
+.bannerDots .dot.active{
+  background: #75d84b;
 }
