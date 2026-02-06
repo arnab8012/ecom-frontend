@@ -1,0 +1,83 @@
+/* ===== PRODUCT GRID ===== */
+
+.productsGrid{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* mobile: 2 column */
+  gap: 14px;
+  margin: 12px 0 20px;
+}
+
+/* desktop */
+@media (min-width: 768px){
+  .productsGrid{
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* ===== PRODUCT CARD ===== */
+.productCard{
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 22px rgba(0,0,0,.08);
+  overflow: hidden;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.productCard:hover{
+  transform: translateY(-4px);
+  box-shadow: 0 14px 30px rgba(0,0,0,.12);
+}
+
+.productImgWrap{
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+}
+
+.productImg{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.productBody{
+  padding: 10px;
+}
+
+.productTitle{
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 0 0 6px;
+}
+
+.productPrice{
+  font-weight: 900;
+  color: #0f5f5c;
+  margin-bottom: 8px;
+}
+
+.productActions{
+  display: flex;
+  gap: 8px;
+}
+
+.btnView,
+.btnAdd{
+  flex: 1;
+  border: none;
+  border-radius: 999px;
+  padding: 8px 0;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.btnView{
+  background: #eef3f3;
+}
+
+.btnAdd{
+  background: #75d84b;
+  color: #000;
+}
