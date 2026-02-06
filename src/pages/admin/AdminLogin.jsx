@@ -13,17 +13,20 @@ export default function AdminLogin() {
   const submit = async (e) => {
     e.preventDefault();
 
-    if (!email || !password) {
+    const em = String(email || "").trim();
+    const pw = String(password || "").trim();
+
+    if (!em || !pw) {
       return alert("Email and password required");
     }
 
     try {
       setLoading(true);
 
-      // ✅ FIX: correct route
+      // ✅ correct route
       const r = await api.post("/api/admin-auth/login", {
-        email: email.trim(),
-        password: password.trim(),
+        email: em,
+        password: pw,
       });
 
       if (!r?.ok) {
@@ -42,8 +45,11 @@ export default function AdminLogin() {
 
   return (
     <div className="authWrap">
-      <div className="authCard">
+      <div className="authCard adminAuthCard">
         <h2 className="authTitle">Admin Login</h2>
+        <p className="muted center" style={{ marginTop: -6 }}>
+          Secure admin access only
+        </p>
 
         <form onSubmit={submit}>
           <label className="lbl">Email</label>
@@ -53,18 +59,24 @@ export default function AdminLogin() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="admin@example.com"
+            autoComplete="email"
+            required
           />
 
-          <label className="lbl">Password</label>
+          <label className="lbl" style={{ marginTop: 10 }}>
+            Password
+          </label>
           <input
             className="input"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="********"
+            autoComplete="current-password"
+            required
           />
 
-          <button className="btnPinkFull" type="submit" disabled={loading}>
+          <button className="btnPinkFull" type="submit" disabled={loading} style={{ marginTop: 12 }}>
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>
