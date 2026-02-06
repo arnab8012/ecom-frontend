@@ -1,6 +1,11 @@
-import { Routes, Route, Navigate } from "react-router-dom";
-import Navbar from "./components/Navbar";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 
+// ✅ Layout
+import Navbar from "./components/Navbar";
+import BottomNav from "./components/BottomNav";
+import Footer from "./components/Footer";
+
+// ✅ Public pages
 import Home from "./pages/Home";
 import Shop from "./pages/Shop";
 import ProductDetails from "./pages/ProductDetails";
@@ -14,7 +19,11 @@ import Settings from "./pages/Settings";
 import SettingsEdit from "./pages/SettingsEdit";
 import Favorites from "./pages/Favorites";
 
+// ✅ Route guards
 import AdminRoute from "./components/AdminRoute";
+import PrivateRoute from "./components/PrivateRoute";
+
+// ✅ Admin pages
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminProducts from "./pages/admin/AdminProducts";
@@ -22,18 +31,20 @@ import AdminOrders from "./pages/admin/AdminOrders";
 import AdminCategories from "./pages/admin/AdminCategories";
 import AdminBanners from "./pages/admin/AdminBanners";
 
-import PrivateRoute from "./components/PrivateRoute";
-import BottomNav from "./components/BottomNav";
-import Footer from "./components/Footer";
-
 import "./styles/app.css";
 
 export default function App() {
+  const { pathname } = useLocation();
+
+  // ✅ admin page গুলোতে navbar/footer/bottomnav দেখাবে না
+  const isAdminPage = pathname.startsWith("/admin");
+
   return (
     <>
-      <Navbar />
+      {!isAdminPage && <Navbar />}
 
-      <div style={{ paddingBottom: 80 }}>
+      {/* ✅ BottomNav থাকার জন্য padding */}
+      <div style={{ paddingBottom: isAdminPage ? 0 : 80 }}>
         <Routes>
           {/* ================== Public ================== */}
           <Route path="/" element={<Home />} />
@@ -63,7 +74,7 @@ export default function App() {
             }
           />
 
-          {/* ✅ Priyo route fix */}
+          {/* ✅ Priyo route */}
           <Route
             path="/priyo"
             element={
@@ -73,7 +84,7 @@ export default function App() {
             }
           />
 
-          {/* ✅ kept: /favorites থাকলে */}
+          {/* ✅ kept: /favorites */}
           <Route
             path="/favorites"
             element={
@@ -154,9 +165,12 @@ export default function App() {
         </Routes>
       </div>
 
-      {/* Footer + BottomNav */}
-      <Footer />
-      <BottomNav />
+      {!isAdminPage && (
+        <>
+          <Footer />
+          <BottomNav />
+        </>
+      )}
     </>
   );
 }
