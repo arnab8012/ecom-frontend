@@ -1,7 +1,6 @@
-/* =========================
-   HOME LAYOUT FIX (NO WHITE GAP)
-========================= */
-
+.homeWrap{
+  display: block;
+}
 .homeWrap{
   width: 100%;
   max-width: 1180px;
