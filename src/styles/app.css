@@ -1859,3 +1859,26 @@ body{
   }
   .bannerThumb img{ height: 140px; }
 }
+
+/* =========================
+   ADMIN (Shared) – Premium UI
+========================= */
+.adminCard{
+  background: linear-gradient(180deg, rgba(117,216,75,0.10), rgba(119,183,255,0.08));
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 18px;
+  box-shadow: 0 14px 30px rgba(0,0,0,0.08);
+}
+
+.adminListRow{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid rgba(0,0,0,0.08);
+}
+
+.adminListRow:first-child{
+  border-top: none;
+}
