@@ -1970,3 +1970,80 @@ body{
   max-width: 100%;
   display: block;
 }
+
+/* =========================
+   FIX: Footer/BottomNav spacing
+   ========================= */
+body {
+  padding-bottom: 0;
+}
+
+.pageWrap {
+  min-height: calc(100vh - 120px);
+}
+
+/* =========================
+   FIX: Page top title bar (Cart / Favorites etc.)
+   ========================= */
+.pageTitleRow,
+.titleRow,
+.topRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: nowrap;
+}
+
+.pageTitleRow h1,
+.pageTitleRow h2,
+.titleRow h1,
+.titleRow h2,
+.topRow h1,
+.topRow h2 {
+  margin: 0;
+  line-height: 1.1;
+  font-size: 28px;
+}
+
+.pageTitleRow .backBtn,
+.titleRow .backBtn,
+.topRow .backBtn {
+  white-space: nowrap;
+}
+
+/* =========================
+   FIX: Cart quantity buttons layout
+   ========================= */
+.qtyBox,
+.qtyWrap,
+.cartQty {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.qtyBox button,
+.qtyWrap button,
+.cartQty button {
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 999px;
+}
+
+/* =========================
+   FIX: product card images
+   ========================= */
+.cardImg {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 12px;
+  background: #f5f5f5;
+}
+
+@media (max-width: 768px) {
+  .cardImg {
+    height: 200px;
+  }
+}
