@@ -6,94 +6,17 @@ html, body, #root { height: 100%; }
 :root{
   --bg:#f7f7fb;
   --ink:#0b1220;
-  --muted:#6b7280;
   --green:#0f5f5c;
   --accent:#75d84b;
   --accent2:#77b7ff;
-  --card:#ffffff;
-  --line: rgba(0,0,0,0.08);
-  --shadow: 0 14px 30px rgba(0,0,0,0.06);
 }
 
-*{ box-sizing: border-box; }
+*{ box-sizing:border-box; }
 
 body{
-  margin: 0;
+  margin:0;
   font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial;
   background: var(--bg);
   color: var(--ink);
-
-  /* ✅ BottomNav fixed height safe area */
   padding-bottom: 90px;
-
-  /* ✅ Horizontal overflow fix (most important) */
-  overflow-x: hidden;
-}
-
-/* images/video default safe */
-img, video{
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
-
-/* =========================
-   GLOBAL LAYOUT
-========================= */
-.container{
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 16px;
-}
-
-.homeSection{ margin-top: 18px; }
-
-/* =========================
-   COMMON UTIL (global use)
-========================= */
-.muted{
-  color: rgba(11,18,32,0.72);
-  font-weight: 800;
-  line-height: 1.45;
-  font-size: 13px;
-}
-
-.rowBetween{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap: 12px;
-}
-
-.twoCol{
-  display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-@media (max-width: 520px){
-  .twoCol{ grid-template-columns: 1fr; }
-}
-
-/* ✅ Page title + Back button (Cart/Favorites etc.) */
-.pageTitleRow,
-.titleRow,
-.topRow{
-  display:flex;
-  align-items:center;
-  justify-content: space-between;
-  gap: 10px;
-  flex-wrap: nowrap;
-}
-.pageTitleRow h1,.pageTitleRow h2,
-.titleRow h1,.titleRow h2,
-.topRow h1,.topRow h2{
-  margin:0;
-  line-height:1.1;
-  font-size: 26px;
-  font-weight: 1000;
-}
-.pageTitleRow .backBtn,
-.titleRow .backBtn,
-.topRow .backBtn{
-  white-space: nowrap;
 }
