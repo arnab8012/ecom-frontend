@@ -13,27 +13,26 @@ export default function AdminLogin() {
   const submit = async (e) => {
     e.preventDefault();
 
-    const em = String(email || "").trim();
+    const em = String(email || "").trim().toLowerCase();
     const pw = String(password || "").trim();
 
-    if (!em || !pw) {
-      return alert("Email and password required");
-    }
+    if (!em || !pw) return alert("Email and password required");
 
     try {
       setLoading(true);
 
-      // ✅ correct route
-      const r = await api.post("/api/admin-auth/login", {
-        email: em,
-        password: pw,
-      });
+      const r = await api.post("/api/admin-auth/login", { email: em, password: pw });
 
-      if (!r?.ok) {
+      if (!r?.ok || !r?.token) {
         return alert(r?.message || "Admin login failed");
       }
 
+      // ✅ IMPORTANT: save token
       localStorage.setItem("admin_token", r.token);
+
+      // ✅ quick test (না থাকলে বুঝবে save হয়নি)
+      console.log("admin_token saved:", localStorage.getItem("admin_token"));
+
       nav("/admin", { replace: true });
     } catch (err) {
       console.error(err);
@@ -47,9 +46,6 @@ export default function AdminLogin() {
     <div className="authWrap">
       <div className="authCard adminAuthCard">
         <h2 className="authTitle">Admin Login</h2>
-        <p className="muted center" style={{ marginTop: -6 }}>
-          Secure admin access only
-        </p>
 
         <form onSubmit={submit}>
           <label className="lbl">Email</label>
@@ -60,7 +56,6 @@ export default function AdminLogin() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="admin@example.com"
             autoComplete="email"
-            required
           />
 
           <label className="lbl" style={{ marginTop: 10 }}>
@@ -73,7 +68,6 @@ export default function AdminLogin() {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="********"
             autoComplete="current-password"
-            required
           />
 
           <button className="btnPinkFull" type="submit" disabled={loading} style={{ marginTop: 12 }}>
