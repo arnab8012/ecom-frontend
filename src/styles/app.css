@@ -1733,3 +1733,71 @@ body{
 .btnGhost:active{
   transform: translateY(1px);
 }
+
+/* =========================
+   SETTINGS EDIT – PREMIUM
+========================= */
+
+/* label look */
+.lbl{
+  display:block;
+  margin: 10px 0 6px;
+  font-weight: 900;
+  font-size: 13px;
+  color: rgba(11,18,32,0.65);
+}
+
+/* input/select look */
+.input,
+.container input,
+.container select{
+  width: 100%;
+  height: 44px;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.10);
+  outline: none;
+  padding: 0 12px;
+  background: rgba(255,255,255,0.78);
+  backdrop-filter: blur(10px);
+  font-weight: 900;
+  color: #0b1220;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.65);
+}
+
+/* focus glow (premium green) */
+.input:focus,
+.container input:focus,
+.container select:focus{
+  border-color: rgba(117,216,75,0.75);
+  box-shadow:
+    0 0 0 4px rgba(117,216,75,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.65);
+}
+
+/* Save button premium */
+.btnPinkFull{
+  width: 100%;
+  height: 46px;
+  margin-top: 14px;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  font-weight: 1000;
+  color: #0b2c1d;
+
+  background: linear-gradient(
+    90deg,
+    rgba(117,216,75,0.95),
+    rgba(119,183,255,0.85)
+  );
+
+  box-shadow: 0 14px 30px rgba(0,0,0,0.14);
+  transition: transform .08s ease, filter .2s ease;
+}
+
+.btnPinkFull:active{ transform: translateY(1px); }
+.btnPinkFull:disabled{
+  opacity: .65;
+  cursor: not-allowed;
+  filter: grayscale(0.25);
+}
