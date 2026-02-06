@@ -1,100 +1,114 @@
 /* =========================
-   NAVBAR (Topbar)
+   NAVBAR – PREMIUM SOLID (FINAL)
 ========================= */
 
 .topbar{
   position: sticky;
   top: 0;
   z-index: 999;
-  padding: 10px 12px;
-  background: linear-gradient(90deg, #0f5f5c 0%, #0b4e4b 100%);
-  box-shadow: 0 10px 26px rgba(0,0,0,0.18);
-  border-bottom: 1px solid rgba(255,255,255,0.10);
+
+  background: linear-gradient(90deg,#0f5f5c,#0b4e4b);
+  padding: 8px 12px;
+
+  box-shadow: 0 10px 25px rgba(0,0,0,0.18);
 }
 
-/* prevent horizontal overflow on mobile */
-.topbar, .topbarInner { max-width: 100%; }
-
+/* inner layout */
 .topbarInner{
   max-width: 1100px;
   margin: 0 auto;
+
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-/* Brand */
+/* =========================
+   BRAND (LOGO)
+========================= */
 .topBrand{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  text-decoration:none;
-  color:#fff;
-  font-weight: 1000;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  text-decoration: none;
+  overflow: hidden;
   flex: 0 0 auto;
 }
 
+/* 🔥 logo size fix */
 .topLogo{
-  height: 34px;          /* ✅ mobile friendly */
+  height: 38px;
   width: auto;
-  display:block;
+  max-width: 120px;
   object-fit: contain;
+  display: block;
 }
 
+/* brand text */
 .topTitle{
-  font-size: 14px;
   font-weight: 900;
+  font-size: 14px;
+  color: #fff;
   white-space: nowrap;
 }
 
-/* Search */
+/* =========================
+   SEARCH BAR
+========================= */
 .topSearch{
   flex: 1;
-  min-width: 0;
-  display:flex;
-  align-items:center;
+  display: flex;
+  justify-content: center;
 }
 
 .topSearchInput{
   width: 100%;
-  height: 34px;
+  max-width: 420px;
+  height: 40px;
 
   border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.22);
+  border: none;
   outline: none;
 
-  padding: 0 44px 0 12px; /* right space for icon */
-  font-weight: 800;
-
-  background: rgba(255,255,255,0.14);
-  color: #fff;
-}
-
-.topSearchInput::placeholder{
-  color: rgba(255,255,255,0.78);
+  padding: 0 44px 0 14px;
   font-weight: 700;
+
+  background: rgba(255,255,255,0.92);
+  color: #0b1220;
 }
 
+/* search icon button */
 .topSearchBtn{
+  margin-left: -40px;
   width: 32px;
   height: 32px;
-  margin-left: -40px;
 
   border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.18);
-  background: rgba(0,0,0,0.18);
-
+  border: none;
   cursor: pointer;
-  font-size: 15px;
+
+  background: #0f5f5c;
+  color: #fff;
+
   display: grid;
   place-items: center;
-  color: #fff;
 }
 
-/* Mobile tweaks */
-@media (max-width: 520px){
-  .topTitle{ display:none; }      /* ✅ small screen এ text hide */
-  .topLogo{ height: 30px; }
-  .topSearchInput{ height: 32px; }
-  .topSearchBtn{ width: 30px; height: 30px; margin-left: -38px; }
+/* =========================
+   MOBILE FIX
+========================= */
+@media (max-width: 480px){
+  .topLogo{
+    height: 34px;
+    max-width: 100px;
+  }
+
+  .topTitle{
+    display: none; /* mobile clean */
+  }
+
+  .topSearchInput{
+    max-width: 240px;
+  }
 }
