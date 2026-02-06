@@ -27,7 +27,6 @@ export default function Profile() {
       try {
         setLoading(true);
 
-        // ✅ ALL হলে status query বাদ দাও
         const url =
           tab === "ALL"
             ? "/api/orders/my"
@@ -52,15 +51,15 @@ export default function Profile() {
   }, [tab, token]);
 
   return (
-    <div className="container">
-      <div className="profileTop">
+    <div className="container profilePage">
+      {/* ✅ Profile Header */}
+      <div className="profileTop premiumCard">
         <div>
           <div className="big">{user?.fullName || ""}</div>
           <div className="muted">{user?.phone || ""}</div>
         </div>
 
-        {/* ✅ Settings + Logout একই লাইনে */}
-        <div style={{ display: "flex", gap: 10 }}>
+        <div className="profileActions">
           <Link className="btnGhost" to="/settings">
             ⚙ Settings
           </Link>
@@ -78,9 +77,13 @@ export default function Profile() {
         </div>
       </div>
 
-      <h3>My Orders</h3>
+      <div className="profileTitleRow">
+        <h3 className="profileH">My Orders</h3>
+        <div className="muted">Filter by status</div>
+      </div>
 
-      <div className="cats">
+      {/* ✅ Tabs */}
+      <div className="tabsRow">
         {TABS.map((t) => (
           <button
             key={t.key}
@@ -93,36 +96,33 @@ export default function Profile() {
         ))}
       </div>
 
+      {/* ✅ Orders */}
       {loading ? (
-        <div className="box">Loading...</div>
+        <div className="box premiumCard">Loading...</div>
       ) : orders.length === 0 ? (
-        <div className="box">No orders</div>
+        <div className="box premiumCard">No orders</div>
       ) : (
         orders.map((o) => (
-          <div key={o._id} className="box">
-            <div className="rowBetween">
+          <div key={o._id} className="box premiumCard orderCard">
+            <div className="rowBetween orderTopRow">
               <b>Order ID: {o.orderNo || o._id}</b>
               <span className="muted">
                 {o.createdAt ? new Date(o.createdAt).toLocaleString() : "—"}
               </span>
             </div>
 
-            <div className="muted">
+            <div className="orderStatus">
               Status: <b>{o.status}</b>
             </div>
 
-            <div style={{ marginTop: 10 }}>
+            <div className="orderItems">
               {(o.items || []).map((it, i) => (
-                <div
-                  key={i}
-                  className="rowBetween"
-                  style={{ padding: "6px 0", borderTop: "1px solid #eee" }}
-                >
+                <div key={i} className="orderItemRow">
                   <div>
                     <b>{it?.title || "No title"}</b>
                     <div className="muted">{it?.variant || ""}</div>
                   </div>
-                  <div>
+                  <div className="orderItemPrice">
                     x{Number(it?.qty || 0)} — ৳{" "}
                     {Number(it?.price || 0) * Number(it?.qty || 0)}
                   </div>
@@ -130,7 +130,7 @@ export default function Profile() {
               ))}
             </div>
 
-            <div className="rowBetween" style={{ marginTop: 10 }}>
+            <div className="rowBetween orderTotalRow">
               <b>Total:</b>
               <b>৳ {o.total ?? "—"}</b>
             </div>
@@ -139,7 +139,7 @@ export default function Profile() {
       )}
 
       <div className="center" style={{ marginTop: 20 }}>
-        <Link className="btnPink" to="/">
+        <Link className="btnPrimary" to="/">
           Continue Shopping
         </Link>
       </div>
