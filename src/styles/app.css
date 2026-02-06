@@ -1164,3 +1164,109 @@ body{
 .btnPrimary:active{
   transform: scale(0.99);
 }
+
+/* =========================
+   💚 PREMIUM FAVORITES (PRIYO)
+========================= */
+
+.favPage{
+  padding-bottom: 90px;
+}
+
+.favHead{
+  align-items: flex-start;
+}
+
+.favTitle{
+  margin: 0;
+  font-size: 28px;
+  font-weight: 1000;
+  color: #0f5132;
+  letter-spacing: 0.2px;
+}
+
+.favUser{
+  font-weight: 900;
+  color: rgba(15,81,50,0.65);
+}
+
+.favActions{
+  display:flex;
+  gap: 12px;
+  align-items:center;
+  margin: 12px 0 18px;
+  flex-wrap: wrap;
+}
+
+.favCheckout{
+  flex: 1;
+  min-width: 210px;
+  background: linear-gradient(135deg,#9be15d,#00e3ae);
+  color:#0b2c1d;
+  border: none;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.18);
+}
+
+.favClear{
+  min-width: 120px;
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0,0,0,0.08);
+  color:#0f5132;
+}
+
+.favGrid{
+  display:grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+/* card premium glass feel */
+.favGrid .pCard{
+  background: linear-gradient(
+    160deg,
+    rgba(255,255,255,0.92),
+    rgba(230,255,240,0.85)
+  );
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 18px 36px rgba(0,0,0,0.12);
+}
+
+/* heart */
+.favGrid .pFav{
+  background: rgba(255,255,255,0.95);
+  box-shadow: 0 12px 26px rgba(0,0,0,0.18);
+}
+
+/* ProductCard button theme upgrade */
+.favGrid .btnSoft{
+  background: rgba(0,227,174,0.18);
+  color:#065f46;
+}
+
+.favGrid .btnPrimary{
+  background: linear-gradient(135deg,#7ee787,#22c55e);
+  color:#064e3b;
+}
+
+/* Buy Now button (floating) */
+.favBuyNow{
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0,0,0,0.08);
+  color: #0f5132;
+  font-weight: 1000;
+  border-radius: 14px;
+  padding: 10px 12px;
+  box-shadow: 0 14px 30px rgba(0,0,0,0.18);
+}
+
+/* Empty state */
+.favEmpty{
+  background: rgba(255,255,255,0.8);
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+@media (max-width: 420px){
+  .favTitle{ font-size: 24px; }
+}
