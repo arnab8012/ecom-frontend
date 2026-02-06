@@ -192,12 +192,10 @@ export default function Home() {
             </div>
 
             <div className="homeTwoGrid">
-              {take(list, 2).map((p) => (
-                <div key={p._id} style={{ width: "100%" }}>
-                  <ProductCard p={p} />
-                </div>
-              ))}
-            </div>
+  {(list || []).slice(0, 2).map((p) => (
+    <ProductCard key={p._id} p={p} />
+  ))}
+</div>
           </div>
         );
       })}
