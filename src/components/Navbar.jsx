@@ -31,18 +31,18 @@ export default function Navbar() {
         </Link>
 
         <form className="topSearch" onSubmit={doSearch} role="search">
-          <div className="topSearchBox">
-            <input
-              className="topSearchInput"
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              placeholder={lang === "bn" ? "পণ্য খুঁজুন..." : "Search products..."}
-            />
-            <button className="topSearchBtn" type="submit" aria-label="Search">
-              🔍
-            </button>
-          </div>
-        </form>
+  <div className="topSearchLine">
+    <input
+      className="topSearchInputLine"
+      value={q}
+      onChange={(e) => setQ(e.target.value)}
+      placeholder={lang === "bn" ? "পণ্য খুঁজুন..." : "Search"}
+    />
+    <button className="topSearchIconBtn" type="submit" aria-label="Search">
+      🔍
+    </button>
+  </div>
+</form>
 
         <div className="topRight">
           <button
