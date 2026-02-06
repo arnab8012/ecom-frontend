@@ -1882,3 +1882,51 @@ body{
 .adminListRow:first-child{
   border-top: none;
 }
+
+/* =========================
+   ADMIN DASHBOARD – Premium cards
+========================= */
+.adminDashGrid{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.adminDashCard{
+  text-decoration: none;
+  color: var(--ink);
+  border-radius: 18px;
+  padding: 14px;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: linear-gradient(180deg, rgba(117,216,75,0.14), rgba(119,183,255,0.10));
+  box-shadow: 0 14px 30px rgba(0,0,0,0.10);
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+
+.adminDashCard:active{
+  transform: scale(0.99);
+}
+
+.adminDashIcon{
+  font-size: 26px;
+  line-height: 1;
+}
+
+.adminDashTitle{
+  margin-top: 8px;
+  font-weight: 1000;
+  font-size: 16px;
+}
+
+.adminDashSub{
+  margin-top: 4px;
+  font-size: 12px;
+  color: rgba(0,0,0,0.55);
+  font-weight: 800;
+}
+
+@media (min-width: 900px){
+  .adminDashGrid{
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
