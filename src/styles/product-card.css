@@ -1,5 +1,4 @@
-/* ===== PRODUCT GRID ===== */
-
+/* ===== PRODUCTS GRID (wrapper) ===== */
 .productsGrid{
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* mobile: 2 column */
@@ -7,7 +6,6 @@
   margin: 12px 0 20px;
 }
 
-/* desktop */
 @media (min-width: 768px){
   .productsGrid{
     grid-template-columns: repeat(4, 1fr);
@@ -15,7 +13,7 @@
 }
 
 /* ===== PRODUCT CARD ===== */
-.productCard{
+.pCard{
   background: #fff;
   border-radius: 18px;
   box-shadow: 0 8px 22px rgba(0,0,0,.08);
@@ -23,61 +21,98 @@
   transition: transform .2s ease, box-shadow .2s ease;
 }
 
-.productCard:hover{
+.pCard:hover{
   transform: translateY(-4px);
   box-shadow: 0 14px 30px rgba(0,0,0,.12);
 }
 
-.productImgWrap{
+/* image area */
+.pImgWrap{
+  position: relative;
   width: 100%;
   aspect-ratio: 1 / 1;
   overflow: hidden;
 }
 
-.productImg{
+.pImg{
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
 
-.productBody{
+/* favorite button */
+.pFav{
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255,255,255,.95);
+  box-shadow: 0 8px 18px rgba(0,0,0,.18);
+  cursor: pointer;
+}
+
+/* body */
+.pBody{
   padding: 10px;
 }
 
-.productTitle{
+.pTitle{
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 800;
   line-height: 1.3;
-  margin: 0 0 6px;
+  margin: 0 0 8px;
+  color: #0b1220;
+  text-decoration: none;
 }
 
-.productPrice{
+.pPriceRow{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.pPrice{
   font-weight: 900;
   color: #0f5f5c;
-  margin-bottom: 8px;
 }
 
-.productActions{
+/* actions */
+.pActions{
   display: flex;
   gap: 8px;
 }
 
-.btnView,
-.btnAdd{
+.btnSoft,
+.btnPrimary{
   flex: 1;
   border: none;
   border-radius: 999px;
-  padding: 8px 0;
-  font-weight: 800;
+  padding: 9px 0;
+  font-weight: 900;
   cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.btnView{
+.btnSoft{
   background: #eef3f3;
+  color: #0b1220;
 }
 
-.btnAdd{
+.btnPrimary{
   background: #75d84b;
   color: #000;
 }
