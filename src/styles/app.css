@@ -1542,3 +1542,98 @@ body{
   font-weight: 1000;
   box-shadow: 0 18px 35px rgba(0,0,0,0.10);
 }
+
+/* =========================
+   ✅ PREMIUM PROFILE
+========================= */
+.profilePage{ padding-bottom: 90px; }
+
+.premiumCard{
+  background: rgba(255,255,255,0.80);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 18px;
+  box-shadow: 0 20px 45px rgba(0,0,0,0.10);
+}
+
+.profileTop{
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 14px;
+  margin-top: 10px;
+}
+
+.profileActions{
+  display:flex;
+  gap:10px;
+  flex: 0 0 auto;
+}
+
+.big{
+  font-size: 20px;
+  font-weight: 1000;
+}
+
+.profileTitleRow{
+  display:flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.profileH{
+  margin: 0;
+  font-size: 20px;
+  font-weight: 1000;
+}
+
+.tabsRow{
+  display:flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 10px 2px 6px;
+}
+
+.tabsRow::-webkit-scrollbar{ height: 6px; }
+.tabsRow::-webkit-scrollbar-thumb{
+  background: rgba(0,0,0,0.14);
+  border-radius: 99px;
+}
+
+/* Order card */
+.orderCard{ margin-top: 12px; }
+
+.orderTopRow{
+  padding-bottom: 8px;
+  border-bottom: 1px dashed rgba(0,0,0,0.12);
+}
+
+.orderStatus{
+  margin-top: 10px;
+  font-weight: 900;
+  color: #0f5f5c;
+}
+
+.orderItems{ margin-top: 10px; }
+
+.orderItemRow{
+  display:flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid rgba(0,0,0,0.06);
+}
+
+.orderItemPrice{
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.orderTotalRow{
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(0,0,0,0.10);
+}
