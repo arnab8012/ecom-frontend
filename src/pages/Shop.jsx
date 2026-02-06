@@ -88,7 +88,7 @@ export default function Shop() {
         <div className="softBox">No products found</div>
       ) : (
         <>
-          <div className="shopGrid">
+          <div className="productsGrid">
             {visible.map((p) => (
               <ProductCard key={p._id} p={p} />
             ))}
