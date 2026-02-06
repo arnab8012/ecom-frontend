@@ -15,10 +15,9 @@ export default function Login() {
     e.preventDefault();
     try {
       setLoading(true);
-      const r = await login(phone, password); // তোমার context অনুযায়ী
+      const r = await login(phone, password);
       if (r?.ok === false) throw new Error(r.message || "Login failed");
 
-      // ✅ যদি আগে private পেজ থেকে আসো, সেখানেই ফেরত যাবে
       const back = loc.state?.from || "/profile";
       nav(back, { replace: true });
     } catch (err) {
@@ -29,21 +28,37 @@ export default function Login() {
   };
 
   return (
-    <div className="container" style={{ maxWidth: 520 }}>
-      <h2 style={{ marginTop: 8 }}>Login</h2>
+    <div className="container authPage" style={{ maxWidth: 520 }}>
+      <h2 className="authH" style={{ marginTop: 8 }}>Login</h2>
 
-      <form onSubmit={onSubmit} className="box" style={{ marginTop: 10 }}>
+      <form onSubmit={onSubmit} className="box authCard" style={{ marginTop: 10 }}>
         <label className="lbl">Phone</label>
-        <input value={phone} onChange={(e) => setPhone(e.target.value)} />
+        <input
+          className="input"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          placeholder="01XXXXXXXXX"
+        />
 
         <label className="lbl" style={{ marginTop: 10 }}>Password</label>
-        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        <input
+          className="input"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="••••••••"
+        />
 
-        <button className="btnPrimary" disabled={loading} style={{ marginTop: 14 }}>
+        <button
+          className="btnPrimary authBtn"
+          disabled={loading}
+          style={{ marginTop: 14, width: "100%" }}
+          type="submit"
+        >
           {loading ? "Loading..." : "Login"}
         </button>
 
-        <div style={{ marginTop: 10 }}>
+        <div className="muted" style={{ marginTop: 10 }}>
           No account? <Link to="/register">Register</Link>
         </div>
       </form>
