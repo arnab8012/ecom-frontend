@@ -1,49 +1,41 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { useAuth } from "../context/AuthContext";
+import { useState } from "react";
 import logo from "../assets/logo.png";
 
 export default function Navbar() {
-  const nav = useNavigate();
   const { pathname } = useLocation();
-  const { user } = useAuth();
+  const nav = useNavigate();
+  const [q, setQ] = useState("");
 
   if (pathname.startsWith("/admin")) return null;
 
-  const [lang, setLang] = useState(() => localStorage.getItem("lang") || "en");
-  useEffect(() => localStorage.setItem("lang", lang), [lang]);
-
-  const [q, setQ] = useState("");
-  const doSearch = (e) => {
+  const onSearch = (e) => {
     e.preventDefault();
-    const text = q.trim();
-    if (!text) return;
-    nav(`/shop?q=${encodeURIComponent(text)}`);
+    if (!q.trim()) return;
+    nav(`/shop?q=${encodeURIComponent(q.trim())}`);
   };
 
   return (
-    <header className="navSolid">
-      <div className="navSolidInner">
-        <Link to="/" className="navSolidBrand" aria-label="Home">
+    <header className="topbar">
+      <div className="topbarInner">
+        {/* LOGO */}
+        <Link to="/" className="topBrand">
           <img src={logo} alt="The Curious Empire" />
+          <span>The Curious Empire</span>
         </Link>
 
-        <form className="navSolidSearch" onSubmit={doSearch} role="search">
+        {/* SEARCH */}
+        <form className="topSearch" onSubmit={onSearch}>
           <input
+            placeholder="Search products"
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder={lang === "bn" ? "পণ্য খুঁজুন..." : "Search products"}
           />
-          <button type="submit" aria-label="Search">🔍</button>
+          <button type="submit">🔍</button>
         </form>
 
-        <button
-          className="navSolidLang"
-          type="button"
-          onClick={() => setLang((x) => (x === "en" ? "bn" : "en"))}
-        >
-          {lang.toUpperCase()}
-        </button>
+        {/* LANG */}
+        <button className="langBtn">EN</button>
       </div>
     </header>
   );
