@@ -1,3 +1,5 @@
+// src/pages/Favorites.jsx
+
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useFavorites } from "../context/FavoritesContext";
@@ -46,50 +48,49 @@ function FavoritesInner() {
   };
 
   return (
-    <div className="container">
-      <div className="rowBetween">
-        <h2>My Favorites</h2>
-        <Link className="btnGhost" to="/">
+    <div className="container favPage">
+      {/* Header */}
+      <div className="rowBetween favHead">
+        <h2 className="favTitle">My Favorites</h2>
+        <Link className="btnGhost favBack" to="/">
           ← Back
         </Link>
       </div>
 
-      <div className="muted" style={{ marginBottom: 12 }}>
+      <div className="muted favUser" style={{ marginBottom: 12 }}>
         {user?.fullName || ""} — Total: {products.length}
       </div>
 
       {products.length === 0 ? (
-        <div className="box">No favorites yet</div>
+        <div className="box favEmpty">No favorites yet</div>
       ) : (
         <>
-          {/* ✅ TOP CHECKOUT */}
-          <button className="btnPinkFull" type="button" onClick={checkoutFirst}>
-            Checkout (First Favorite)
-          </button>
+          {/* Actions */}
+          <div className="favActions">
+            <button className="btnPinkFull favCheckout" type="button" onClick={checkoutFirst}>
+              Checkout (First Favorite)
+            </button>
 
-          <button
-            className="btnGhost"
-            type="button"
-            onClick={clear}
-            style={{ margin: "12px 0" }}
-          >
-            Clear All
-          </button>
+            <button className="btnGhost favClear" type="button" onClick={clear}>
+              Clear All
+            </button>
+          </div>
 
-          <div className="grid">
+          {/* Grid */}
+          <div className="grid favGrid">
             {products.map((p) => (
-              <div key={p._id} style={{ position: "relative" }}>
+              <div key={p._id} className="favItemWrap" style={{ position: "relative" }}>
                 <ProductCard p={p} />
 
                 {/* ✅ PER PRODUCT BUY NOW */}
                 <button
-                  className="btnPink"
+                  className="btnPink favBuyNow"
                   type="button"
                   style={{
                     position: "absolute",
                     right: 12,
                     bottom: 12,
-                    zIndex: 5
+                    zIndex: 5,
                   }}
                   onClick={() => {
                     buyNow(p, "", 1);
