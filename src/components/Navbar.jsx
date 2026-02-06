@@ -14,6 +14,7 @@ export default function Navbar() {
   useEffect(() => localStorage.setItem("lang", lang), [lang]);
 
   const [q, setQ] = useState("");
+
   const doSearch = (e) => {
     e.preventDefault();
     const text = q.trim();
@@ -30,17 +31,25 @@ export default function Navbar() {
         </Link>
 
         <form className="topSearch" onSubmit={doSearch} role="search">
-          <input
-            className="topSearchInput"
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder={lang === "bn" ? "পণ্য খুঁজুন..." : "Search products..."}
-          />
-          <button className="topSearchBtn" type="submit">🔍</button>
+          <div className="topSearchBox">
+            <input
+              className="topSearchInput"
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder={lang === "bn" ? "পণ্য খুঁজুন..." : "Search products..."}
+            />
+            <button className="topSearchBtn" type="submit" aria-label="Search">
+              🔍
+            </button>
+          </div>
         </form>
 
         <div className="topRight">
-          <button className="topLang" type="button" onClick={() => setLang((x) => (x === "en" ? "bn" : "en"))}>
+          <button
+            className="topLang"
+            type="button"
+            onClick={() => setLang((x) => (x === "en" ? "bn" : "en"))}
+          >
             {lang === "en" ? "EN" : "BN"}
           </button>
         </div>
