@@ -9,6 +9,7 @@ export default function Footer() {
   if (pathname.startsWith("/admin")) return null;
 
   return (
+   <footer className="footer">
     <footer className="siteFooter">
       <div className="footerCard">
         {/* Top brand row */}
