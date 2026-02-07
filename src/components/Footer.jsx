@@ -9,8 +9,7 @@ export default function Footer() {
   if (pathname.startsWith("/admin")) return null;
 
   return (
-   <footer className="footer">
-    <footer className="siteFooter">
+    <footer className="footer siteFooter">
       <div className="footerCard">
         {/* Top brand row */}
         <div className="footerBrand">
@@ -78,26 +77,40 @@ export default function Footer() {
         <div className="footerGrid">
           <div className="footerCol">
             <h4 className="footerH">Quick Links</h4>
-            <Link className="footerLink" to="/shop">› Shop</Link>
-            <Link className="footerLink" to="/shop?offer=1">› Offers</Link>
-            <Link className="footerLink" to="/shop?sort=top">› Top Sales</Link>
-            <Link className="footerLink" to="/shop">› All Products</Link>
+            <Link className="footerLink" to="/shop">
+              › Shop
+            </Link>
+            <Link className="footerLink" to="/shop?offer=1">
+              › Offers
+            </Link>
+            <Link className="footerLink" to="/shop?sort=top">
+              › Top Sales
+            </Link>
+            <Link className="footerLink" to="/shop">
+              › All Products
+            </Link>
           </div>
 
           <div className="footerCol">
             <h4 className="footerH">Account</h4>
-            <Link className="footerLink" to="/profile">› My Account</Link>
-            <Link className="footerLink" to="/favorites">› Priyo</Link>
-            <Link className="footerLink" to="/cart">› Cart</Link>
-            <Link className="footerLink" to="/settings">› Settings</Link>
+            <Link className="footerLink" to="/profile">
+              › My Account
+            </Link>
+            <Link className="footerLink" to="/favorites">
+              › Priyo
+            </Link>
+            <Link className="footerLink" to="/cart">
+              › Cart
+            </Link>
+            <Link className="footerLink" to="/settings">
+              › Settings
+            </Link>
           </div>
         </div>
 
         {/* Copyright */}
         <div className="footerBottom">
-          <span>
-            © {new Date().getFullYear()} The Curious Empire. All rights reserved.
-          </span>
+          <span>© {new Date().getFullYear()} The Curious Empire. All rights reserved.</span>
         </div>
 
         {/* ✅ Developer credit (এটা footerCard এর ভিতরে রাখতে হবে) */}
