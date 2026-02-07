@@ -1,5 +1,7 @@
 // src/pages/Cart.jsx
 
+import "../styles/cart.css"; // ✅ এইটা যোগ করো (না থাকলে cart page unstyled হবে)
+
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
@@ -17,6 +19,8 @@ export default function Cart() {
     return s + price * qty;
   }, 0);
 
+  const formatBDT = (n) => `৳ ${Math.round(Number(n) || 0).toLocaleString("en-US")}`;
+
   const goCheckout = () => {
     if (!list.length) return;
     if (!user) nav("/login");
@@ -29,6 +33,7 @@ export default function Cart() {
         <h2 className="cartTitleH" style={{ margin: 0 }}>
           Cart
         </h2>
+
         <button className="btnGhost cartBackBtn" type="button" onClick={() => nav(-1)}>
           ← Back
         </button>
@@ -44,23 +49,25 @@ export default function Cart() {
             {list.map((x) => {
               const id = x?._id || x?.id;
               const title = x?.title || "Product";
+
               const img =
                 x?.images?.[0] ||
                 x?.image ||
                 x?.thumb ||
-                "https://via.placeholder.com/120";
+                "https://via.placeholder.com/320x240?text=Product";
 
               const price = Number(x?.price) || 0;
               const qty = Number(x?.qty) || 1;
 
               return (
-                <div className="cartItem cartItemPremium" key={id}>
+                <div className="cartItem cartItemPremium" key={id || title}>
                   <Link to={`/product/${id}`} className="cartThumb cartThumbPremium">
                     <img
                       src={img}
                       alt={title}
+                      loading="lazy"
                       onError={(e) => {
-                        e.currentTarget.src = "https://via.placeholder.com/120";
+                        e.currentTarget.src = "https://via.placeholder.com/320x240?text=Product";
                       }}
                     />
                   </Link>
@@ -71,17 +78,31 @@ export default function Cart() {
                     </Link>
 
                     <div className="cartMeta cartMetaPremium">
-                      <span className="cartPrice cartPricePremium">৳ {price}</span>
-                      <span className="cartLine cartLinePremium">× {qty} = ৳ {price * qty}</span>
+                      <span className="cartPrice cartPricePremium">{formatBDT(price)}</span>
+                      <span className="cartLine cartLinePremium">
+                        × {qty} = {formatBDT(price * qty)}
+                      </span>
                     </div>
 
                     <div className="cartActions cartActionsPremium">
                       <div className="qtyBox qtyBoxPremium">
-                        <button type="button" onClick={() => dec(id)} className="qtyBtn qtyBtnPremium">
+                        <button
+                          type="button"
+                          onClick={() => dec(id)}
+                          className="qtyBtn qtyBtnPremium"
+                          aria-label="Decrease quantity"
+                        >
                           −
                         </button>
+
                         <span className="qtyNum qtyNumPremium">{qty}</span>
-                        <button type="button" onClick={() => inc(id)} className="qtyBtn qtyBtnPremium">
+
+                        <button
+                          type="button"
+                          onClick={() => inc(id)}
+                          className="qtyBtn qtyBtnPremium"
+                          aria-label="Increase quantity"
+                        >
                           +
                         </button>
                       </div>
@@ -103,7 +124,7 @@ export default function Cart() {
           <div className="cartSummary cartSummaryPremium">
             <div className="sumRow sumRowPremium">
               <span>Subtotal</span>
-              <b>৳ {subtotal}</b>
+              <b>{formatBDT(subtotal)}</b>
             </div>
 
             <div className="sumBtns sumBtnsPremium">
