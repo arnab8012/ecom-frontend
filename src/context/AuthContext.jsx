@@ -4,6 +4,13 @@ import { api } from "../api/api";
 
 const AuthContext = createContext(null);
 
+// ✅ storage keys (এগুলো তোমার project এর keys অনুযায়ী)
+// CartProvider এ তুমি LS_KEY = "cart_v1" ব্যবহার করছো
+const CART_KEY = "cart_v1";
+
+// FavoritesContext এ যে key আছে সেটা এখানে দাও (তোমারটা যদি আলাদা হয়, বদলাও)
+const FAV_KEY = "fav_v1";
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [booting, setBooting] = useState(true);
@@ -70,16 +77,22 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
+    // ✅ auth clear
     localStorage.removeItem("token");
-    // চাইলে cart/fav logout এ clear করতে পারো (optional)
-    // localStorage.removeItem("cart_v1");
-    // localStorage.removeItem("fav_v1");
 
+    // ✅ cart + favorites clear করলে badge 0 হবে
+    localStorage.removeItem(CART_KEY);
+    localStorage.removeItem(FAV_KEY);
+
+    // ✅ state reset
     setUser(null);
     setBooting(false);
 
-    // যদি api.js এ token cache থাকে, এখানে clear করো (optional)
+    // ✅ যদি api.js এ token cache থাকে, এখানে clear (optional)
     // api.setToken?.(null);
+
+    // ✅ UI instant refresh চাইলে (optional)
+    // window.location.reload();
   };
 
   return (
