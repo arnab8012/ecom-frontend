@@ -1,61 +1,72 @@
+// src/pages/SettingsEdit.jsx
+import "../styles/settings.css";
+
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { api } from "../api/api";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 export default function SettingsEdit() {
-  const { user } = useAuth();
   const nav = useNavigate();
-  const token = api.token();
+  const { user } = useAuth();
 
   const [fullName, setFullName] = useState("");
-  const [permanentAddress, setPermanentAddress] = useState("");
-  const [gender, setGender] = useState("MALE");
-  const [loading, setLoading] = useState(false);
+  const [gender, setGender] = useState("");
 
   useEffect(() => {
-    setFullName(user?.fullName || "");
-    setPermanentAddress(user?.permanentAddress || "");
-    setGender(user?.gender || "MALE");
-  }, [user]);
-
-  const save = async () => {
-    try {
-      setLoading(true);
-      const r = await api.put("/api/auth/me", { fullName, permanentAddress, gender }, token);
-      if (!r?.ok) return alert(r?.message || "Failed to update");
-      alert("✅ Updated");
-      nav("/profile");
-    } finally {
-      setLoading(false);
+    if (!user) {
+      nav("/login");
+      return;
     }
+    setFullName(user?.fullName || "");
+    setGender(user?.gender || "");
+  }, [user, nav]);
+
+  const save = (e) => {
+    e.preventDefault();
+
+    // ✅ এখন শুধু UI; পরে API connect করবো
+    alert("Save API এখনো connect করা হয়নি (UI ready).");
   };
 
+  if (!user) return null;
+
   return (
-    <div className="container">
-      <div className="rowBetween" style={{ marginBottom: 14 }}>
-        <h2>Edit Profile</h2>
-        <Link className="btnGhost" to="/settings">← Back</Link>
-      </div>
+    <div className="container settingsPage">
+      <div className="settingsHead">
+        <h2 className="settingsTitle">Edit Profile</h2>
 
-      <div className="box">
-        <label className="lbl">Full Name</label>
-        <input className="input" value={fullName} onChange={(e) => setFullName(e.target.value)} />
-
-        <label className="lbl">Permanent Address</label>
-        <input className="input" value={permanentAddress} onChange={(e) => setPermanentAddress(e.target.value)} />
-
-        <label className="lbl">Gender</label>
-        <select className="input" value={gender} onChange={(e) => setGender(e.target.value)}>
-          <option value="MALE">MALE</option>
-          <option value="FEMALE">FEMALE</option>
-          <option value="OTHER">OTHER</option>
-        </select>
-
-        <button className="btnPinkFull" type="button" disabled={loading} onClick={save}>
-          {loading ? "Saving..." : "Save"}
+        <button className="settingsBackBtn" type="button" onClick={() => nav(-1)}>
+          ← Back
         </button>
       </div>
+
+      <form className="settingsCard premiumCard" onSubmit={save}>
+        <label className="formLabel">Full Name</label>
+        <input
+          className="formInput"
+          value={fullName}
+          onChange={(e) => setFullName(e.target.value)}
+          placeholder="Your name"
+        />
+
+        <label className="formLabel">Gender</label>
+        <select className="formInput" value={gender} onChange={(e) => setGender(e.target.value)}>
+          <option value="">Select</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+
+        <div className="settingsBtns">
+          <button type="button" className="settingsBtn editBtn" onClick={() => nav(-1)}>
+            Cancel
+          </button>
+
+          <button type="submit" className="settingsBtn saveBtn">
+            Save
+          </button>
+        </div>
+      </form>
     </div>
   );
 }
