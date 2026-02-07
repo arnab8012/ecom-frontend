@@ -71,7 +71,31 @@ export const api = {
     });
   },
 
+  // ✅ extra helper: POST with token (Settings/Checkout etc.)
+  postAuth(path, token, body) {
+    return jsonFetch(`${BASE}${path}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: JSON.stringify(body || {}),
+    });
+  },
+
   put(path, body, token) {
+    return jsonFetch(`${BASE}${path}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: JSON.stringify(body || {}),
+    });
+  },
+
+  // ✅ extra helper: PUT with token (Edit Profile -> PUT /api/auth/me)
+  putAuth(path, token, body) {
     return jsonFetch(`${BASE}${path}`, {
       method: "PUT",
       headers: {
