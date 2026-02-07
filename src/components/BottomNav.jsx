@@ -1,5 +1,5 @@
-import { NavLink, useLocation } from "react-router-dom";
 import "../styles/bottom-nav.css";
+import { NavLink, useLocation } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useFavorites } from "../context/FavoritesContext";
 import { useAuth } from "../context/AuthContext";
