@@ -1,8 +1,8 @@
 :root{
-  --bottomNavH: 72px; /* তোমার nav বড় হলে 80/86 করতে পারো */
+  --bottomNavH: 72px; /* দরকার হলে 80/86 করো */
 }
 
-/* ✅ Fixed bottom nav */
+/* ✅ fixed bottom nav */
 .bottomNav{
   position: fixed;
   left: 0;
@@ -12,14 +12,12 @@
   height: var(--bottomNavH);
   z-index: 9999;
 
-  /* ✅ Safe area support (Android/iPhone) */
+  /* ✅ safe-area (mobile) */
   padding-bottom: env(safe-area-inset-bottom);
-
-  /* extra: যাতে padding দিলে height বেড়ে না যায় */
   box-sizing: border-box;
 }
 
-/* ✅ page content যেন nav-এর নিচে না যায় */
+/* ✅ nav এর নিচে কন্টেন্ট/ফুটার যেন না ঢুকে */
 body{
   padding-bottom: calc(var(--bottomNavH) + env(safe-area-inset-bottom));
 }
