@@ -1,3 +1,4 @@
+// src/context/AuthContext.jsx
 import { createContext, useContext, useEffect, useState } from "react";
 import { api } from "../api/api";
 import { useCart } from "./CartContext";
@@ -23,11 +24,13 @@ export function AuthProvider({ children }) {
     (async () => {
       try {
         const t = localStorage.getItem("token");
+
         if (!t) {
           if (alive) {
             setUser(null);
             setBooting(false);
-            // guest mode
+
+            // ✅ guest mode
             cart?.useUserCart?.("");
             fav?.useUserFav?.("");
           }
@@ -51,7 +54,7 @@ export function AuthProvider({ children }) {
           cart?.useUserCart?.("");
           fav?.useUserFav?.("");
         }
-      } catch {
+      } catch (e) {
         if (alive) {
           localStorage.removeItem("token");
           setUser(null);
