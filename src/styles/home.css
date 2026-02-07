@@ -104,3 +104,9 @@
   text-decoration: none;
   color: #0f5f5c;
 }
+
+.homeTwoGrid{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
