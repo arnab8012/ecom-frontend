@@ -4,7 +4,7 @@
 
 /* page wrapper */
 .container{
-  padding-bottom: 140px; /* ✅ footer overlap fix */
+  padding-bottom: 110px; /* ✅ footer overlap fix */
 }
 
 /* header row */
