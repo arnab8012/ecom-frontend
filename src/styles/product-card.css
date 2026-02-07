@@ -1,5 +1,5 @@
 /* ===== PRODUCTS GRID (wrapper) ===== */
-.productsGrid{
+.productsTwoGrid{
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* mobile: 2 column */
   gap: 14px;
@@ -10,8 +10,8 @@
   border-radius: 18px 18px 0 0;
 }
 @media (min-width: 768px){
-  .productsGrid{
-    grid-template-columns: repeat(4, 1fr);
+  .productsTwoGrid{
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
