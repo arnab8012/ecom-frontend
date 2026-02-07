@@ -1,4 +1,7 @@
-import { useEffect, useState } from "react";
+// src/pages/Profile.jsx
+import "../styles/profile.css";
+
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { api } from "../api/api";
@@ -14,11 +17,15 @@ const TABS = [
 export default function Profile() {
   const { user, logout } = useAuth();
   const nav = useNavigate();
-  const token = api.token();
+
+  // ✅ always use same token key
+  const token = useMemo(() => localStorage.getItem("token"), []);
 
   const [tab, setTab] = useState("PLACED");
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const formatBDT = (n) => `৳ ${Math.round(Number(n) || 0).toLocaleString("en-US")}`;
 
   useEffect(() => {
     let alive = true;
@@ -26,6 +33,16 @@ export default function Profile() {
     (async () => {
       try {
         setLoading(true);
+
+        // ✅ token না থাকলে login এ পাঠাও
+        if (!token) {
+          if (alive) {
+            setOrders([]);
+            setLoading(false);
+            nav("/login");
+          }
+          return;
+        }
 
         const url =
           tab === "ALL"
@@ -48,24 +65,24 @@ export default function Profile() {
     return () => {
       alive = false;
     };
-  }, [tab, token]);
+  }, [tab, token, nav]);
 
   return (
     <div className="container profilePage">
       {/* ✅ Profile Header */}
       <div className="profileTop premiumCard">
         <div>
-          <div className="big">{user?.fullName || ""}</div>
+          <div className="big">{user?.fullName || "User"}</div>
           <div className="muted">{user?.phone || ""}</div>
         </div>
 
         <div className="profileActions">
-          <Link className="btnGhost" to="/settings">
+          <Link className="btnGhost profileBtn" to="/settings">
             ⚙ Settings
           </Link>
 
           <button
-            className="btnGhost"
+            className="btnGhost profileBtn"
             type="button"
             onClick={() => {
               logout();
@@ -102,44 +119,59 @@ export default function Profile() {
       ) : orders.length === 0 ? (
         <div className="box premiumCard">No orders</div>
       ) : (
-        orders.map((o) => (
-          <div key={o._id} className="box premiumCard orderCard">
-            <div className="rowBetween orderTopRow">
-              <b>Order ID: {o.orderNo || o._id}</b>
-              <span className="muted">
-                {o.createdAt ? new Date(o.createdAt).toLocaleString() : "—"}
-              </span>
-            </div>
+        <div className="ordersWrap">
+          {orders.map((o) => {
+            const id = o._id || o.id || o.orderNo;
+            const when = o.createdAt ? new Date(o.createdAt).toLocaleString() : "—";
+            const items = Array.isArray(o.items) ? o.items : [];
+            const total = o.total ?? items.reduce((s, it) => s + (Number(it?.price) || 0) * (Number(it?.qty) || 0), 0);
 
-            <div className="orderStatus">
-              Status: <b>{o.status}</b>
-            </div>
-
-            <div className="orderItems">
-              {(o.items || []).map((it, i) => (
-                <div key={i} className="orderItemRow">
-                  <div>
-                    <b>{it?.title || "No title"}</b>
-                    <div className="muted">{it?.variant || ""}</div>
-                  </div>
-                  <div className="orderItemPrice">
-                    x{Number(it?.qty || 0)} — ৳{" "}
-                    {Number(it?.price || 0) * Number(it?.qty || 0)}
-                  </div>
+            return (
+              <div key={id} className="box premiumCard orderCard">
+                <div className="rowBetween orderTopRow">
+                  <b className="orderIdText">Order ID: {o.orderNo || o._id}</b>
+                  <span className="muted">{when}</span>
                 </div>
-              ))}
-            </div>
 
-            <div className="rowBetween orderTotalRow">
-              <b>Total:</b>
-              <b>৳ {o.total ?? "—"}</b>
-            </div>
-          </div>
-        ))
+                <div className="orderStatusRow">
+                  Status: <span className="statusPill">{String(o.status || "").toUpperCase()}</span>
+                </div>
+
+                <div className="orderItems">
+                  {items.map((it, i) => {
+                    const title = it?.title || "No title";
+                    const variant = it?.variant || "";
+                    const qty = Number(it?.qty || 0);
+                    const price = Number(it?.price || 0);
+                    const line = price * qty;
+
+                    return (
+                      <div key={i} className="orderItemRow">
+                        <div className="orderItemLeft">
+                          <b>{title}</b>
+                          {variant ? <div className="muted">{variant}</div> : null}
+                        </div>
+
+                        <div className="orderItemPrice">
+                          x{qty} — {formatBDT(line)}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="rowBetween orderTotalRow">
+                  <b>Total:</b>
+                  <b>{formatBDT(total)}</b>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       )}
 
       <div className="center" style={{ marginTop: 20 }}>
-        <Link className="btnPrimary" to="/">
+        <Link className="btnPrimary profileContinueBtn" to="/">
           Continue Shopping
         </Link>
       </div>
