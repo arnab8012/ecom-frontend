@@ -1,9 +1,13 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { useAuth } from "./AuthContext";
 
 const CartCtx = createContext(null);
 
-const LS_KEY = "cart_v1";
-const LS_BUY = "buy_now_v1";
+// ✅ guest + per-user keys
+const CART_GUEST = "cart_guest";
+const BUY_GUEST = "buy_now_guest";
+const CART_USER = (uid) => `cart_user_${uid}`;
+const BUY_USER = (uid) => `buy_now_user_${uid}`;
 
 function loadJSON(key, fallback) {
   try {
@@ -16,42 +20,52 @@ function loadJSON(key, fallback) {
   }
 }
 
+// ✅ id normalize: productId/_id/id সব ধরবে
 function getId(x) {
-  return String(
-    x?.productId ||
-      x?._id ||
-      x?.id ||
-      x?.product?._id ||
-      x?.product?.id ||
-      ""
-  );
+  return String(x?.productId || x?._id || x?.id || x?.product?._id || x?.product?.id || "");
 }
 function getVar(x) {
   return String(x?.variant || "");
 }
 
 export function CartProvider({ children }) {
+  const { user } = useAuth();
+
+  const uid = user?._id || user?.id || user?.userId || "";
+
+  const cartKey = uid ? CART_USER(uid) : CART_GUEST;
+  const buyKey = uid ? BUY_USER(uid) : BUY_GUEST;
+
   const [items, setItems] = useState(() => {
-    const data = loadJSON(LS_KEY, []);
+    const data = loadJSON(cartKey, []);
     return Array.isArray(data) ? data : [];
   });
 
-  const [checkoutItem, setCheckoutItem] = useState(() => loadJSON(LS_BUY, null));
+  const [checkoutItem, setCheckoutItem] = useState(() => loadJSON(buyKey, null));
 
+  // ✅ login/logout হলে correct key থেকে cart/buy reload
+  useEffect(() => {
+    const data = loadJSON(cartKey, []);
+    setItems(Array.isArray(data) ? data : []);
+    setCheckoutItem(loadJSON(buyKey, null));
+  }, [cartKey, buyKey]);
+
+  // ✅ persist cart
   useEffect(() => {
     try {
-      localStorage.setItem(LS_KEY, JSON.stringify(items));
+      localStorage.setItem(cartKey, JSON.stringify(items));
     } catch {}
-  }, [items]);
+  }, [cartKey, items]);
 
+  // ✅ persist buy now
   useEffect(() => {
     try {
-      localStorage.setItem(LS_BUY, JSON.stringify(checkoutItem));
+      localStorage.setItem(buyKey, JSON.stringify(checkoutItem));
     } catch {}
-  }, [checkoutItem]);
+  }, [buyKey, checkoutItem]);
 
-  const value = useMemo(() => {
-    return {
+  const value = useMemo(
+    () => ({
       items,
       checkoutItem,
 
@@ -68,7 +82,7 @@ export function CartProvider({ children }) {
             const copy = [...list];
             copy[idx] = {
               ...copy[idx],
-              qty: (Number(copy[idx].qty) || 1) + (Number(item?.qty) || 1),
+              qty: (Number(copy[idx].qty) || 1) + (Number(item?.qty) || 1)
             };
             return copy;
           }
@@ -79,8 +93,8 @@ export function CartProvider({ children }) {
               ...item,
               productId: item?.productId || item?._id || item?.id || pid,
               variant: v,
-              qty: Number(item?.qty) || 1,
-            },
+              qty: Number(item?.qty) || 1
+            }
           ];
         });
       },
@@ -125,6 +139,7 @@ export function CartProvider({ children }) {
         });
       },
 
+      // ✅ Cart.jsx এর + / - এর জন্য
       inc(id) {
         const pid = String(id || "");
         if (!pid) return;
@@ -161,7 +176,7 @@ export function CartProvider({ children }) {
           price: Number(p?.price || 0),
           image: p?.images?.[0] || p?.image || "",
           variant: String(variant || p?.variant || ""),
-          qty: Number(qty || p?.qty || 1),
+          qty: Number(qty || p?.qty || 1)
         };
         if (!item.productId) return;
         setCheckoutItem(item);
@@ -170,8 +185,15 @@ export function CartProvider({ children }) {
       clearBuyNow() {
         setCheckoutItem(null);
       },
-    };
-  }, [items, checkoutItem]);
+
+      // ✅ logout এ UI থেকে 0 করতে চাইলে এটা call করবে
+      resetUIOnly() {
+        setItems([]);
+        setCheckoutItem(null);
+      }
+    }),
+    [items, checkoutItem]
+  );
 
   return <CartCtx.Provider value={value}>{children}</CartCtx.Provider>;
 }
