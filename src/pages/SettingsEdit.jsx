@@ -8,38 +8,56 @@ import { api } from "../api/api";
 
 export default function SettingsEdit() {
   const nav = useNavigate();
-  const { user } = useAuth();
+  const { user } = useAuth(); // (optional) refreshMe থাকলে destructure করতে পারবে
 
   const [fullName, setFullName] = useState("");
-  const [gender, setGender] = useState("");
-
+  const [gender, setGender] = useState(""); // backend style: MALE/FEMALE/OTHER
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     setFullName(user?.fullName || "");
-    setGender(user?.gender || "");
+
+    // ✅ normalize gender to MALE/FEMALE/OTHER
+    const g = String(user?.gender || "").toUpperCase();
+    if (g === "MALE" || g === "FEMALE" || g === "OTHER") setGender(g);
+    else setGender("");
   }, [user]);
 
   const onSave = async (e) => {
     e.preventDefault();
+
+    const name = fullName.trim();
+    if (!name) {
+      alert("Full Name required");
+      return;
+    }
+
     try {
       setSaving(true);
 
       const token = localStorage.getItem("token");
-      if (!token) return nav("/login");
+      if (!token) {
+        nav("/login");
+        return;
+      }
 
-      const r = await api.postAuth?.("/api/auth/update-profile", token, {
-        fullName,
-        gender
-      });
-
-      // যদি আপনার api.js এ postAuth না থাকে, তাহলে নিচের fallback use করবে:
-      // const r = await api.post("/api/auth/update-profile", { fullName, gender });
+      // ✅ Backend route matches: PUT /api/auth/me
+      const r = await api.put(
+        "/api/auth/me",
+        {
+          fullName: name,
+          gender: gender || undefined
+        },
+        token
+      );
 
       if (!r?.ok) {
         alert(r?.message || "Save failed");
         return;
       }
+
+      // ✅ optional: যদি AuthContext এ refreshMe/addUserUpdate থাকে তাহলে এখান থেকে call করবে
+      // await refreshMe?.();
 
       alert("Saved ✅");
       nav("/settings");
@@ -56,7 +74,7 @@ export default function SettingsEdit() {
       <div className="editHead">
         <h2 className="editTitle">Edit Profile</h2>
 
-        <button className="editBackBtn" type="button" onClick={() => nav(-1)}>
+        <button className="editBackBtn" type="button" onClick={() => nav(-1)} disabled={saving}>
           ← Back
         </button>
       </div>
@@ -81,9 +99,9 @@ export default function SettingsEdit() {
             <label className="lbl">Gender</label>
             <select className="inp" value={gender} onChange={(e) => setGender(e.target.value)}>
               <option value="">Select</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Other">Other</option>
+              <option value="MALE">Male</option>
+              <option value="FEMALE">Female</option>
+              <option value="OTHER">Other</option>
             </select>
           </div>
         </div>
