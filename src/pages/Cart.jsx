@@ -1,6 +1,6 @@
 // src/pages/Cart.jsx
 
-import "../styles/cart.css"; // ✅ এইটা যোগ করো (না থাকলে cart page unstyled হবে)
+import "../styles/cart.css"; // ✅ cart page styling + click fix
 
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
@@ -34,7 +34,8 @@ export default function Cart() {
           Cart
         </h2>
 
-        <button className="btnGhost cartBackBtn" type="button" onClick={() => nav(-1)}>
+        {/* ✅ সুন্দর Back button */}
+        <button className="cartBackBtn" type="button" onClick={() => nav(-1)}>
           ← Back
         </button>
       </div>
@@ -61,6 +62,7 @@ export default function Cart() {
 
               return (
                 <div className="cartItem cartItemPremium" key={id || title}>
+                  {/* ✅ Link শুধু image-এ থাকবে */}
                   <Link to={`/product/${id}`} className="cartThumb cartThumbPremium">
                     <img
                       src={img}
@@ -84,6 +86,7 @@ export default function Cart() {
                       </span>
                     </div>
 
+                    {/* ✅ Buttons */}
                     <div className="cartActions cartActionsPremium">
                       <div className="qtyBox qtyBoxPremium">
                         <button
