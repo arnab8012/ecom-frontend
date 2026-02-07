@@ -1,5 +1,5 @@
 // src/pages/SettingsEdit.jsx
-import "../styles/settings.css";
+import "../styles/settingsEdit.css";
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -7,103 +7,101 @@ import { useAuth } from "../context/AuthContext";
 import { api } from "../api/api";
 
 export default function SettingsEdit() {
-  const { user } = useAuth();
   const nav = useNavigate();
-  const token = api.token();
+  const { user } = useAuth();
 
   const [fullName, setFullName] = useState("");
   const [gender, setGender] = useState("");
+
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    if (user) {
-      setFullName(user.fullName || "");
-      setGender(user.gender || "");
-    }
+    setFullName(user?.fullName || "");
+    setGender(user?.gender || "");
   }, [user]);
 
-  const saveProfile = async () => {
-    if (!fullName.trim()) return alert("Name required");
-
+  const onSave = async (e) => {
+    e.preventDefault();
     try {
       setSaving(true);
-      const r = await api.putAuth(
-        "/api/users/me",
-        { fullName, gender },
-        token
-      );
 
-      if (r?.ok) {
-        nav("/settings");
-      } else {
-        alert(r?.message || "Update failed");
+      const token = localStorage.getItem("token");
+      if (!token) return nav("/login");
+
+      const r = await api.postAuth?.("/api/auth/update-profile", token, {
+        fullName,
+        gender
+      });
+
+      // যদি আপনার api.js এ postAuth না থাকে, তাহলে নিচের fallback use করবে:
+      // const r = await api.post("/api/auth/update-profile", { fullName, gender });
+
+      if (!r?.ok) {
+        alert(r?.message || "Save failed");
+        return;
       }
-    } catch {
-      alert("Something went wrong");
+
+      alert("Saved ✅");
+      nav("/settings");
+    } catch (err) {
+      alert(err?.message || "Save failed");
     } finally {
       setSaving(false);
     }
   };
 
   return (
-    <div className="container settingsPage">
+    <div className="container editProfilePage">
       {/* Header */}
-      <div className="settingsHead">
-        <h1 className="settingsTitle">Edit Profile</h1>
-        <button
-          className="settingsBackBtn"
-          type="button"
-          onClick={() => nav(-1)}
-        >
+      <div className="editHead">
+        <h2 className="editTitle">Edit Profile</h2>
+
+        <button className="editBackBtn" type="button" onClick={() => nav(-1)}>
           ← Back
         </button>
       </div>
 
       {/* Card */}
-      <div className="settingsCard">
-        {/* Name */}
-        <label className="formLabel">Full Name</label>
-        <input
-          className="formInput"
-          value={fullName}
-          onChange={(e) => setFullName(e.target.value)}
-          placeholder="Your name"
-        />
+      <form className="editCard" onSubmit={onSave}>
+        <div className="editGrid">
+          {/* Full Name */}
+          <div className="field">
+            <label className="lbl">Full Name</label>
+            <input
+              className="inp"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              placeholder="Full name"
+              autoComplete="name"
+            />
+          </div>
 
-        {/* Gender */}
-        <label className="formLabel">Gender</label>
-        <select
-          className="formInput"
-          value={gender}
-          onChange={(e) => setGender(e.target.value)}
-        >
-          <option value="">Select</option>
-          <option value="Male">Male</option>
-          <option value="Female">Female</option>
-          <option value="Other">Other</option>
-        </select>
+          {/* Gender */}
+          <div className="field">
+            <label className="lbl">Gender</label>
+            <select className="inp" value={gender} onChange={(e) => setGender(e.target.value)}>
+              <option value="">Select</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
 
         {/* Buttons */}
-        <div className="settingsBtns">
-          <button
-            className="settingsBtn editBtn"
-            type="button"
-            onClick={() => nav(-1)}
-            disabled={saving}
-          >
+        <div className="editBtns">
+          <button className="btnCancel" type="button" onClick={() => nav(-1)} disabled={saving}>
             Cancel
           </button>
 
-          <button
-            className="settingsBtn saveBtn"
-            type="button"
-            onClick={saveProfile}
-            disabled={saving}
-          >
+          <button className="btnSave" type="submit" disabled={saving}>
             {saving ? "Saving..." : "Save"}
           </button>
         </div>
-      </div>
+      </form>
+
+      {/* bottom spacing so footer/nav never sticks */}
+      <div className="editBottomSpace" />
     </div>
   );
 }
