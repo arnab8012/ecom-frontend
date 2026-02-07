@@ -4,43 +4,64 @@ import "../styles/settings.css";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { api } from "../api/api";
 
 export default function SettingsEdit() {
-  const nav = useNavigate();
   const { user } = useAuth();
+  const nav = useNavigate();
+  const token = api.token();
 
   const [fullName, setFullName] = useState("");
   const [gender, setGender] = useState("");
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    if (!user) {
-      nav("/login");
-      return;
+    if (user) {
+      setFullName(user.fullName || "");
+      setGender(user.gender || "");
     }
-    setFullName(user?.fullName || "");
-    setGender(user?.gender || "");
-  }, [user, nav]);
+  }, [user]);
 
-  const save = (e) => {
-    e.preventDefault();
+  const saveProfile = async () => {
+    if (!fullName.trim()) return alert("Name required");
 
-    // ✅ এখন শুধু UI; পরে API connect করবো
-    alert("Save API এখনো connect করা হয়নি (UI ready).");
+    try {
+      setSaving(true);
+      const r = await api.putAuth(
+        "/api/users/me",
+        { fullName, gender },
+        token
+      );
+
+      if (r?.ok) {
+        nav("/settings");
+      } else {
+        alert(r?.message || "Update failed");
+      }
+    } catch {
+      alert("Something went wrong");
+    } finally {
+      setSaving(false);
+    }
   };
-
-  if (!user) return null;
 
   return (
     <div className="container settingsPage">
+      {/* Header */}
       <div className="settingsHead">
-        <h2 className="settingsTitle">Edit Profile</h2>
-
-        <button className="settingsBackBtn" type="button" onClick={() => nav(-1)}>
+        <h1 className="settingsTitle">Edit Profile</h1>
+        <button
+          className="settingsBackBtn"
+          type="button"
+          onClick={() => nav(-1)}
+        >
           ← Back
         </button>
       </div>
 
-      <form className="settingsCard premiumCard" onSubmit={save}>
+      {/* Card */}
+      <div className="settingsCard">
+        {/* Name */}
         <label className="formLabel">Full Name</label>
         <input
           className="formInput"
@@ -49,24 +70,40 @@ export default function SettingsEdit() {
           placeholder="Your name"
         />
 
+        {/* Gender */}
         <label className="formLabel">Gender</label>
-        <select className="formInput" value={gender} onChange={(e) => setGender(e.target.value)}>
+        <select
+          className="formInput"
+          value={gender}
+          onChange={(e) => setGender(e.target.value)}
+        >
           <option value="">Select</option>
           <option value="Male">Male</option>
           <option value="Female">Female</option>
           <option value="Other">Other</option>
         </select>
 
+        {/* Buttons */}
         <div className="settingsBtns">
-          <button type="button" className="settingsBtn editBtn" onClick={() => nav(-1)}>
+          <button
+            className="settingsBtn editBtn"
+            type="button"
+            onClick={() => nav(-1)}
+            disabled={saving}
+          >
             Cancel
           </button>
 
-          <button type="submit" className="settingsBtn saveBtn">
-            Save
+          <button
+            className="settingsBtn saveBtn"
+            type="button"
+            onClick={saveProfile}
+            disabled={saving}
+          >
+            {saving ? "Saving..." : "Save"}
           </button>
         </div>
-      </form>
+      </div>
     </div>
   );
 }
