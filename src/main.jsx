@@ -6,20 +6,20 @@ import App from "./App";
 import "./styles/app.css";
 import "./styles/auth.css";
 
-import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
 import { FavoritesProvider } from "./context/FavoritesContext";
+import { AuthProvider } from "./context/AuthContext";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>
-      <AuthProvider>
+      <CartProvider>
         <FavoritesProvider>
-          <CartProvider>
+          <AuthProvider>
             <App />
-          </CartProvider>
+          </AuthProvider>
         </FavoritesProvider>
-      </AuthProvider>
+      </CartProvider>
     </BrowserRouter>
   </React.StrictMode>
 );
