@@ -1,181 +1,20 @@
-/* ===== CART PAGE ===== */
+/* src/styles/cart.css */
 
+/* ===== page base ===== */
 .cartPage {
-  padding-bottom: calc(var(--bottomNavH, 72px) + 20px);
+  padding-bottom: calc(var(--bottomNavH, 72px) + env(safe-area-inset-bottom) + 16px);
 }
 
-/* ===== CART ITEM CARD ===== */
-.cartList {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.cartItem {
-  display: flex;
-  gap: 12px;
-  background: #e9f7f0; /* light green background */
-  border-radius: 16px;
-  padding: 12px;
+.cartHead {
   align-items: center;
 }
 
-/* ===== IMAGE FIX (IMPORTANT) ===== */
-.cartThumb {
-  width: 96px;
-  height: 96px;
-  flex-shrink: 0;
-  border-radius: 12px;
-  overflow: hidden;
-  background: #fff;
+.cartTitleH {
+  font-size: 34px;
+  font-weight: 900;
 }
 
-.cartThumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;   /* 🔥 এইটাই main fix */
-  display: block;
-}
-
-/* ===== INFO ===== */
-.cartInfo {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.cartTitle {
-  font-size: 14px;
-  font-weight: 600;
-  color: #063b2e;
-  line-height: 1.25;
-}
-
-.cartMeta {
-  font-size: 13px;
-  color: #0b5d48;
-}
-
-.cartPrice {
-  font-weight: 700;
-  margin-right: 6px;
-}
-
-/* ===== ACTIONS ===== */
-.cartActions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 6px;
-}
-
-.qtyBox {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.qtyBtn {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  border: none;
-  background: #0b8f6a;
-  color: #fff;
-  font-size: 18px;
-  cursor: pointer;
-}
-
-.qtyNum {
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.btnDanger {
-  background: #ff4d4f;
-  border: none;
-  color: #fff;
-  padding: 4px 10px;
-  border-radius: 8px;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-/* ===== SUMMARY ===== */
-.cartSummary {
-  margin-top: 18px;
-  background: #e3f4ec;
-  border-radius: 14px;
-  padding: 14px;
-}
-
-.sumRow {
-  display: flex;
-  justify-content: space-between;
-  font-size: 15px;
-  margin-bottom: 12px;
-}
-
-.sumBtns {
-  display: flex;
-  gap: 10px;
-}
-
-.btnSoft {
-  flex: 1;
-  background: #cdeee3;
-  border: none;
-  padding: 10px;
-  border-radius: 12px;
-  font-weight: 600;
-}
-
-.btnPrimary {
-  flex: 1;
-  background: #16a34a;
-  color: #fff;
-  border: none;
-  padding: 10px;
-  border-radius: 12px;
-  font-weight: 700;
-}
-
-/* ===== EMPTY CART ===== */
-.cartEmpty {
-  text-align: center;
-  padding: 40px 12px;
-  background: #eefaf5;
-  border-radius: 16px;
-}
-
-/* ===== CLICK FIX (VERY IMPORTANT) ===== */
-
-/* image link শুধু image-এই সীমাবদ্ধ */
-.cartThumb {
-  position: relative;
-  z-index: 1;
-}
-
-/* info + buttons image এর উপরে থাকবে */
-.cartInfo {
-  position: relative;
-  z-index: 5;
-}
-
-/* সব বাটন নিশ্চিতভাবে clickable */
-.qtyBtn,
-.btnDanger {
-  pointer-events: auto;
-  z-index: 10;
-}
-
-/* Link যেন পুরো card ঢেকে না ফেলে */
-.cartItem a {
-  display: inline-block;
-}
-
-/* ===== BACK BUTTON ===== */
+/* ===== Back button (Premium) ===== */
 .cartBackBtn {
   background: #e6f6ef;
   border: 1px solid #b7e6d4;
@@ -183,11 +22,173 @@
   padding: 6px 14px;
   border-radius: 999px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .cartBackBtn:hover {
   background: #d1f0e4;
+}
+
+/* ===== list ===== */
+.cartListPremium {
+  display: grid;
+  gap: 14px;
+}
+
+.cartItemPremium {
+  background: #e6f6ef;
+  border-radius: 18px;
+  padding: 12px;
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 12px;
+  align-items: start;
+}
+
+/* ✅ image link (only image area) */
+.cartThumbPremium {
+  display: block;
+  width: 120px;
+  height: 92px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #dff3ea;
+}
+
+.cartThumbPremium img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* text */
+.cartTitleLinkPremium {
+  display: inline-block;
+  font-weight: 900;
+  color: #0b3d2e;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.cartMetaPremium {
+  margin-top: 6px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: baseline;
+}
+
+.cartPricePremium {
+  font-weight: 900;
+  color: #0b3d2e;
+}
+
+.cartLinePremium {
+  color: #0b3d2e;
+  opacity: 0.9;
+  font-weight: 700;
+}
+
+/* actions */
+.cartActionsPremium {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.qtyBoxPremium {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.qtyBtnPremium {
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 999px;
+  background: #0f766e;
+  color: #fff;
+  font-size: 22px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.qtyNumPremium {
+  min-width: 20px;
+  text-align: center;
+  font-weight: 900;
+  font-size: 18px;
+  color: #0b3d2e;
+}
+
+.btnDangerPremium {
+  border: none;
+  background: #ff5a5a;
+  color: white;
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+/* summary */
+.cartSummaryPremium {
+  margin-top: 16px;
+  background: #e6f6ef;
+  border-radius: 18px;
+  padding: 14px;
+}
+
+.sumRowPremium {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+  color: #0b3d2e;
+  font-weight: 800;
+}
+
+.sumBtnsPremium {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+/* ===== ✅ CLICK FIX (MOST IMPORTANT) ===== */
+/* link যেন overlay না করে */
+.cartThumb {
+  position: relative;
+  z-index: 1;
+}
+
+.cartInfo {
+  position: relative;
+  z-index: 5;
+}
+
+/* buttons always clickable */
+.qtyBtn,
+.btnDanger,
+.qtyBtnPremium,
+.btnDangerPremium {
+  pointer-events: auto;
+  z-index: 10;
+}
+
+/* mobile */
+@media (max-width: 420px) {
+  .cartItemPremium {
+    grid-template-columns: 92px 1fr;
+  }
+  .cartThumbPremium {
+    width: 92px;
+    height: 78px;
+  }
 }
