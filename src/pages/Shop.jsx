@@ -34,6 +34,8 @@ export default function Shop() {
 
         if (r?.ok) setAll(Array.isArray(r.products) ? r.products : []);
         else setAll([]);
+      } catch (e) {
+        if (alive) setAll([]);
       } finally {
         if (alive) setLoading(false);
       }
@@ -64,7 +66,8 @@ export default function Shop() {
   }, [q, category]);
 
   return (
-    <div className="container">
+    // ✅ footer overlap fix: extra bottom padding
+    <div className="container" style={{ paddingBottom: 140 }}>
       {/* Header row */}
       <div className="shopHead">
         <div>
@@ -90,6 +93,7 @@ export default function Shop() {
         <div className="softBox">No products found</div>
       ) : (
         <>
+          {/* ✅ 2-column grid (mobile) */}
           <div className="productsGrid">
             {visible.map((p) => (
               <ProductCard key={p._id} p={p} />
@@ -98,7 +102,11 @@ export default function Shop() {
 
           {canMore ? (
             <div className="shopMoreWrap">
-              <button className="btnPrimary" type="button" onClick={() => setLimit((x) => x + 12)}>
+              <button
+                className="btnPrimary"
+                type="button"
+                onClick={() => setLimit((x) => x + 12)}
+              >
                 See more
               </button>
             </div>
