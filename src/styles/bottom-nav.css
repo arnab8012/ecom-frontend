@@ -1,8 +1,7 @@
 :root{
-  --bottomNavH: 72px; /* দরকার হলে 80/86 করো */
+  --bottomNavH: 72px;
 }
 
-/* ✅ fixed bottom nav */
 .bottomNav{
   position: fixed;
   left: 0;
@@ -10,14 +9,50 @@
   bottom: 0;
 
   height: var(--bottomNavH);
-  z-index: 9999;
+  background: #ffffff;
+  border-top: 1px solid rgba(0,0,0,.08);
 
-  /* ✅ safe-area (mobile) */
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+
+  z-index: 9999;
   padding-bottom: env(safe-area-inset-bottom);
-  box-sizing: border-box;
 }
 
-/* ✅ nav এর নিচে কন্টেন্ট/ফুটার যেন না ঢুকে */
+/* each item */
+.bnItem{
+  flex: 1;
+  text-align: center;
+  text-decoration: none;
+  color: #666;
+  font-size: 12px;
+}
+
+.bnItem .bnIcon{
+  display: block;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.bnItem.active{
+  color: #0f5f5c;
+  font-weight: 700;
+}
+
+/* badge */
+.bnBadge{
+  position: absolute;
+  top: -4px;
+  right: -10px;
+  background: #ff3b3b;
+  color: #fff;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 999px;
+}
+
+/* body spacing so content not hidden */
 body{
   padding-bottom: calc(var(--bottomNavH) + env(safe-area-inset-bottom));
 }
