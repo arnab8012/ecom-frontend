@@ -1,6 +1,5 @@
 // src/pages/Cart.jsx
-
-import "../styles/cart.css"; // ✅ cart page styling + click fix
+import "../styles/cart.css";
 
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
@@ -34,8 +33,7 @@ export default function Cart() {
           Cart
         </h2>
 
-        {/* ✅ সুন্দর Back button */}
-        <button className="cartBackBtn" type="button" onClick={() => nav(-1)}>
+        <button className="btnGhost cartBackBtn" type="button" onClick={() => nav(-1)}>
           ← Back
         </button>
       </div>
@@ -47,8 +45,9 @@ export default function Cart() {
       ) : (
         <>
           <div className="cartList cartListPremium">
-            {list.map((x) => {
-              const id = x?._id || x?.id;
+            {list.map((x, idx) => {
+              // ✅ IMPORTANT: productId আগে (তোমার context এ এটাই থাকে)
+              const id = x?.productId || x?._id || x?.id;
               const title = x?.title || "Product";
 
               const img =
@@ -61,9 +60,8 @@ export default function Cart() {
               const qty = Number(x?.qty) || 1;
 
               return (
-                <div className="cartItem cartItemPremium" key={id || title}>
-                  {/* ✅ Link শুধু image-এ থাকবে */}
-                  <Link to={`/product/${id}`} className="cartThumb cartThumbPremium">
+                <div className="cartItem cartItemPremium" key={id || `${title}-${idx}`}>
+                  <Link to={id ? `/product/${id}` : "#"} className="cartThumb cartThumbPremium">
                     <img
                       src={img}
                       alt={title}
@@ -75,7 +73,7 @@ export default function Cart() {
                   </Link>
 
                   <div className="cartInfo cartInfoPremium">
-                    <Link to={`/product/${id}`} className="cartTitle cartTitleLinkPremium">
+                    <Link to={id ? `/product/${id}` : "#"} className="cartTitle cartTitleLinkPremium">
                       {title}
                     </Link>
 
@@ -86,14 +84,14 @@ export default function Cart() {
                       </span>
                     </div>
 
-                    {/* ✅ Buttons */}
                     <div className="cartActions cartActionsPremium">
                       <div className="qtyBox qtyBoxPremium">
                         <button
                           type="button"
-                          onClick={() => dec(id)}
+                          onClick={() => id && dec(String(id))}
                           className="qtyBtn qtyBtnPremium"
                           aria-label="Decrease quantity"
+                          disabled={!id}
                         >
                           −
                         </button>
@@ -102,9 +100,10 @@ export default function Cart() {
 
                         <button
                           type="button"
-                          onClick={() => inc(id)}
+                          onClick={() => id && inc(String(id))}
                           className="qtyBtn qtyBtnPremium"
                           aria-label="Increase quantity"
+                          disabled={!id}
                         >
                           +
                         </button>
@@ -113,10 +112,14 @@ export default function Cart() {
                       <button
                         type="button"
                         className="btnDanger btnDangerPremium"
-                        onClick={() => remove(id)}
+                        onClick={() => id && remove(String(id))}
+                        disabled={!id}
                       >
                         Remove
                       </button>
+
+                      {/* ✅ Debug help (চাইলে পরে মুছবে) */}
+                      {/* {!id ? <small style={{ color: "red" }}>Missing product id</small> : null} */}
                     </div>
                   </div>
                 </div>
