@@ -1,0 +1,14 @@
+/* ===== SHOP PAGE ===== */
+.shopGrid{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr)); /* ✅ mobile 2 column */
+  gap: 14px;
+  margin: 12px 0 22px;
+  align-items: stretch;
+}
+
+@media (min-width: 768px){
+  .shopGrid{
+    grid-template-columns: repeat(4, minmax(0, 1fr)); /* ✅ desktop 4 column */
+  }
+}
