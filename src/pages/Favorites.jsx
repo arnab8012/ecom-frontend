@@ -1,59 +1,112 @@
 // src/pages/Favorites.jsx
 import "../styles/favorites.css";
 
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
 import { useFavorites } from "../context/FavoritesContext";
 import { useAuth } from "../context/AuthContext";
+import { api } from "../api/api"; // ✅ তোমার প্রজেক্টে api আছে (HomeBanner এ ব্যবহার করছো)
 
 export default function Favorites() {
   const nav = useNavigate();
-  const loc = useLocation();
+  const { pathname } = useLocation();
   const fav = useFavorites();
   const { user } = useAuth();
 
   // ✅ admin panel এ hide
-  if (loc.pathname.startsWith("/admin")) return null;
+  if (pathname.startsWith("/admin")) return null;
 
-  // ✅ বিভিন্ন context shape handle
   const favIds = Array.isArray(fav?.favIds) ? fav.favIds : [];
-  const favItemsRaw =
-    (Array.isArray(fav?.items) && fav.items) ||
-    (Array.isArray(fav?.favorites) && fav.favorites) ||
-    (Array.isArray(fav?.list) && fav.list) ||
-    [];
 
-  // ✅ যদি object list না থাকে, তাও count দেখাবে
-  const list = favItemsRaw;
-
-  const total = list.length || favIds.length;
+  const [loading, setLoading] = useState(false);
+  const [products, setProducts] = useState([]); // ✅ details list
 
   const formatBDT = (n) => `৳ ${Math.round(Number(n) || 0).toLocaleString("en-US")}`;
 
+  // ✅ favIds পরিবর্তন হলে product details load
+  useEffect(() => {
+    let alive = true;
+
+    async function load() {
+      if (!favIds.length) {
+        setProducts([]);
+        return;
+      }
+
+      setLoading(true);
+
+      try {
+        // ✅ 1) সব products নিয়ে filter (সবচেয়ে compatible)
+        const r = await api.get("/api/products");
+        if (!alive) return;
+
+        if (r?.ok && Array.isArray(r?.products)) {
+          const map = new Map(r.products.map((p) => [String(p._id), p]));
+          const list = favIds.map((id) => map.get(String(id))).filter(Boolean);
+          setProducts(list);
+        } else {
+          setProducts([]);
+        }
+      } catch (e) {
+        if (!alive) return;
+        setProducts([]);
+      } finally {
+        if (!alive) return;
+        setLoading(false);
+      }
+    }
+
+    load();
+    return () => {
+      alive = false;
+    };
+  }, [favIds.join("|")]); // ✅ stable dependency
+
+  const total = favIds.length;
+
   const doRemove = (id) => {
-    // ✅ তোমার context এ remove / toggle / removeFav / removeFavorite যে যেটা আছে সেটার সাথে কাজ করবে
+    // ✅ তোমার context এ যে function আছে সেটাই কাজ করবে
     if (fav?.remove) return fav.remove(id);
     if (fav?.removeFav) return fav.removeFav(id);
     if (fav?.removeFavorite) return fav.removeFavorite(id);
     if (fav?.toggle) return fav.toggle(id);
     if (fav?.toggleFav) return fav.toggleFav(id);
-    // কিছু না থাকলে কিছুই করবে না
   };
 
   const doClear = () => {
     if (fav?.clear) return fav.clear();
     if (fav?.clearAll) return fav.clearAll();
     if (fav?.reset) return fav.reset();
+
+    // fallback: সব id remove করে দেই
+    favIds.forEach((id) => doRemove(id));
+  };
+
+  const firstFavId = favIds?.[0] ? String(favIds[0]) : null;
+
+  const firstFavProduct = useMemo(() => {
+    if (!firstFavId) return null;
+    return products.find((p) => String(p?._id) === firstFavId) || null;
+  }, [firstFavId, products]);
+
+  const checkoutFirst = () => {
+    // ✅ তোমার checkout flow আলাদা হতে পারে, তাই simple:
+    // 1) যদি firstFavProduct পাওয়া যায় -> product page এ নিয়ে যাবে
+    // 2) না পাওয়া গেলে -> shop এ
+    if (firstFavProduct?._id) nav(`/product/${firstFavProduct._id}`);
+    else nav("/shop");
   };
 
   return (
     <div className="container favPage">
-      <div className="rowBetween favHead">
+      <div className="favHead">
         <div>
           <h2 className="favTitle" style={{ margin: 0 }}>
             My Favorites
           </h2>
+
           <div className="favSub">
-            {user?.name || user?.phone || user?.email || "Guest"} — <b>Total: {total}</b>
+            {user?.phone || user?.email || "Guest"} — <b>Total: {total}</b>
           </div>
         </div>
 
@@ -69,7 +122,7 @@ export default function Favorites() {
       ) : (
         <>
           <div className="favTopActions">
-            <button type="button" className="favPrimaryBtn" onClick={() => nav("/checkout")}>
+            <button type="button" className="favPrimaryBtn" onClick={checkoutFirst}>
               Checkout (First Favorite)
             </button>
 
@@ -78,22 +131,23 @@ export default function Favorites() {
             </button>
           </div>
 
-          {/* ✅ যদি তোমার context এ favorite item object থাকে—Cart style cards */}
-          {list.length ? (
+          {loading ? (
+            <div className="favEmpty">Loading favorites…</div>
+          ) : products.length ? (
             <div className="favList">
-              {list.map((x, idx) => {
-                const id = x?.productId || x?._id || x?.id;
-                const title = x?.title || x?.name || "Product";
-                const price = Number(x?.price) || 0;
+              {products.map((p, idx) => {
+                const id = String(p?._id || "");
+                const title = p?.title || "Product";
+                const price = Number(p?.price) || 0;
                 const img =
-                  x?.images?.[0] ||
-                  x?.image ||
-                  x?.thumb ||
+                  p?.images?.[0] ||
+                  p?.image ||
+                  p?.thumb ||
                   "https://via.placeholder.com/320x240?text=Product";
 
                 return (
-                  <div className="favItem" key={id || `${title}-${idx}`}>
-                    <Link to={id ? `/product/${id}` : "#"} className="favThumb">
+                  <div className="favItem" key={id || `${idx}`}>
+                    <Link to={`/product/${id}`} className="favThumb">
                       <img
                         src={img}
                         alt={title}
@@ -105,23 +159,18 @@ export default function Favorites() {
                     </Link>
 
                     <div className="favInfo">
-                      <Link to={id ? `/product/${id}` : "#"} className="favItemTitle">
+                      <Link to={`/product/${id}`} className="favItemTitle">
                         {title}
                       </Link>
 
                       <div className="favPrice">{formatBDT(price)}</div>
 
                       <div className="favBtns">
-                        <Link to={id ? `/product/${id}` : "#"} className="favViewBtn">
+                        <Link to={`/product/${id}`} className="favViewBtn">
                           View
                         </Link>
 
-                        <button
-                          type="button"
-                          className="favRemoveBtn"
-                          onClick={() => id && doRemove(String(id))}
-                          disabled={!id}
-                        >
+                        <button type="button" className="favRemoveBtn" onClick={() => doRemove(id)}>
                           Remove
                         </button>
                       </div>
@@ -131,11 +180,10 @@ export default function Favorites() {
               })}
             </div>
           ) : (
-            // ✅ যদি item object না থাকে (শুধু favIds থাকে)
             <div className="favEmpty">
-              Favorites loaded, but product details not found in context.
+              Favorites আছে (IDs: {favIds.length}) কিন্তু product list এ match হয়নি।
               <br />
-              (Only IDs stored: {favIds.length})
+              (সম্ভবত /api/products এ এই আইডি গুলো নেই)
             </div>
           )}
         </>
