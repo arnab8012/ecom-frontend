@@ -14,18 +14,29 @@ const TABS = [
   { key: "ALL", label: "All Orders" }
 ];
 
+function formatBDT(n) {
+  return `৳ ${Math.round(Number(n) || 0).toLocaleString("en-US")}`;
+}
+
+function statusClass(s) {
+  const k = String(s || "").toUpperCase();
+  if (k === "DELIVERED") return "statusPill delivered";
+  if (k === "CONFIRMED") return "statusPill confirmed";
+  if (k === "CANCELLED") return "statusPill cancelled";
+  if (k === "PLACED") return "statusPill placed";
+  return "statusPill";
+}
+
 export default function Profile() {
   const { user, logout } = useAuth();
   const nav = useNavigate();
 
-  // ✅ always use same token key
+  // ✅ token stable রাখলাম (render এ বারবার বদলাবে না)
   const token = useMemo(() => localStorage.getItem("token"), []);
 
   const [tab, setTab] = useState("PLACED");
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const formatBDT = (n) => `৳ ${Math.round(Number(n) || 0).toLocaleString("en-US")}`;
 
   useEffect(() => {
     let alive = true;
@@ -33,16 +44,6 @@ export default function Profile() {
     (async () => {
       try {
         setLoading(true);
-
-        // ✅ token না থাকলে login এ পাঠাও
-        if (!token) {
-          if (alive) {
-            setOrders([]);
-            setLoading(false);
-            nav("/login");
-          }
-          return;
-        }
 
         const url =
           tab === "ALL"
@@ -65,48 +66,52 @@ export default function Profile() {
     return () => {
       alive = false;
     };
-  }, [tab, token, nav]);
+  }, [tab, token]);
+
+  const doLogout = () => {
+    const ok = window.confirm("Are you sure you want to logout?");
+    if (!ok) return;
+    logout();
+    nav("/login");
+  };
 
   return (
     <div className="container profilePage">
       {/* ✅ Profile Header */}
-      <div className="profileTop premiumCard">
-        <div>
-          <div className="big">{user?.fullName || "User"}</div>
-          <div className="muted">{user?.phone || ""}</div>
+      <div className="profileTop premiumCard profileTopPremium">
+        <div className="profileWho">
+          <div className="profileName">{user?.fullName || ""}</div>
+          <div className="profilePhone">{user?.phone || ""}</div>
         </div>
 
-        <div className="profileActions">
+        <div className="profileActions profileActionsPremium">
           <Link className="btnGhost profileBtn" to="/settings">
             ⚙ Settings
           </Link>
 
-          <button
-            className="btnGhost profileBtn"
-            type="button"
-            onClick={() => {
-              logout();
-              nav("/login");
-            }}
-          >
+          <button className="btnGhost profileBtn" type="button" onClick={doLogout}>
             Logout
           </button>
         </div>
       </div>
 
-      <div className="profileTitleRow">
-        <h3 className="profileH">My Orders</h3>
-        <div className="muted">Filter by status</div>
+      <div className="profileTitleRowPremium">
+        <div>
+          <h3 className="profileH">My Orders</h3>
+          <div className="muted">Filter by status</div>
+        </div>
       </div>
 
-      {/* ✅ Tabs */}
-      <div className="tabsRow">
+      {/* ✅ Tabs (Premium + scroll) */}
+      <div className="tabsRowPremium" role="tablist" aria-label="Order status filters">
         {TABS.map((t) => (
           <button
             key={t.key}
-            className={tab === t.key ? "chip active" : "chip"}
+            className={tab === t.key ? "chipPremium active" : "chipPremium"}
             onClick={() => setTab(t.key)}
             type="button"
+            role="tab"
+            aria-selected={tab === t.key}
           >
             {t.label}
           </button>
@@ -115,63 +120,91 @@ export default function Profile() {
 
       {/* ✅ Orders */}
       {loading ? (
-        <div className="box premiumCard">Loading...</div>
+        <div className="box premiumCard profileEmptyCard">
+          <div className="emptyIcon">⏳</div>
+          <div className="emptyTitle">Loading orders...</div>
+          <div className="emptyHint">Please wait a moment.</div>
+        </div>
       ) : orders.length === 0 ? (
-        <div className="box premiumCard">No orders</div>
+        <div className="box premiumCard profileEmptyCard">
+          <div className="emptyIcon">🧾</div>
+          <div className="emptyTitle">No orders found</div>
+          <div className="emptyHint">Try another status or start shopping.</div>
+          <Link className="btnPrimary emptyBtn" to="/shop">
+            Shop Now
+          </Link>
+        </div>
       ) : (
-        <div className="ordersWrap">
-          {orders.map((o) => {
-            const id = o._id || o.id || o.orderNo;
-            const when = o.createdAt ? new Date(o.createdAt).toLocaleString() : "—";
-            const items = Array.isArray(o.items) ? o.items : [];
-            const total = o.total ?? items.reduce((s, it) => s + (Number(it?.price) || 0) * (Number(it?.qty) || 0), 0);
+        orders.map((o) => {
+          const created = o.createdAt ? new Date(o.createdAt).toLocaleString() : "—";
+          const orderId = o.orderNo || o._id;
 
-            return (
-              <div key={id} className="box premiumCard orderCard">
-                <div className="rowBetween orderTopRow">
-                  <b className="orderIdText">Order ID: {o.orderNo || o._id}</b>
-                  <span className="muted">{when}</span>
+          return (
+            <div key={o._id} className="box premiumCard orderCardPremium">
+              <div className="orderTopRowPremium">
+                <div className="orderId">
+                  Order ID: <b>{orderId}</b>
                 </div>
+                <div className="orderDate muted">{created}</div>
+              </div>
 
-                <div className="orderStatusRow">
-                  Status: <span className="statusPill">{String(o.status || "").toUpperCase()}</span>
-                </div>
+              <div className="orderStatusRowPremium">
+                <span className="muted">Status</span>
+                <span className={statusClass(o.status)}>{String(o.status || "—")}</span>
+              </div>
 
-                <div className="orderItems">
-                  {items.map((it, i) => {
-                    const title = it?.title || "No title";
-                    const variant = it?.variant || "";
-                    const qty = Number(it?.qty || 0);
-                    const price = Number(it?.price || 0);
-                    const line = price * qty;
+              <div className="orderItemsPremium">
+                {(o.items || []).map((it, i) => {
+                  const img =
+                    it?.image ||
+                    it?.images?.[0] ||
+                    it?.thumb ||
+                    "https://via.placeholder.com/120x90?text=Product";
 
-                    return (
-                      <div key={i} className="orderItemRow">
-                        <div className="orderItemLeft">
-                          <b>{title}</b>
-                          {variant ? <div className="muted">{variant}</div> : null}
-                        </div>
+                  const title = it?.title || "No title";
+                  const variant = it?.variant || "";
+                  const qty = Number(it?.qty || 0);
+                  const price = Number(it?.price || 0);
+                  const lineTotal = price * qty;
 
-                        <div className="orderItemPrice">
-                          x{qty} — {formatBDT(line)}
+                  return (
+                    <div key={i} className="orderItemRowPremium">
+                      <div className="orderItemThumb">
+                        <img
+                          src={img}
+                          alt={title}
+                          loading="lazy"
+                          onError={(e) => {
+                            e.currentTarget.src = "https://via.placeholder.com/120x90?text=Product";
+                          }}
+                        />
+                      </div>
+
+                      <div className="orderItemInfo">
+                        <div className="orderItemTitle">{title}</div>
+                        {variant ? <div className="orderItemVariant muted">{variant}</div> : null}
+                        <div className="orderItemMeta">
+                          <span className="muted">
+                            x{qty} — {formatBDT(lineTotal)}
+                          </span>
                         </div>
                       </div>
-                    );
-                  })}
-                </div>
-
-                <div className="rowBetween orderTotalRow">
-                  <b>Total:</b>
-                  <b>{formatBDT(total)}</b>
-                </div>
+                    </div>
+                  );
+                })}
               </div>
-            );
-          })}
-        </div>
+
+              <div className="orderTotalRowPremium">
+                <b>Total</b>
+                <b>{formatBDT(o.total ?? 0)}</b>
+              </div>
+            </div>
+          );
+        })
       )}
 
-      <div className="center" style={{ marginTop: 20 }}>
-        <Link className="btnPrimary profileContinueBtn" to="/">
+      <div className="center profileBottomCta">
+        <Link className="btnPrimary" to="/">
           Continue Shopping
         </Link>
       </div>
