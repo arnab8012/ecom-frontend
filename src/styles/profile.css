@@ -1,0 +1,133 @@
+/* src/styles/profile.css */
+
+.profilePage{
+  padding-bottom: calc(var(--bottomNavH, 72px) + env(safe-area-inset-bottom) + 20px);
+}
+
+/* Header */
+.profileTop{
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.profileActions{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.profileBtn{
+  border-radius: 999px !important;
+  padding: 8px 12px !important;
+  font-weight: 900 !important;
+}
+
+/* Title */
+.profileTitleRow{
+  margin-top: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.profileH{
+  margin: 0;
+  font-size: 24px;
+  font-weight: 1000;
+}
+
+/* Orders list wrapper */
+.ordersWrap{
+  display: grid;
+  gap: 14px;
+}
+
+/* Order card */
+.orderCard{
+  background: #e6f6ef;
+  border-radius: 18px;
+  padding: 14px;
+}
+
+.orderTopRow{
+  margin-bottom: 8px;
+}
+
+.orderIdText{
+  font-weight: 1000;
+}
+
+/* Status pill */
+.orderStatusRow{
+  font-weight: 900;
+  margin-bottom: 10px;
+}
+
+.statusPill{
+  display: inline-block;
+  margin-left: 8px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.65);
+  border: 1px solid rgba(0,0,0,0.12);
+  font-weight: 1000;
+}
+
+/* Items */
+.orderItems{
+  display: grid;
+  gap: 10px;
+}
+
+.orderItemRow{
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  background: rgba(255,255,255,0.55);
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 14px;
+  padding: 10px 12px;
+}
+
+.orderItemLeft b{
+  font-weight: 1000;
+}
+
+.orderItemPrice{
+  font-weight: 1000;
+  white-space: nowrap;
+}
+
+/* Total row */
+.orderTotalRow{
+  border-top: 1px dashed rgba(0,0,0,0.18);
+  padding-top: 10px;
+  margin-top: 12px;
+}
+
+/* Continue button */
+.profileContinueBtn{
+  border-radius: 999px !important;
+  font-weight: 1000 !important;
+}
+
+/* Mobile */
+@media (max-width: 480px){
+  .profileTop{
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .orderItemRow{
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .orderItemPrice{
+    white-space: normal;
+  }
+}
