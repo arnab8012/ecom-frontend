@@ -25,3 +25,17 @@ body{
   margin: 0 auto;
   padding: 0 12px;
 }
+
+/* =========================
+   GLOBAL LAYOUT FIX
+========================= */
+
+:root{
+  --bottomNavH: 74px; /* bottom menu height */
+}
+
+/* prevent footer/content hide under bottom nav */
+#root{
+  min-height: 100vh;
+  padding-bottom: calc(var(--bottomNavH) + env(safe-area-inset-bottom));
+}
