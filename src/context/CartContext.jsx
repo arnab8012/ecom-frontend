@@ -3,7 +3,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react";
 const CartCtx = createContext(null);
 
 const LS_KEY = "cart_v1";
-const LS_BUY = "buy_now_v1"; // ✅ buy now
+const LS_BUY = "buy_now_v1";
 
 function loadJSON(key, fallback) {
   try {
@@ -18,7 +18,14 @@ function loadJSON(key, fallback) {
 
 // ✅ id normalize: productId/_id/id সব ধরবে
 function getId(x) {
-  return String(x?.productId || x?._id || x?.id || x?.product?._id || x?.product?.id || "");
+  return String(
+    x?.productId ||
+      x?._id ||
+      x?.id ||
+      x?.product?._id ||
+      x?.product?.id ||
+      ""
+  );
 }
 
 // ✅ variant normalize
@@ -48,59 +55,54 @@ export function CartProvider({ children }) {
     } catch {}
   }, [checkoutItem]);
 
-  const value = useMemo(
-    () => ({
+  const value = useMemo(() => {
+    return {
       items,
-      checkoutItem, // ✅ single product checkout item
+      checkoutItem,
 
-      // ✅ add to cart (compatible)
+      // ✅ add to cart
       add(item) {
         const pid = getId(item);
         const v = getVar(item);
-
         if (!pid) return;
 
         setItems((prev) => {
           const list = Array.isArray(prev) ? prev : [];
-
           const idx = list.findIndex((x) => getId(x) === pid && getVar(x) === v);
 
           if (idx >= 0) {
             const copy = [...list];
             copy[idx] = {
               ...copy[idx],
-              qty: (Number(copy[idx].qty) || 1) + (Number(item?.qty) || 1)
+              qty: (Number(copy[idx].qty) || 1) + (Number(item?.qty) || 1),
             };
             return copy;
           }
 
-          // ✅ ensure productId stored (Cart.jsx থেকে id pass করলে match হবে)
           return [
             ...list,
             {
               ...item,
               productId: item?.productId || item?._id || item?.id || pid,
               variant: v,
-              qty: Number(item?.qty) || 1
-            }
+              qty: Number(item?.qty) || 1,
+            },
           ];
         });
       },
 
-      // ✅ remove: (id) বা (productId, variant) দুইভাবেই চলবে
+      // ✅ remove: remove(id) অথবা remove(id, variant)
       remove(productId, variant = "") {
         const pid = String(productId || "");
         const v = String(variant || "");
-
         if (!pid) return;
 
         setItems((prev) => {
           const list = Array.isArray(prev) ? prev : [];
 
-          // যদি variant দেওয়া না থাকে => id match হলেই remove
+          // variant না দিলে => শুধু id match হলেই remove
           if (!v) return list.filter((x) => getId(x) !== pid);
 
-          // variant দেওয়া থাকলে => id + variant match
           return list.filter((x) => !(getId(x) === pid && getVar(x) === v));
         });
       },
@@ -109,49 +111,41 @@ export function CartProvider({ children }) {
         setItems([]);
       },
 
-      // ✅ setQty: (id, qty) বা (productId, variant, qty) compatible
+      // ✅ setQty: setQty(id, qty) অথবা setQty(id, variant, qty)
       setQty(productId, variantOrQty, maybeQty) {
         const pid = String(productId || "");
         if (!pid) return;
 
-        // call pattern check
         let v = "";
         let qty = 1;
 
         if (typeof maybeQty === "undefined") {
-          // setQty(id, qty)
           qty = Number(variantOrQty || 1);
         } else {
-          // setQty(id, variant, qty)
           v = String(variantOrQty || "");
           qty = Number(maybeQty || 1);
         }
 
         setItems((prev) => {
           const list = Array.isArray(prev) ? prev : [];
-
           return list.map((x) => {
-            const xid = getId(x);
-            const xv = getVar(x);
-
-            if (xid !== pid) return x;
-
-            // যদি variant দেওয়া থাকে, match না হলে skip
-            if (v && xv !== v) return x;
-
+            if (getId(x) !== pid) return x;
+            if (v && getVar(x) !== v) return x;
             return { ...x, qty: Math.max(1, qty) };
           });
         });
       },
 
-      // ✅ inc/dec যোগ করা হলো (Cart.jsx এর সাথে match)
+      // ✅ Cart.jsx এর জন্য
       inc(id) {
         const pid = String(id || "");
         if (!pid) return;
 
         setItems((prev) => {
           const list = Array.isArray(prev) ? prev : [];
-          return list.map((x) => (getId(x) === pid ? { ...x, qty: (Number(x.qty) || 1) + 1 } : x));
+          return list.map((x) =>
+            getId(x) === pid ? { ...x, qty: (Number(x.qty) || 1) + 1 } : x
+          );
         });
       },
 
@@ -161,18 +155,18 @@ export function CartProvider({ children }) {
 
         setItems((prev) => {
           const list = Array.isArray(prev) ? prev : [];
-
-          // qty 1 হলে remove করে দিবো (better UX)
           const found = list.find((x) => getId(x) === pid);
           const q = found ? Number(found.qty) || 1 : 1;
 
           if (q <= 1) return list.filter((x) => getId(x) !== pid);
 
-          return list.map((x) => (getId(x) === pid ? { ...x, qty: (Number(x.qty) || 1) - 1 } : x));
+          return list.map((x) =>
+            getId(x) === pid ? { ...x, qty: (Number(x.qty) || 1) - 1 } : x
+          );
         });
       },
 
-      // ✅ BUY NOW: single product checkout
+      // ✅ buy now
       buyNow(p, variant = "", qty = 1) {
         const item = {
           productId: p?._id || p?.productId || p?.id || "",
@@ -180,7 +174,7 @@ export function CartProvider({ children }) {
           price: Number(p?.price || 0),
           image: p?.images?.[0] || p?.image || "",
           variant: String(variant || p?.variant || ""),
-          qty: Number(qty || p?.qty || 1)
+          qty: Number(qty || p?.qty || 1),
         };
         if (!item.productId) return;
         setCheckoutItem(item);
@@ -188,10 +182,9 @@ export function CartProvider({ children }) {
 
       clearBuyNow() {
         setCheckoutItem(null);
-      }
-    }),
-    [items, checkoutItem]
-  );
+      },
+    };
+  }, [items, checkoutItem]);
 
   return <CartCtx.Provider value={value}>{children}</CartCtx.Provider>;
 }
