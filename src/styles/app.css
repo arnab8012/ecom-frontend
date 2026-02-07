@@ -26,16 +26,16 @@ body{
   padding: 0 12px;
 }
 
-/* =========================
-   GLOBAL LAYOUT FIX
-========================= */
-
+/* ✅ BottomNav fixed থাকলে footer overlap বন্ধ করবে */
 :root{
-  --bottomNavH: 74px; /* bottom menu height */
+  --bottom-nav-h: 72px; /* তোমার bottom nav height */
 }
 
-/* prevent footer/content hide under bottom nav */
-#root{
-  min-height: 100vh;
-  padding-bottom: calc(var(--bottomNavH) + env(safe-area-inset-bottom));
+body{
+  padding-bottom: var(--bottom-nav-h);
+}
+
+.siteFooter,
+.footer{
+  padding-bottom: calc(var(--bottom-nav-h) + 14px);
 }
