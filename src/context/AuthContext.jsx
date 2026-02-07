@@ -1,51 +1,19 @@
-// src/context/AuthContext.jsx
 import { createContext, useContext, useEffect, useState } from "react";
 import { api } from "../api/api";
+import { useCart } from "./CartContext";
+import { useFavorites } from "./FavoritesContext";
 
 const AuthContext = createContext(null);
 
-// ✅ legacy keys (আগের কোডের সাথে compatible)
-const CART_KEY = "cart_v1";
-const FAV_KEY = "fav_v1";
-const BUY_KEY = "buy_now_v1";
-
-// ✅ new guest/per-user keys (যদি তুমি সেটা ব্যবহার করো)
-const CART_GUEST = "cart_guest";
-const FAV_GUEST = "fav_guest";
-const BUY_GUEST = "buy_now_guest";
-
-function clearCartFavEverywhere() {
-  try {
-    // ✅ fixed known keys
-    localStorage.removeItem(CART_KEY);
-    localStorage.removeItem(FAV_KEY);
-    localStorage.removeItem(BUY_KEY);
-
-    localStorage.removeItem(CART_GUEST);
-    localStorage.removeItem(FAV_GUEST);
-    localStorage.removeItem(BUY_GUEST);
-
-    // ✅ per-user keys (cart_user_*, fav_user_*, buy_now_user_*)
-    const keysToRemove = [];
-    for (let i = 0; i < localStorage.length; i++) {
-      const k = localStorage.key(i);
-      if (!k) continue;
-
-      if (
-        k.startsWith("cart_user_") ||
-        k.startsWith("fav_user_") ||
-        k.startsWith("buy_now_user_")
-      ) {
-        keysToRemove.push(k);
-      }
-    }
-    keysToRemove.forEach((k) => localStorage.removeItem(k));
-  } catch {
-    // ignore
-  }
+function getUid(u) {
+  // ✅ যেটা তোমার user object এ আছে সেটা ধরবে
+  return u?._id || u?.id || u?.phone || u?.email || "";
 }
 
 export function AuthProvider({ children }) {
+  const cart = useCart();
+  const fav = useFavorites();
+
   const [user, setUser] = useState(null);
   const [booting, setBooting] = useState(true);
 
@@ -55,11 +23,13 @@ export function AuthProvider({ children }) {
     (async () => {
       try {
         const t = localStorage.getItem("token");
-
         if (!t) {
           if (alive) {
             setUser(null);
             setBooting(false);
+            // guest mode
+            cart?.useUserCart?.("");
+            fav?.useUserFav?.("");
           }
           return;
         }
@@ -68,15 +38,26 @@ export function AuthProvider({ children }) {
         if (!alive) return;
 
         if (r?.ok) {
-          setUser(r.user || null);
+          const u = r.user || null;
+          setUser(u);
+
+          const uid = getUid(u);
+          cart?.useUserCart?.(uid);
+          fav?.useUserFav?.(uid);
         } else {
           localStorage.removeItem("token");
           setUser(null);
+
+          cart?.useUserCart?.("");
+          fav?.useUserFav?.("");
         }
       } catch {
         if (alive) {
           localStorage.removeItem("token");
           setUser(null);
+
+          cart?.useUserCart?.("");
+          fav?.useUserFav?.("");
         }
       } finally {
         if (alive) setBooting(false);
@@ -86,6 +67,7 @@ export function AuthProvider({ children }) {
     return () => {
       alive = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const login = async (phone, password) => {
@@ -93,7 +75,14 @@ export function AuthProvider({ children }) {
     if (!r?.ok) return r;
 
     localStorage.setItem("token", r.token);
-    setUser(r.user || null);
+
+    const u = r.user || null;
+    setUser(u);
+
+    const uid = getUid(u) || phone; // fallback phone
+    cart?.useUserCart?.(uid);
+    fav?.useUserFav?.(uid);
+
     setBooting(false);
     return { ok: true };
   };
@@ -103,24 +92,26 @@ export function AuthProvider({ children }) {
     if (!r?.ok) return r;
 
     if (r.token) localStorage.setItem("token", r.token);
-    setUser(r.user || null);
+
+    const u = r.user || null;
+    setUser(u);
+
+    const uid = getUid(u) || phone;
+    cart?.useUserCart?.(uid);
+    fav?.useUserFav?.(uid);
+
     setBooting(false);
     return { ok: true };
   };
 
   const logout = () => {
-    // ✅ auth clear
     localStorage.removeItem("token");
-
-    // ✅ cart + fav clear => badge 0 হবে (সব key ধরলাম)
-    clearCartFavEverywhere();
-
-    // ✅ state reset
     setUser(null);
     setBooting(false);
 
-    // ⚠️ reload দরকার নেই যদি Cart/Fav Provider localStorage থেকে update নেয়
-    // window.location.reload();
+    // ✅ guest mode -> badge 0
+    cart?.useUserCart?.("");
+    fav?.useUserFav?.("");
   };
 
   return (
