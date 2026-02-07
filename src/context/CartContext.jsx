@@ -16,7 +16,6 @@ function loadJSON(key, fallback) {
   }
 }
 
-// ✅ id normalize: productId/_id/id সব ধরবে
 function getId(x) {
   return String(
     x?.productId ||
@@ -27,8 +26,6 @@ function getId(x) {
       ""
   );
 }
-
-// ✅ variant normalize
 function getVar(x) {
   return String(x?.variant || "");
 }
@@ -41,14 +38,12 @@ export function CartProvider({ children }) {
 
   const [checkoutItem, setCheckoutItem] = useState(() => loadJSON(LS_BUY, null));
 
-  // persist cart
   useEffect(() => {
     try {
       localStorage.setItem(LS_KEY, JSON.stringify(items));
     } catch {}
   }, [items]);
 
-  // persist buy now
   useEffect(() => {
     try {
       localStorage.setItem(LS_BUY, JSON.stringify(checkoutItem));
@@ -60,7 +55,6 @@ export function CartProvider({ children }) {
       items,
       checkoutItem,
 
-      // ✅ add to cart
       add(item) {
         const pid = getId(item);
         const v = getVar(item);
@@ -91,7 +85,6 @@ export function CartProvider({ children }) {
         });
       },
 
-      // ✅ remove: remove(id) অথবা remove(id, variant)
       remove(productId, variant = "") {
         const pid = String(productId || "");
         const v = String(variant || "");
@@ -99,10 +92,7 @@ export function CartProvider({ children }) {
 
         setItems((prev) => {
           const list = Array.isArray(prev) ? prev : [];
-
-          // variant না দিলে => শুধু id match হলেই remove
           if (!v) return list.filter((x) => getId(x) !== pid);
-
           return list.filter((x) => !(getId(x) === pid && getVar(x) === v));
         });
       },
@@ -111,7 +101,6 @@ export function CartProvider({ children }) {
         setItems([]);
       },
 
-      // ✅ setQty: setQty(id, qty) অথবা setQty(id, variant, qty)
       setQty(productId, variantOrQty, maybeQty) {
         const pid = String(productId || "");
         if (!pid) return;
@@ -136,7 +125,6 @@ export function CartProvider({ children }) {
         });
       },
 
-      // ✅ Cart.jsx এর জন্য
       inc(id) {
         const pid = String(id || "");
         if (!pid) return;
@@ -166,7 +154,6 @@ export function CartProvider({ children }) {
         });
       },
 
-      // ✅ buy now
       buyNow(p, variant = "", qty = 1) {
         const item = {
           productId: p?._id || p?.productId || p?.id || "",
