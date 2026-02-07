@@ -1,5 +1,4 @@
-import "../styles/
-
+import "../styles/mobile-menu.css";
 export default function MobileMenu({ open, onClose }) {
   return (
     <div className={`mobile-drawer ${open ? "open" : ""}`}>
