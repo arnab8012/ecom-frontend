@@ -7,6 +7,10 @@
   align-items: stretch;
 }
 
+.container{
+  padding-bottom: 90px; /* ✅ footer / bottom spacing */
+}
+
 @media (min-width: 768px){
   .shopGrid{
     grid-template-columns: repeat(4, minmax(0, 1fr)); /* ✅ desktop 4 column */
