@@ -3,11 +3,9 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import logo from "../assets/logo.png";
 
-
 export default function Navbar() {
   const nav = useNavigate();
   const { pathname } = useLocation();
- 
 
   // ❌ Admin panel এ navbar দেখাবে না
   if (pathname.startsWith("/admin")) return null;
@@ -16,15 +14,16 @@ export default function Navbar() {
 
   const doSearch = (e) => {
     e.preventDefault();
-    if (!q.trim()) return;
-    nav(`/shop?q=${encodeURIComponent(q.trim())}`);
+    const v = q.trim();
+    if (!v) return;
+    nav(`/shop?q=${encodeURIComponent(v)}`);
   };
 
   return (
     <header className="topbar">
       <div className="topbarInner">
         {/* BRAND */}
-        <Link to="/" className="topBrand">
+        <Link to="/" className="topBrand" aria-label="Go to home">
           <img
             src={logo}
             alt="The Curious Empire"
@@ -35,15 +34,20 @@ export default function Navbar() {
         </Link>
 
         {/* SEARCH */}
-        <form className="topSearch" onSubmit={doSearch}>
-          <input
-            className="topSearchInput"
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder="Search products"
-         autoComplete="off"
-          />
-          <button className="topSearchBtn" type="submit">🔍</button>
+        <form className="topSearch" onSubmit={doSearch} role="search" aria-label="Search products">
+          <div className="topSearchBox">
+            <input
+              className="topSearchInput"
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="Search"
+              autoComplete="off"
+              inputMode="search"
+            />
+            <button className="topSearchBtn" type="submit" aria-label="Search">
+              🔍
+            </button>
+          </div>
         </form>
       </div>
     </header>
