@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import "./Footer.css";
+import "../styles/footer.css";
 import logo from "../assets/logo.png";
 
 export default function Footer() {
