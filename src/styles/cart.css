@@ -148,3 +148,29 @@
   background: #eefaf5;
   border-radius: 16px;
 }
+
+/* ===== CLICK FIX (VERY IMPORTANT) ===== */
+
+/* image link শুধু image-এই সীমাবদ্ধ */
+.cartThumb {
+  position: relative;
+  z-index: 1;
+}
+
+/* info + buttons image এর উপরে থাকবে */
+.cartInfo {
+  position: relative;
+  z-index: 5;
+}
+
+/* সব বাটন নিশ্চিতভাবে clickable */
+.qtyBtn,
+.btnDanger {
+  pointer-events: auto;
+  z-index: 10;
+}
+
+/* Link যেন পুরো card ঢেকে না ফেলে */
+.cartItem a {
+  display: inline-block;
+}
