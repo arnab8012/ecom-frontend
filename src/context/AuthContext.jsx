@@ -1,3 +1,4 @@
+// src/context/AuthContext.jsx
 import { createContext, useContext, useEffect, useState } from "react";
 import { api } from "../api/api";
 
@@ -12,9 +13,9 @@ export function AuthProvider({ children }) {
 
     (async () => {
       try {
-        const t = api.token();
+        // ✅ always read the same key we set on login/register
+        const t = localStorage.getItem("token");
 
-        // ✅ token না থাকলে boot শেষ
         if (!t) {
           if (alive) {
             setUser(null);
@@ -29,11 +30,11 @@ export function AuthProvider({ children }) {
         if (r?.ok) {
           setUser(r.user || null);
         } else {
-          // ✅ token invalid হলে token remove
+          // ✅ token invalid হলে remove
           localStorage.removeItem("token");
           setUser(null);
         }
-      } catch {
+      } catch (e) {
         if (alive) {
           localStorage.removeItem("token");
           setUser(null);
@@ -54,6 +55,7 @@ export function AuthProvider({ children }) {
 
     localStorage.setItem("token", r.token);
     setUser(r.user || null);
+    setBooting(false);
     return { ok: true };
   };
 
@@ -63,13 +65,21 @@ export function AuthProvider({ children }) {
 
     if (r.token) localStorage.setItem("token", r.token);
     setUser(r.user || null);
-
+    setBooting(false);
     return { ok: true };
   };
 
   const logout = () => {
     localStorage.removeItem("token");
+    // চাইলে cart/fav logout এ clear করতে পারো (optional)
+    // localStorage.removeItem("cart_v1");
+    // localStorage.removeItem("fav_v1");
+
     setUser(null);
+    setBooting(false);
+
+    // যদি api.js এ token cache থাকে, এখানে clear করো (optional)
+    // api.setToken?.(null);
   };
 
   return (
