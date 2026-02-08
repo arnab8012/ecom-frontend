@@ -1,246 +1,127 @@
-import "../styles/productDetails.css";
-import { useEffect, useMemo, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { api } from "../api/api";
-import { useCart } from "../context/CartContext";
+/* ✅ Page top spacing so it never sticks into sticky navbar */
+.pdPage{
+  padding-top: 14px;
+}
 
-export default function ProductDetails() {
-  const { id } = useParams();
-  const nav = useNavigate();
-  const { add } = useCart();
+/* ✅ main layout */
+.pd{
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 18px;
+  padding-bottom: 80px;
+}
 
-  const [p, setP] = useState(null);
-  const [variant, setVariant] = useState("");
-  const [qty, setQty] = useState(1);
+/* Mobile: stacked */
+@media (max-width: 900px){
+  .pd{
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+}
 
-  const [idx, setIdx] = useState(0);
+/* ✅ LEFT */
+.pdLeft{
+  min-width: 0;
+}
 
-  useEffect(() => {
-    let alive = true;
+/* ✅ Gallery wrapper (this is the main FIX) */
+.pdGallery{
+  position: relative;
+  margin-top: 10px;           /* ✅ navbar নিচে ঢোকা বন্ধ */
+  border-radius: 18px;
+  overflow: hidden;
+  background: #f3f4f6;
+}
 
-    (async () => {
-      const r = await api.get(`/api/products/${id}`);
-      if (!alive) return;
+/* ✅ Keep image big (NOT small) */
+.pdImg{
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
 
-      if (r.ok) {
-        setP(r.product);
-        const firstVar = r.product.variants?.[0]?.name || "";
-        setVariant(firstVar);
-        setIdx(0);
-      } else {
-        alert(r.message || "Not found");
-      }
-    })();
+/* ✅ nav buttons */
+.pdNavBtn{
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  background: rgba(0,0,0,0.45);
+  color: #fff;
+  font-size: 22px;
+  line-height: 1;
+}
 
-    return () => (alive = false);
-  }, [id]);
+.pdPrev{ left: 12px; }
+.pdNext{ right: 12px; }
 
-  const imgs = useMemo(() => {
-    const arr = Array.isArray(p?.images) ? p.images : [];
-    return arr.filter(Boolean);
-  }, [p?.images]);
+.pdNavBtn:active{
+  transform: translateY(-50%) scale(0.96);
+}
 
-  useEffect(() => {
-    if (imgs.length <= 1) return;
-    const t = setInterval(() => {
-      setIdx((x) => (x + 1) % imgs.length);
-    }, 2500);
-    return () => clearInterval(t);
-  }, [imgs.length]);
+/* ✅ dots */
+.pdDots{
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
 
-  if (!p) return <div className="container">Loading...</div>;
+.pdDot{
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  background: rgba(0,0,0,0.25);
+}
+.pdDot.active{
+  background: #111;
+}
 
-  const mainImg = imgs[idx] || "https://via.placeholder.com/800x500?text=Product";
+/* ✅ thumbnails row */
+.pdThumbRow{
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
 
-  const cartItem = {
-    productId: p._id,
-    title: p.title,
-    image: imgs[0] || mainImg,
-    variant,
-    qty,
-    price: p.price,
-  };
+.pdThumbBtn{
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 3px;
+  background: #fff;
+  cursor: pointer;
+  flex: 0 0 auto;
+}
 
-  const prev = () => {
-    if (!imgs.length) return;
-    setIdx((x) => (x - 1 + imgs.length) % imgs.length);
-  };
+.pdThumbBtn.active{
+  border: 2px solid #ff007a;
+}
 
-  const next = () => {
-    if (!imgs.length) return;
-    setIdx((x) => (x + 1) % imgs.length);
-  };
+.pdThumbImg{
+  width: 82px;
+  height: 62px;
+  object-fit: cover;
+  border-radius: 12px;
+  display: block;
+}
 
-  return (
-    <div className="container pdPage">
-      <div className="pd">
-        {/* ✅ LEFT: Gallery */}
-        <div className="pdGallery">
-          <div style={{ position: "relative" }}>
-            <img className="pdImg" src={mainImg} alt={p.title} />
+/* ✅ RIGHT side basic tweaks (if your global classes exist, this won’t break) */
+.pdRight{
+  min-width: 0;
+}
 
-            {imgs.length > 1 && (
-              <>
-                <button
-                  type="button"
-                  onClick={prev}
-                  style={{
-                    position: "absolute",
-                    left: 10,
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    width: 40,
-                    height: 40,
-                    borderRadius: 999,
-                    border: "none",
-                    cursor: "pointer",
-                    background: "rgba(0,0,0,0.45)",
-                    color: "#fff",
-                    fontSize: 20,
-                  }}
-                >
-                  ‹
-                </button>
-
-                <button
-                  type="button"
-                  onClick={next}
-                  style={{
-                    position: "absolute",
-                    right: 10,
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    width: 40,
-                    height: 40,
-                    borderRadius: 999,
-                    border: "none",
-                    cursor: "pointer",
-                    background: "rgba(0,0,0,0.45)",
-                    color: "#fff",
-                    fontSize: 20,
-                  }}
-                >
-                  ›
-                </button>
-              </>
-            )}
-
-            {imgs.length > 1 && (
-              <div
-                style={{
-                  position: "absolute",
-                  left: 0,
-                  right: 0,
-                  bottom: 10,
-                  display: "flex",
-                  justifyContent: "center",
-                  gap: 8,
-                }}
-              >
-                {imgs.map((_, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    onClick={() => setIdx(i)}
-                    style={{
-                      width: 10,
-                      height: 10,
-                      borderRadius: 999,
-                      border: "none",
-                      cursor: "pointer",
-                      background: i === idx ? "#111" : "rgba(0,0,0,0.25)",
-                    }}
-                    aria-label={`img-${i}`}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
-
-          {imgs.length > 1 && (
-            <div className="pdThumbRow">
-              {imgs.map((url, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  onClick={() => setIdx(i)}
-                  className={`pdThumbBtn ${i === idx ? "active" : ""}`}
-                  title={`Image ${i + 1}`}
-                >
-                  <img className="pdThumbImg" src={url} alt="" />
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* ✅ RIGHT: Details */}
-        <div className="pdRight">
-          <h2>{p.title}</h2>
-
-          <div className="priceRow">
-            <span className="price">৳ {p.price}</span>
-            {p.compareAtPrice ? <span className="cut">৳ {p.compareAtPrice}</span> : null}
-          </div>
-
-          <div className="muted">Delivery time: {p.deliveryDays}</div>
-
-          {p.variants?.length ? (
-            <div className="box">
-              <div className="lbl">Available variant:</div>
-              <select value={variant} onChange={(e) => setVariant(e.target.value)} className="input">
-                {p.variants.map((v, i) => (
-                  <option key={i} value={v.name}>
-                    {v.name} (Stock: {v.stock})
-                  </option>
-                ))}
-              </select>
-            </div>
-          ) : null}
-
-          <div className="box">
-            <div className="lbl">Quantity</div>
-            <div className="qtyRow">
-              <button className="btnGhost" onClick={() => setQty((q) => Math.max(1, q - 1))} type="button">
-                -
-              </button>
-              <input className="qtyInput" value={qty} onChange={(e) => setQty(Number(e.target.value || 1))} />
-              <button className="btnGhost" onClick={() => setQty((q) => q + 1)} type="button">
-                +
-              </button>
-            </div>
-          </div>
-
-          <div className="pdBtns">
-            <button
-              className="btnPinkFull"
-              onClick={() => {
-                add(cartItem);
-                nav("/cart");
-              }}
-              type="button"
-            >
-              Add to Cart
-            </button>
-
-            <button
-              className="btnDarkFull"
-              onClick={() => {
-                add(cartItem);
-                nav("/checkout");
-              }}
-              type="button"
-            >
-              Buy Now
-            </button>
-          </div>
-
-          <div className="box">
-            <h4>Description</h4>
-            <p className="muted">{p.description || "No description yet."}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+.pdTitle{
+  margin: 0 0 10px;
 }
