@@ -4,11 +4,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import { api } from "../api/api";
 import { useCart } from "../context/CartContext";
 
-function safeUrl(u) {
-  if (!u) return "";
-  return String(u).trim().replace(/ /g, "%20");
-}
-
 export default function ProductDetails() {
   const { id } = useParams();
   const nav = useNavigate();
@@ -17,30 +12,52 @@ export default function ProductDetails() {
   const [p, setP] = useState(null);
   const [variant, setVariant] = useState("");
   const [qty, setQty] = useState(1);
+
+  // ✅ gallery state
   const [idx, setIdx] = useState(0);
+
+  // ✅ helper: Home.jsx এর মতো relative image হলে BASE যোগ করবে + space encode
+  const absUrl = (u) => {
+    if (!u) return "";
+    let s = String(u).trim();
+
+    // space encode
+    s = s.replace(/ /g, "%20");
+
+    if (s.startsWith("http://") || s.startsWith("https://")) return s;
+
+    // "/uploads/.." বা "uploads/.." দুইটাই handle
+    return `${api.BASE}${s.startsWith("/") ? "" : "/"}${s}`;
+  };
 
   useEffect(() => {
     let alive = true;
+
     (async () => {
       const r = await api.get(`/api/products/${id}`);
       if (!alive) return;
 
       if (r.ok) {
         setP(r.product);
-        setVariant(r.product.variants?.[0]?.name || "");
+        const firstVar = r.product.variants?.[0]?.name || "";
+        setVariant(firstVar);
+
+        // ✅ reset gallery index
         setIdx(0);
       } else {
         alert(r.message || "Not found");
       }
     })();
+
     return () => (alive = false);
   }, [id]);
 
   const imgs = useMemo(() => {
     const arr = Array.isArray(p?.images) ? p.images : [];
-    return arr.map(safeUrl).filter(Boolean);
-  }, [p?.images]);
+    return arr.map(absUrl).filter(Boolean);
+  }, [p?.images]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // ✅ auto image change
   useEffect(() => {
     if (imgs.length <= 1) return;
     const t = setInterval(() => {
@@ -51,8 +68,7 @@ export default function ProductDetails() {
 
   if (!p) return <div className="container">Loading...</div>;
 
-  const fallbackMain = "https://via.placeholder.com/800x500";
-  const mainImg = imgs[idx] || fallbackMain;
+  const mainImg = imgs[idx] || "https://via.placeholder.com/800x500";
 
   const cartItem = {
     productId: p._id,
@@ -63,74 +79,154 @@ export default function ProductDetails() {
     price: p.price,
   };
 
+  const prev = () => {
+    if (!imgs.length) return;
+    setIdx((x) => (x - 1 + imgs.length) % imgs.length);
+  };
+
+  const next = () => {
+    if (!imgs.length) return;
+    setIdx((x) => (x + 1) % imgs.length);
+  };
+
   return (
     <div className="container">
       <div className="pd">
-        <div>
-          <img
-            className="pdImg"
-            src={mainImg}
-            alt={p.title}
-            style={{ width: "100%", borderRadius: 14 }}
-            onError={(e) => {
-              e.currentTarget.src = fallbackMain;
-            }}
-          />
+        {/* ✅ LEFT: Gallery */}
+        <div className="pdLeft">
+          <div className="pdImgWrap">
+            <img
+              className="pdImg"
+              src={mainImg}
+              alt={p.title}
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = "https://via.placeholder.com/800x500";
+              }}
+            />
+
+            {/* ✅ arrow buttons */}
+            {imgs.length > 1 && (
+              <>
+                <button type="button" onClick={prev} className="pdArrow left" aria-label="Prev">
+                  ‹
+                </button>
+                <button type="button" onClick={next} className="pdArrow right" aria-label="Next">
+                  ›
+                </button>
+              </>
+            )}
+
+            {/* ✅ dots */}
+            {imgs.length > 1 && (
+              <div className="pdDots">
+                {imgs.map((_, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => setIdx(i)}
+                    className={`pdDot ${i === idx ? "active" : ""}`}
+                    aria-label={`img-${i}`}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* ✅ thumbnails */}
+          {imgs.length > 1 && (
+            <div className="pdThumbs">
+              {imgs.map((url, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => setIdx(i)}
+                  className={`pdThumbBtn ${i === idx ? "active" : ""}`}
+                  title={`Image ${i + 1}`}
+                >
+                  <img src={url} alt="" className="pdThumbImg" />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
+        {/* ✅ RIGHT: Details */}
         <div className="pdRight">
-          <h2>{p.title}</h2>
+          <h2 className="pdTitle">{p.title}</h2>
 
           <div className="priceRow">
             <span className="price">৳ {p.price}</span>
-            {p.compareAtPrice ? (
-              <span className="cut">৳ {p.compareAtPrice}</span>
-            ) : null}
+            {p.compareAtPrice ? <span className="cut">৳ {p.compareAtPrice}</span> : null}
           </div>
 
           <div className="muted">Delivery time: {p.deliveryDays}</div>
 
           {p.variants?.length ? (
-            <select
-              value={variant}
-              onChange={(e) => setVariant(e.target.value)}
-              className="input"
-            >
-              {p.variants.map((v, i) => (
-                <option key={i} value={v.name}>
-                  {v.name} (Stock: {v.stock})
-                </option>
-              ))}
-            </select>
+            <div className="box">
+              <div className="lbl">Available variant:</div>
+              <select value={variant} onChange={(e) => setVariant(e.target.value)} className="input">
+                {p.variants.map((v, i) => (
+                  <option key={i} value={v.name}>
+                    {v.name} (Stock: {v.stock})
+                  </option>
+                ))}
+              </select>
+            </div>
           ) : null}
 
-          <div className="qtyRow">
-            <button onClick={() => setQty(Math.max(1, qty - 1))}>-</button>
-            <input value={qty} readOnly />
-            <button onClick={() => setQty(qty + 1)}>+</button>
+          <div className="box">
+            <div className="lbl">Quantity</div>
+            <div className="qtyRow">
+              <button
+                className="btnGhost"
+                onClick={() => setQty((q) => Math.max(1, q - 1))}
+                type="button"
+              >
+                -
+              </button>
+
+              <input
+                className="qtyInput"
+                value={qty}
+                onChange={(e) => setQty(Number(e.target.value || 1))}
+                inputMode="numeric"
+              />
+
+              <button className="btnGhost" onClick={() => setQty((q) => q + 1)} type="button">
+                +
+              </button>
+            </div>
           </div>
 
-          <button
-            className="btnPinkFull"
-            onClick={() => {
-              add(cartItem);
-              nav("/cart");
-            }}
-          >
-            Add to Cart
-          </button>
+          <div className="pdBtns">
+            <button
+              className="btnPinkFull"
+              onClick={() => {
+                add(cartItem);
+                nav("/cart");
+              }}
+              type="button"
+            >
+              Add to Cart
+            </button>
 
-          <button
-            className="btnDarkFull"
-            onClick={() => {
-              add(cartItem);
-              nav("/checkout");
-            }}
-          >
-            Buy Now
-          </button>
+            <button
+              className="btnDarkFull"
+              onClick={() => {
+                add(cartItem);
+                nav("/checkout");
+              }}
+              type="button"
+            >
+              Buy Now
+            </button>
+          </div>
 
-          <p className="muted">{p.description}</p>
+          <div className="box">
+            <h4>Description</h4>
+            <p className="muted">{p.description || "No description yet."}</p>
+          </div>
         </div>
       </div>
     </div>
