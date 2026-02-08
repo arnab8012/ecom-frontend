@@ -181,3 +181,14 @@
     align-items: start;
   }
 }
+/* ✅ FIX: navbar এর নিচে image ঢোকা বন্ধ */
+.pdGallery{
+  margin-top: 14px;
+}
+
+/* যদি কিছু device এ এখনও 1px overlap থাকে */
+@supports (padding-top: env(safe-area-inset-top)) {
+  .pdPage{
+    padding-top: calc(14px + env(safe-area-inset-top));
+  }
+}
