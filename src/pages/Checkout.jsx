@@ -56,35 +56,36 @@ function loadBook() {
 export default function Checkout() {
   const nav = useNavigate();
   const [sp] = useSearchParams();
+  const buyMode = sp.get("mode") === "buy"; // ✅ buy now mode
 
-  const { items, clear, checkoutItem, clearBuyNow } = useCart();
+  const { items, clear, checkoutItem, clearBuyNow } = useCart(); // ✅ checkoutItem + clearBuyNow যোগ
   const { user } = useAuth();
 
   const token = api.token();
 
-  // ✅ buy-now mode (product details / favorites থেকে)
-  const buyMode = sp.get("mode") === "buy";
-
-  // ✅ order items decide
-  const orderItems = useMemo(() => {
-    if (buyMode) return checkoutItem ? [checkoutItem] : [];
-    return Array.isArray(items) ? items : [];
-  }, [buyMode, items, checkoutItem]);
-
   const [book, setBook] = useState(loadBook());
   const [useNew, setUseNew] = useState(false);
   const [selectedId, setSelectedId] = useState(book.selectedId || "");
+
   const [shipping, setShipping] = useState(emptyShipping(user));
 
   const [paymentMethod, setPaymentMethod] = useState("COD");
   const deliveryCharge = 110;
 
+  // ✅ orderItems: buyMode হলে শুধু checkoutItem, না হলে cart items
+  const orderItems = useMemo(() => {
+    if (buyMode) return checkoutItem ? [checkoutItem] : [];
+    return Array.isArray(items) ? items : [];
+  }, [buyMode, items, checkoutItem]);
+
   const subTotal = useMemo(
     () => orderItems.reduce((s, it) => s + Number(it.price || 0) * Number(it.qty || 0), 0),
     [orderItems]
   );
+
   const total = subTotal + deliveryCharge;
 
+  // ✅ when user loads / book changes -> set initial shipping
   useEffect(() => {
     const b = loadBook();
     setBook(b);
@@ -109,6 +110,7 @@ export default function Checkout() {
     // eslint-disable-next-line
   }, [user?.id]);
 
+  // ✅ when selectedId changes -> update shipping from book (only if not useNew)
   useEffect(() => {
     if (useNew) return;
     const found = book.items.find((x) => x.id === selectedId);
@@ -118,14 +120,7 @@ export default function Checkout() {
     // eslint-disable-next-line
   }, [selectedId]);
 
-  // ✅ empty handling
-  if (!orderItems.length) {
-    return (
-      <div className="container">
-        {buyMode ? "No buy-now item selected" : "Cart empty"}
-      </div>
-    );
-  }
+  if (!orderItems.length) return <div className="container">No item selected</div>;
 
   const validateShipping = () => {
     if (!shipping.fullName) return "Name required";
@@ -208,7 +203,7 @@ export default function Checkout() {
     const r = await api.post("/api/orders", payload, token);
     if (!r?.ok) return alert(r?.message || "Order failed");
 
-    // ✅ IMPORTANT: buy-mode হলে cart clear হবে না
+    // ✅ buyMode হলে cart clear করবে না
     if (buyMode) clearBuyNow?.();
     else clear?.();
 
@@ -220,6 +215,7 @@ export default function Checkout() {
     <div className="container">
       <h2>Shipping Details</h2>
 
+      {/* ✅ Saved addresses */}
       {book.items?.length > 0 && (
         <div className="box" style={{ marginBottom: 14 }}>
           <div className="rowBetween">
