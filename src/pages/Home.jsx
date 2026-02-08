@@ -19,7 +19,6 @@ export default function Home() {
     if (!u) return "";
     const s = String(u);
     if (s.startsWith("http://") || s.startsWith("https://")) return s;
-    // "/uploads/.." বা "uploads/.." দুইটাই handle
     return `${api.BASE}${s.startsWith("/") ? "" : "/"}${s}`;
   };
 
@@ -68,7 +67,6 @@ export default function Home() {
     return () => clearInterval(id);
   }, [bannerUrls.length]);
 
-  // ✅ banners change হলে slide out-of-range হলে reset
   useEffect(() => {
     if (bannerUrls.length === 0) {
       setSlide(0);
@@ -87,58 +85,57 @@ export default function Home() {
     return map;
   }, [allProducts]);
 
-  const take = (arr, n) => (Array.isArray(arr) ? arr.slice(0, n) : []);
   const titleText = (name) => String(name || "").toUpperCase();
 
   return (
-    <div className="container homeWrap"
-    style={{ paddingBottom: 90 }}>
-      {/* ✅ Full width banner (admin uploaded) + overlay */}
-    {bannerUrls.length > 0 && (
-  <div className="homeBanner">
-  <div
-    className="bannerSlideTrack"
-    style={{
-      transform: `translateX(-${slide * 100}%)`,
-    }}
-  >
-    {bannerUrls.map((url, i) => (
-      <div className="bannerSlide" key={i}>
-        <img
-          src={url}
-          alt="The Curious Empire Banner"
-          className="bannerImg"
-          loading="lazy"
-        />
-      </div>
-    ))}
-  </div>
+    <div className="container homeWrap" style={{ paddingBottom: 90 }}>
+      {/* ✅ Banner slider */}
+      {bannerUrls.length > 0 && (
+        <>
+          <div className="homeBanner">
+            <div
+              className="bannerSlideTrack"
+              style={{ transform: `translateX(-${slide * 100}%)` }}
+            >
+              {bannerUrls.map((url, i) => (
+                <div className="bannerSlide" key={i}>
+                  <img
+                    src={url}
+                    alt="The Curious Empire Banner"
+                    className="bannerImg"
+                    loading="lazy"
+                  />
+                </div>
+              ))}
+            </div>
 
-  {/* overlay */}
-  <div className="bannerOverlay">
-    <h1>The Curious Empire</h1>
-    <p>Premium Shopping Experience</p>
-  </div>
+            {/* dots */}
+            {bannerUrls.length > 1 && (
+              <div className="bannerDots">
+                {bannerUrls.map((_, i) => (
+                  <button
+                    key={i}
+                    className={`dot ${i === slide ? "active" : ""}`}
+                    onClick={() => setSlide(i)}
+                    type="button"
+                    aria-label={`Go to slide ${i + 1}`}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
 
-  {/* dots */}
-  {bannerUrls.length > 1 && (
-    <div className="bannerDots">
-      {bannerUrls.map((_, i) => (
-        <button
-          key={i}
-          className={`dot ${i === slide ? "active" : ""}`}
-          onClick={() => setSlide(i)}
-          type="button"
-        />
-      ))}
-    </div>
-  )}
-</div>
-)}
+          {/* ✅ Banner-এর নিচে (তোমার মার্ক করা জায়গায়) টেক্সট */}
+          <div className="homeHeroText">
+            <div className="homeHeroTitle">The Curious Empire</div>
+            <div className="homeHeroSub">Premium Shopping Experience</div>
+          </div>
+        </>
+      )}
 
       {/* Categories */}
       {cats.length > 0 && (
-        <div className="homeSection">
+        <div className="homeSection categoriesSection">
           <div className="secTop">
             <h3 className="secTitle">Categories</h3>
             <Link className="seeMore" to="/shop">
@@ -192,10 +189,10 @@ export default function Home() {
             </div>
 
             <div className="homeTwoGrid">
-  {(list || []).slice(0, 2).map((p) => (
-    <ProductCard key={p._id} p={p} />
-  ))}
-</div>
+              {(list || []).slice(0, 2).map((p) => (
+                <ProductCard key={p._id} p={p} />
+              ))}
+            </div>
           </div>
         );
       })}
