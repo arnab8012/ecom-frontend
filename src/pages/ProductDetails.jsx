@@ -72,7 +72,7 @@ export default function ProductDetails() {
 
   if (!p) return <div className="container">Loading...</div>;
 
-  const fallbackMain = "https://via.placeholder.com/800x500?text=Product";
+  const fallbackMain = "https://via.placeholder.com/800x500";
   const mainImg = imgs[idx] || fallbackMain;
 
   const cartItem = {
