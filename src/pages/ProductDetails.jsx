@@ -4,6 +4,14 @@ import { useParams, useNavigate } from "react-router-dom";
 import { api } from "../api/api";
 import { useCart } from "../context/CartContext";
 
+// ✅ URL safe (space / weird chars fix)
+function safeUrl(u) {
+  if (!u) return "";
+  const s = String(u).trim();
+  // encode only spaces safely (most common issue)
+  return s.replace(/ /g, "%20");
+}
+
 export default function ProductDetails() {
   const { id } = useParams();
   const nav = useNavigate();
@@ -40,7 +48,8 @@ export default function ProductDetails() {
 
   const imgs = useMemo(() => {
     const arr = Array.isArray(p?.images) ? p.images : [];
-    return arr.filter(Boolean);
+    // ✅ sanitize urls to prevent layout breaking in one product
+    return arr.map(safeUrl).filter(Boolean);
   }, [p?.images]);
 
   // ✅ auto image change
@@ -52,10 +61,19 @@ export default function ProductDetails() {
     return () => clearInterval(t);
   }, [imgs.length]);
 
+  // ✅ guard: if imgs shrink, idx out of range হলে reset
+  useEffect(() => {
+    if (!imgs.length) {
+      setIdx(0);
+      return;
+    }
+    if (idx >= imgs.length) setIdx(0);
+  }, [imgs.length, idx]);
+
   if (!p) return <div className="container">Loading...</div>;
 
-  const mainImg =
-    imgs[idx] || "https://via.placeholder.com/800x500?text=Product";
+  const fallbackMain = "https://via.placeholder.com/800x500?text=Product";
+  const mainImg = imgs[idx] || fallbackMain;
 
   const cartItem = {
     productId: p._id,
@@ -87,6 +105,10 @@ export default function ProductDetails() {
               src={mainImg}
               alt={p.title}
               style={{ width: "100%", borderRadius: 14 }}
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = fallbackMain;
+              }}
             />
 
             {/* ✅ arrow buttons */}
@@ -201,6 +223,10 @@ export default function ProductDetails() {
                     width="78"
                     height="60"
                     style={{ objectFit: "cover", borderRadius: 10 }}
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = "https://via.placeholder.com/160";
+                    }}
                   />
                 </button>
               ))}
@@ -214,9 +240,7 @@ export default function ProductDetails() {
 
           <div className="priceRow">
             <span className="price">৳ {p.price}</span>
-            {p.compareAtPrice ? (
-              <span className="cut">৳ {p.compareAtPrice}</span>
-            ) : null}
+            {p.compareAtPrice ? <span className="cut">৳ {p.compareAtPrice}</span> : null}
           </div>
 
           <div className="muted">Delivery time: {p.deliveryDays}</div>
@@ -224,11 +248,7 @@ export default function ProductDetails() {
           {p.variants?.length ? (
             <div className="box">
               <div className="lbl">Available variant:</div>
-              <select
-                value={variant}
-                onChange={(e) => setVariant(e.target.value)}
-                className="input"
-              >
+              <select value={variant} onChange={(e) => setVariant(e.target.value)} className="input">
                 {p.variants.map((v, i) => (
                   <option key={i} value={v.name}>
                     {v.name} (Stock: {v.stock})
@@ -251,13 +271,9 @@ export default function ProductDetails() {
               <input
                 className="qtyInput"
                 value={qty}
-                onChange={(e) => setQty(Number(e.target.value || 1))}
+                onChange={(e) => setQty(Math.max(1, Number(e.target.value || 1)))}
               />
-              <button
-                className="btnGhost"
-                onClick={() => setQty((q) => q + 1)}
-                type="button"
-              >
+              <button className="btnGhost" onClick={() => setQty((q) => q + 1)} type="button">
                 +
               </button>
             </div>
@@ -296,3 +312,4 @@ export default function ProductDetails() {
     </div>
   );
 }
+```0
