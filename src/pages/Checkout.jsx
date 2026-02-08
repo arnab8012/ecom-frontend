@@ -55,7 +55,10 @@ function loadBook() {
 
 export default function Checkout() {
   const nav = useNavigate();
-  const { items, clear } = useCart();
+
+  // ✅ এখানে checkoutItem + clearBuyNow নিলাম
+  const { items, checkoutItem, clear, clearBuyNow } = useCart();
+
   const { user } = useAuth();
 
   // token useAuth এ নেই (তোমার AuthContext অনুযায়ী token localStorage এ)
@@ -70,10 +73,24 @@ export default function Checkout() {
   const [paymentMethod, setPaymentMethod] = useState("COD");
   const deliveryCharge = 110;
 
+  // ✅ Buy Now mode detect
+  const isBuyNow = !!checkoutItem?.productId;
+
+  // ✅ orderItems: BuyNow থাকলে একটাই, না থাকলে cart items
+  const orderItems = useMemo(() => {
+    if (isBuyNow) return [checkoutItem];
+    return Array.isArray(items) ? items : [];
+  }, [isBuyNow, checkoutItem, items]);
+
   const subTotal = useMemo(
-    () => items.reduce((s, it) => s + Number(it.price || 0) * Number(it.qty || 0), 0),
-    [items]
+    () =>
+      orderItems.reduce(
+        (s, it) => s + Number(it.price || 0) * Number(it.qty || 0),
+        0
+      ),
+    [orderItems]
   );
+
   const total = subTotal + deliveryCharge;
 
   // ✅ when user loads / book changes -> set initial shipping
@@ -112,7 +129,12 @@ export default function Checkout() {
     // eslint-disable-next-line
   }, [selectedId]);
 
-  if (!items.length) return <div className="container">Cart empty</div>;
+  // ✅ Empty state:
+  // - BuyNow: checkoutItem না থাকলে empty
+  // - Cart: items empty হলে empty
+  if (!orderItems.length) {
+    return <div className="container">{isBuyNow ? "No item selected" : "Cart empty"}</div>;
+  }
 
   const validateShipping = () => {
     if (!shipping.fullName) return "Name required";
@@ -192,7 +214,7 @@ export default function Checkout() {
     saveToBook(shipping);
 
     const payload = {
-      items: items.map((x) => ({
+      items: orderItems.map((x) => ({
         productId: x.productId,
         qty: x.qty,
         variant: x.variant
@@ -204,7 +226,13 @@ export default function Checkout() {
     const r = await api.post("/api/orders", payload, token);
     if (!r?.ok) return alert(r?.message || "Order failed");
 
-    clear();
+    // ✅ clear đúngভাবে
+    if (isBuyNow) {
+      clearBuyNow();
+    } else {
+      clear();
+    }
+
     alert("✅ Order placed!");
     nav("/profile");
   };
