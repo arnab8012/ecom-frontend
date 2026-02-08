@@ -1,217 +1,124 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
-const CartCtx = createContext(null);
+const CartContext = createContext(null);
 
-// ✅ guest keys (logout হলে UI 0 দেখানোর জন্য)
-const LS_GUEST = "cart_guest";
-const LS_BUY_GUEST = "buy_now_guest";
+const CART_KEY = "cart_items_v1";
+const BUY_KEY = "buy_now_item_v1";
 
-// ✅ helper
-function safeParse(raw, fallback) {
+function loadCart() {
   try {
-    const v = JSON.parse(raw);
-    return v ?? fallback;
+    const j = JSON.parse(localStorage.getItem("cart_items_v1") || "[]");
+    return Array.isArray(j) ? j : [];
   } catch {
-    return fallback;
+    return [];
   }
 }
-function loadKey(key, fallback) {
-  const raw = localStorage.getItem(key);
-  return raw ? safeParse(raw, fallback) : fallback;
-}
 
-// ✅ per-user keys
-const userCartKey = (uid) => `cart_user_${String(uid || "").trim()}`;
-const userBuyKey = (uid) => `buy_now_user_${String(uid || "").trim()}`;
-
-// ✅ id normalize
-function getId(x) {
-  return String(x?.productId || x?._id || x?.id || x?.product?._id || x?.product?.id || "");
-}
-function getVar(x) {
-  return String(x?.variant || "");
+function saveCart(items) {
+  localStorage.setItem(CART_KEY, JSON.stringify(items));
 }
 
 export function CartProvider({ children }) {
-  const [activeKey, setActiveKey] = useState(LS_GUEST);
-  const [activeBuyKey, setActiveBuyKey] = useState(LS_BUY_GUEST);
+  // 🛒 normal cart
+  const [items, setItems] = useState(loadCart);
 
-  const [items, setItems] = useState(() => {
-    const data = loadKey(LS_GUEST, []);
-    return Array.isArray(data) ? data : [];
+  // ⚡ buy-now single item (NOT part of cart)
+  const [checkoutItem, setCheckoutItem] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem(BUY_KEY) || "null");
+    } catch {
+      return null;
+    }
   });
 
-  const [checkoutItem, setCheckoutItem] = useState(() => loadKey(LS_BUY_GUEST, null));
+  // ---------- CART ----------
+  const add = (item) => {
+    setItems((prev) => {
+      const i = prev.findIndex(
+        (x) =>
+          x.productId === item.productId &&
+          String(x.variant || "") === String(item.variant || "")
+      );
 
-  // ✅ persist to current active keys
-  useEffect(() => {
-    try {
-      localStorage.setItem(activeKey, JSON.stringify(items));
-    } catch {}
-  }, [items, activeKey]);
+      let next;
+      if (i >= 0) {
+        next = prev.map((x, idx) =>
+          idx === i ? { ...x, qty: x.qty + item.qty } : x
+        );
+      } else {
+        next = [...prev, item];
+      }
 
-  useEffect(() => {
-    try {
-      localStorage.setItem(activeBuyKey, JSON.stringify(checkoutItem));
-    } catch {}
-  }, [checkoutItem, activeBuyKey]);
-
-  // ✅ switch cart storage by user (login/logout এ কল হবে)
-  const useUserCart = (uidOrPhone) => {
-    const uid = String(uidOrPhone || "").trim();
-
-    if (!uid) {
-      // guest mode
-      setActiveKey(LS_GUEST);
-      setActiveBuyKey(LS_BUY_GUEST);
-
-      const gi = loadKey(LS_GUEST, []);
-      setItems(Array.isArray(gi) ? gi : []);
-
-      const gb = loadKey(LS_BUY_GUEST, null);
-      setCheckoutItem(gb || null);
-      return;
-    }
-
-    // user mode
-    const ck = userCartKey(uid);
-    const bk = userBuyKey(uid);
-
-    setActiveKey(ck);
-    setActiveBuyKey(bk);
-
-    const ui = loadKey(ck, []);
-    setItems(Array.isArray(ui) ? ui : []);
-
-    const ub = loadKey(bk, null);
-    setCheckoutItem(ub || null);
+      saveCart(next);
+      return next;
+    });
   };
 
-  const value = useMemo(
-    () => ({
-      items,
-      checkoutItem,
+  const remove = (productId, variant = "") => {
+    setItems((prev) => {
+      const next = prev.filter(
+        (x) =>
+          !(
+            x.productId === productId &&
+            String(x.variant || "") === String(variant || "")
+          )
+      );
+      saveCart(next);
+      return next;
+    });
+  };
 
-      // ✅ important: AuthContext থেকে login/logout হলে call করবে
-      useUserCart,
+  const clear = () => {
+    setItems([]);
+    localStorage.removeItem(CART_KEY);
+  };
 
-      add(item) {
-        const pid = getId(item);
-        const v = getVar(item);
-        if (!pid) return;
+  // ---------- BUY NOW ----------
+  const buyNow = (product, variant = "", qty = 1) => {
+    const one = {
+      productId: product._id,
+      title: product.title,
+      price: product.price,
+      image:
+        product.images?.[0] ||
+        product.image ||
+        "https://via.placeholder.com/300",
+      variant,
+      qty
+    };
 
-        setItems((prev) => {
-          const list = Array.isArray(prev) ? prev : [];
-          const idx = list.findIndex((x) => getId(x) === pid && getVar(x) === v);
+    setCheckoutItem(one);
+    localStorage.setItem(BUY_KEY, JSON.stringify(one));
+  };
 
-          if (idx >= 0) {
-            const copy = [...list];
-            copy[idx] = {
-              ...copy[idx],
-              qty: (Number(copy[idx].qty) || 1) + (Number(item?.qty) || 1),
-            };
-            return copy;
-          }
+  const clearBuyNow = () => {
+    setCheckoutItem(null);
+    localStorage.removeItem(BUY_KEY);
+  };
 
-          return [
-            ...list,
-            {
-              ...item,
-              productId: item?.productId || item?._id || item?.id || pid,
-              variant: v,
-              qty: Number(item?.qty) || 1,
-            },
-          ];
-        });
-      },
-
-      remove(productId, variant = "") {
-        const pid = String(productId || "");
-        const v = String(variant || "");
-        if (!pid) return;
-
-        setItems((prev) => {
-          const list = Array.isArray(prev) ? prev : [];
-          if (!v) return list.filter((x) => getId(x) !== pid);
-          return list.filter((x) => !(getId(x) === pid && getVar(x) === v));
-        });
-      },
-
-      clear() {
-        setItems([]);
-      },
-
-      setQty(productId, variantOrQty, maybeQty) {
-        const pid = String(productId || "");
-        if (!pid) return;
-
-        let v = "";
-        let qty = 1;
-
-        if (typeof maybeQty === "undefined") {
-          qty = Number(variantOrQty || 1);
-        } else {
-          v = String(variantOrQty || "");
-          qty = Number(maybeQty || 1);
-        }
-
-        setItems((prev) => {
-          const list = Array.isArray(prev) ? prev : [];
-          return list.map((x) => {
-            if (getId(x) !== pid) return x;
-            if (v && getVar(x) !== v) return x;
-            return { ...x, qty: Math.max(1, qty) };
-          });
-        });
-      },
-
-      inc(id) {
-        const pid = String(id || "");
-        if (!pid) return;
-        setItems((prev) => {
-          const list = Array.isArray(prev) ? prev : [];
-          return list.map((x) => (getId(x) === pid ? { ...x, qty: (Number(x.qty) || 1) + 1 } : x));
-        });
-      },
-
-      dec(id) {
-        const pid = String(id || "");
-        if (!pid) return;
-
-        setItems((prev) => {
-          const list = Array.isArray(prev) ? prev : [];
-          const found = list.find((x) => getId(x) === pid);
-          const q = found ? Number(found.qty) || 1 : 1;
-
-          if (q <= 1) return list.filter((x) => getId(x) !== pid);
-
-          return list.map((x) => (getId(x) === pid ? { ...x, qty: (Number(x.qty) || 1) - 1 } : x));
-        });
-      },
-
-      buyNow(p, variant = "", qty = 1) {
-        const item = {
-          productId: p?._id || p?.productId || p?.id || "",
-          title: p?.title || p?.name || "",
-          price: Number(p?.price || 0),
-          image: p?.images?.[0] || p?.image || "",
-          variant: String(variant || p?.variant || ""),
-          qty: Number(qty || p?.qty || 1),
-        };
-        if (!item.productId) return;
-        setCheckoutItem(item);
-      },
-
-      clearBuyNow() {
-        setCheckoutItem(null);
-      },
-    }),
-    [items, checkoutItem]
+  // ---------- helpers ----------
+  const cartCount = useMemo(
+    () => items.reduce((s, x) => s + (x.qty || 0), 0),
+    [items]
   );
 
-  return <CartCtx.Provider value={value}>{children}</CartCtx.Provider>;
+  const value = {
+    // cart
+    items,
+    add,
+    remove,
+    clear,
+    cartCount,
+
+    // buy now
+    buyNow,
+    checkoutItem,
+    clearBuyNow
+  };
+
+  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }
 
 export function useCart() {
-  return useContext(CartCtx);
+  return useContext(CartContext);
 }
