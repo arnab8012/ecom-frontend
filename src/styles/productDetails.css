@@ -213,10 +213,6 @@
   color: #fff;
 }
 
-:root{
-  --navH: 62px; /* navbar এর আনুমানিক height */
-}
-
 /* ✅ ProductDetails page: navbar overlap prevent */
 .pd{
   padding-top: calc(var(--navH) + 1px);
