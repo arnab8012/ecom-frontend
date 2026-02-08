@@ -22,18 +22,18 @@ export default function Navbar() {
   return (
     <header className="topbar">
       <div className="topbarInner">
-        {/* BRAND */}
+        {/* LEFT: LOGO */}
         <Link to="/" className="topBrand" aria-label="Go to home">
-          <img
-            src={logo}
-            alt="The Curious Empire"
-            className="topLogo"
-            loading="eager"
-          />
-          <span className="topTitle">The Curious Empire</span>
+          <img src={logo} alt="The Curious Empire" className="topLogo" loading="eager" />
         </Link>
 
-        {/* SEARCH */}
+        {/* MIDDLE: TEXT (logo-search gap) */}
+        <div className="topMidText" aria-label="Brand tagline">
+          <div className="topMidTitle">The Curious Empire</div>
+          <div className="topMidSub">Premium Shopping Experience</div>
+        </div>
+
+        {/* RIGHT: SEARCH */}
         <form className="topSearch" onSubmit={doSearch} role="search" aria-label="Search products">
           <div className="topSearchBox">
             <input
