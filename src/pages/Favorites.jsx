@@ -5,13 +5,15 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import { useFavorites } from "../context/FavoritesContext";
 import { useAuth } from "../context/AuthContext";
-import { api } from "../api/api"; // ✅ তোমার প্রজেক্টে api আছে (HomeBanner এ ব্যবহার করছো)
+import { useCart } from "../context/CartContext";
+import { api } from "../api/api";
 
 export default function Favorites() {
   const nav = useNavigate();
   const { pathname } = useLocation();
   const fav = useFavorites();
   const { user } = useAuth();
+  const { buyNow } = useCart();
 
   // ✅ admin panel এ hide
   if (pathname.startsWith("/admin")) return null;
@@ -19,11 +21,10 @@ export default function Favorites() {
   const favIds = Array.isArray(fav?.favIds) ? fav.favIds : [];
 
   const [loading, setLoading] = useState(false);
-  const [products, setProducts] = useState([]); // ✅ details list
+  const [products, setProducts] = useState([]);
 
   const formatBDT = (n) => `৳ ${Math.round(Number(n) || 0).toLocaleString("en-US")}`;
 
-  // ✅ favIds পরিবর্তন হলে product details load
   useEffect(() => {
     let alive = true;
 
@@ -36,7 +37,6 @@ export default function Favorites() {
       setLoading(true);
 
       try {
-        // ✅ 1) সব products নিয়ে filter (সবচেয়ে compatible)
         const r = await api.get("/api/products");
         if (!alive) return;
 
@@ -47,7 +47,7 @@ export default function Favorites() {
         } else {
           setProducts([]);
         }
-      } catch (e) {
+      } catch {
         if (!alive) return;
         setProducts([]);
       } finally {
@@ -60,12 +60,11 @@ export default function Favorites() {
     return () => {
       alive = false;
     };
-  }, [favIds.join("|")]); // ✅ stable dependency
+  }, [favIds.join("|")]);
 
   const total = favIds.length;
 
   const doRemove = (id) => {
-    // ✅ তোমার context এ যে function আছে সেটাই কাজ করবে
     if (fav?.remove) return fav.remove(id);
     if (fav?.removeFav) return fav.removeFav(id);
     if (fav?.removeFavorite) return fav.removeFavorite(id);
@@ -77,8 +76,6 @@ export default function Favorites() {
     if (fav?.clear) return fav.clear();
     if (fav?.clearAll) return fav.clearAll();
     if (fav?.reset) return fav.reset();
-
-    // fallback: সব id remove করে দেই
     favIds.forEach((id) => doRemove(id));
   };
 
@@ -89,12 +86,20 @@ export default function Favorites() {
     return products.find((p) => String(p?._id) === firstFavId) || null;
   }, [firstFavId, products]);
 
+  // ✅ FIX: Favorites Checkout => BuyNow item set করে Checkout এ যাবে (Cart add হবে না)
   const checkoutFirst = () => {
-    // ✅ তোমার checkout flow আলাদা হতে পারে, তাই simple:
-    // 1) যদি firstFavProduct পাওয়া যায় -> product page এ নিয়ে যাবে
-    // 2) না পাওয়া গেলে -> shop এ
-    if (firstFavProduct?._id) nav(`/product/${firstFavProduct._id}`);
-    else nav("/shop");
+    if (!user) {
+      nav("/login");
+      return;
+    }
+
+    if (firstFavProduct?._id) {
+      buyNow(firstFavProduct, "", 1); // ✅ only 1 item checkout
+      nav("/checkout?mode=buy");      // ✅ checkout page buy-now mode
+      return;
+    }
+
+    nav("/shop");
   };
 
   return (
