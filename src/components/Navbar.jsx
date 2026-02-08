@@ -22,33 +22,31 @@ export default function Navbar() {
   return (
     <header className="topbar">
       <div className="topbarInner">
-        {/* LOGO */}
-        <Link to="/" className="topBrand" aria-label="Go to home">
-          <img src={logo} alt="The Curious Empire" className="topLogo" loading="eager" />
+
+        {/* BRAND LOGO */}
+        <Link to="/" className="topBrand">
+          <img src={logo} alt="The Curious Empire" className="topLogo" />
         </Link>
 
-        {/* TEXT in the middle gap */}
-        <div className="topMidText">
-          <div className="topMidTitle">The Curious Empire</div>
-          <div className="topMidSub">Premium Shopping Experience</div>
+        {/* BRAND TEXT (IMAGE STYLE) */}
+        <div className="brandTextWrap">
+          <span className="brandTextMain">The Curious Empire</span>
+          <span className="brandTextSub">Premium Shopping Experience</span>
         </div>
 
         {/* SEARCH */}
-        <form className="topSearch" onSubmit={doSearch} role="search" aria-label="Search products">
+        <form className="topSearch" onSubmit={doSearch}>
           <div className="topSearchBox">
             <input
               className="topSearchInput"
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder="Search"
-              autoComplete="off"
-              inputMode="search"
             />
-            <button className="topSearchBtn" type="submit" aria-label="Search">
-              🔍
-            </button>
+            <button className="topSearchBtn" type="submit">🔍</button>
           </div>
         </form>
+
       </div>
     </header>
   );
