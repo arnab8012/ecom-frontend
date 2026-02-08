@@ -17,35 +17,69 @@
   padding: 10px 14px;
 }
 
+/* ✅ 3 column: logo | text | search  */
 .topbarInner{
   max-width: 1180px;
   margin: 0 auto;
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
 }
 
-/* BRAND */
+/* =========================
+   BRAND
+========================= */
+
 .topBrand{
   display: flex;
   align-items: center;
-  gap: 10px;
   text-decoration: none;
   flex-shrink: 0;
 }
 
+/* ✅ logo height bigger like your mark */
 .topLogo{
-  height: 36px;
+  height: 46px;
   width: auto;
   object-fit: contain;
+  display: block;
 }
 
+/* পুরোনো title না দেখালেও সমস্যা নাই */
 .topTitle{
+  display: none;
+}
+
+/* =========================
+   MIDDLE TEXT (logo-search gap)
+========================= */
+.topMidText{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  line-height: 1.08;
+  min-width: 0; /* ellipsis works */
+}
+
+.topMidTitle{
   font-weight: 900;
-  font-size: 14px;
+  font-size: 16px;
   color: #ffffff;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.2px;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.topMidSub{
+  margin-top: 3px;
+  font-weight: 700;
+  font-size: 12px;
+  color: rgba(255,255,255,0.80);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* =========================
@@ -53,16 +87,15 @@
 ========================= */
 
 .topSearch{
-  flex: 1;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
 }
 
 /* wrapper */
 .topSearchBox{
   position: relative;
-  width: 100%;
-  max-width: 460px;
+  width: 240px;        /* ✅ search small like your mark */
+  max-width: 46vw;
   display: flex;
   align-items: center;
 }
@@ -70,7 +103,7 @@
 /* input underline */
 .topSearchInput{
   width: 100%;
-  height: 42px;
+  height: 38px;        /* ✅ smaller height */
 
   background: transparent;
   border: none;
@@ -80,7 +113,7 @@
   font-size: 18px;
   font-weight: 500;
 
-  padding: 6px 44px 6px 0;
+  padding: 6px 40px 6px 0;
   border-bottom: 2px solid rgba(255,255,255,0.70);
 }
 
@@ -97,8 +130,8 @@
   top: 50%;
   transform: translateY(-50%);
 
-  width: 38px;
-  height: 38px;
+  width: 36px;
+  height: 36px;
 
   border: none;
   background: transparent;
@@ -113,21 +146,35 @@
   transform: translateY(-50%) scale(0.96);
 }
 
-/* MOBILE */
+/* =========================
+   MOBILE
+========================= */
 @media (max-width: 480px){
-  .topTitle{
-    display: none;
+  .topLogo{
+    height: 42px;
+  }
+
+  .topMidTitle{
+    font-size: 14px;
+  }
+  .topMidSub{
+    font-size: 11px;
+  }
+
+  .topSearchBox{
+    width: 160px;
+    max-width: 44vw;
   }
 
   .topSearchInput{
-    height: 40px;
+    height: 36px;
     font-size: 16px;
-    padding-right: 40px;
+    padding-right: 38px;
   }
 
   .topSearchBtn{
-    width: 36px;
-    height: 36px;
+    width: 34px;
+    height: 34px;
     font-size: 20px;
   }
 }
