@@ -125,3 +125,78 @@
 .pdTitle{
   margin: 0 0 10px;
 }
+/* ===== Quantity section clean & premium ===== */
+
+.qtyRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.btnGhost {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  border: 1px solid #dcdcdc;
+  background: #fff;
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.qtyInput {
+  width: 70px;
+  height: 42px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 10px;
+  border: 1px solid #dcdcdc;
+}
+
+/* ===== Buttons area ===== */
+
+.pdBtns {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+/* Add to Cart – already ok, just height consistent */
+.btnPinkFull {
+  height: 48px;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* Buy Now – FIXED (no tiny button anymore) */
+.btnDarkFull {
+  height: 48px;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 700;
+  background: #0f766e;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+/* Mobile polish */
+@media (max-width: 640px) {
+  .qtyRow {
+    gap: 10px;
+  }
+
+  .btnGhost {
+    width: 40px;
+    height: 40px;
+  }
+
+  .qtyInput {
+    width: 64px;
+    height: 40px;
+  }
+}
