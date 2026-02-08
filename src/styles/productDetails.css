@@ -1,194 +1,209 @@
-/* src/styles/productDetails.css */
+import "../styles/productDetails.css";
+import { useEffect, useMemo, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { api } from "../api/api";
+import { useCart } from "../context/CartContext";
 
-/* ✅ ProductDetails page should never go under sticky navbar */
-.pdPage{
-  padding-top: 14px; /* শুধু একটু breathing space */
-  padding-bottom: 90px; /* bottom nav থাকলে */
-}
+export default function ProductDetails() {
+  const { id } = useParams();
+  const nav = useNavigate();
+  const { add } = useCart();
 
-/* ✅ Layout */
-.pd{
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 14px;
-}
+  const [p, setP] = useState(null);
+  const [variant, setVariant] = useState("");
+  const [qty, setQty] = useState(1);
 
-/* ✅ Gallery */
-.pdGallery{
-  position: relative;
-}
+  // ✅ gallery state
+  const [idx, setIdx] = useState(0);
 
-.pdImg{
-  width: 100%;
-  height: auto;          /* ✅ NEVER force small height */
-  display: block;
-  border-radius: 16px;
-  object-fit: contain;   /* ✅ cover দিলে crop হয়, contain দিলে কাটা যাবে না */
-  background: #fff;
-}
+  useEffect(() => {
+    let alive = true;
 
-/* ✅ Thumb row */
-.pdThumbRow{
-  display: flex;
-  gap: 10px;
-  margin-top: 12px;
-  overflow-x: auto;
-  padding-bottom: 6px;
-}
+    (async () => {
+      const r = await api.get(`/api/products/${id}`);
+      if (!alive) return;
 
-.pdThumbBtn{
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 2px;
-  background: #fff;
-  cursor: pointer;
-  flex: 0 0 auto;
-}
+      if (r.ok) {
+        setP(r.product);
+        const firstVar = r.product?.variants?.[0]?.name || "";
+        setVariant(firstVar);
 
-.pdThumbBtn.active{
-  border: 2px solid #ff007a;
-}
+        // ✅ reset gallery index
+        setIdx(0);
+      } else {
+        alert(r.message || "Not found");
+      }
+    })();
 
-.pdThumbImg{
-  width: 78px;
-  height: 60px;
-  object-fit: cover;
-  border-radius: 10px;
-  display: block;
-}
+    return () => (alive = false);
+  }, [id]);
 
-/* ✅ Right side */
-.pdRight{
-  background: #e9f7f2;
-  border-radius: 18px;
-  padding: 16px;
-}
+  const imgs = useMemo(() => {
+    const arr = Array.isArray(p?.images) ? p.images : [];
+    return arr.filter(Boolean);
+  }, [p?.images]);
 
-/* Common UI (তোমার class নাম অনুযায়ী) */
-.priceRow{
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  margin: 8px 0;
-}
+  // ✅ auto image change
+  useEffect(() => {
+    if (imgs.length <= 1) return;
+    const t = setInterval(() => {
+      setIdx((x) => (x + 1) % imgs.length);
+    }, 2500);
+    return () => clearInterval(t);
+  }, [imgs.length]);
 
-.price{
-  font-size: 28px;
-  font-weight: 900;
-  color: #0f5f5c;
-}
+  if (!p) return <div className="container pdPage">Loading...</div>;
 
-.cut{
-  font-size: 18px;
-  color: rgba(0,0,0,.45);
-  text-decoration: line-through;
-  font-weight: 800;
-}
+  const mainImg = imgs[idx] || "https://via.placeholder.com/800x500?text=Product";
 
-.muted{
-  color: rgba(0,0,0,.55);
-  font-weight: 600;
-}
+  const cartItem = {
+    productId: p._id,
+    title: p.title,
+    image: imgs[0] || mainImg,
+    variant,
+    qty,
+    price: p.price,
+  };
 
-.box{
-  background: rgba(255,255,255,.55);
-  border: 1px solid rgba(0,0,0,.06);
-  border-radius: 16px;
-  padding: 14px;
-  margin-top: 12px;
-}
+  const prev = () => {
+    if (!imgs.length) return;
+    setIdx((x) => (x - 1 + imgs.length) % imgs.length);
+  };
 
-.lbl{
-  font-weight: 900;
-  margin-bottom: 8px;
-  color: rgba(0,0,0,.65);
-}
+  const next = () => {
+    if (!imgs.length) return;
+    setIdx((x) => (x + 1) % imgs.length);
+  };
 
-.input{
-  width: 100%;
-  border-radius: 14px;
-  border: 1px solid rgba(0,0,0,.12);
-  padding: 12px 12px;
-  background: #fff;
-  font-weight: 700;
-  outline: none;
-}
+  return (
+    <div className="container pdPage">
+      <div className="pd">
+        {/* ✅ LEFT: Gallery */}
+        <div className="pdLeft">
+          <div className="pdGallery">
+            <img className="pdImg" src={mainImg} alt={p.title} />
 
-.qtyRow{
-  display: grid;
-  grid-template-columns: 46px 1fr 46px;
-  gap: 10px;
-  align-items: center;
-}
+            {/* ✅ arrow buttons */}
+            {imgs.length > 1 && (
+              <>
+                <button type="button" onClick={prev} className="pdNavBtn pdPrev" aria-label="Prev">
+                  ‹
+                </button>
 
-.btnGhost{
-  height: 44px;
-  border-radius: 14px;
-  border: 1px solid rgba(0,0,0,.12);
-  background: #fff;
-  font-size: 20px;
-  font-weight: 900;
-  cursor: pointer;
-}
+                <button type="button" onClick={next} className="pdNavBtn pdNext" aria-label="Next">
+                  ›
+                </button>
+              </>
+            )}
 
-.qtyInput{
-  height: 44px;
-  border-radius: 14px;
-  border: 1px solid rgba(0,0,0,.12);
-  padding: 0 12px;
-  font-size: 16px;
-  font-weight: 900;
-  outline: none;
-  background: #fff;
-  text-align: center;
-}
+            {/* ✅ dots */}
+            {imgs.length > 1 && (
+              <div className="pdDots" aria-label="Image dots">
+                {imgs.map((_, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => setIdx(i)}
+                    className={`pdDot ${i === idx ? "active" : ""}`}
+                    aria-label={`img-${i}`}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
 
-.pdBtns{
-  display: grid;
-  gap: 10px;
-  margin-top: 14px;
-}
+          {/* ✅ thumbnails */}
+          {imgs.length > 1 && (
+            <div className="pdThumbRow">
+              {imgs.map((url, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => setIdx(i)}
+                  className={`pdThumbBtn ${i === idx ? "active" : ""}`}
+                  title={`Image ${i + 1}`}
+                >
+                  <img src={url} alt="" className="pdThumbImg" />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
 
-.btnPinkFull{
-  width: 100%;
-  height: 54px;
-  border: none;
-  border-radius: 999px;
-  cursor: pointer;
-  font-weight: 900;
-  font-size: 18px;
-  background: linear-gradient(90deg, #7ce34a, #86c7ff);
-  color: #0b1220;
-}
+        {/* ✅ RIGHT: Details */}
+        <div className="pdRight">
+          <h2 className="pdTitle">{p.title}</h2>
 
-.btnDarkFull{
-  width: 100%;
-  height: 54px;
-  border: none;
-  border-radius: 999px;
-  cursor: pointer;
-  font-weight: 900;
-  font-size: 18px;
-  background: #0f6b63;
-  color: #fff;
-}
+          <div className="priceRow">
+            <span className="price">৳ {p.price}</span>
+            {p.compareAtPrice ? <span className="cut">৳ {p.compareAtPrice}</span> : null}
+          </div>
 
-/* Desktop */
-@media (min-width: 900px){
-  .pd{
-    grid-template-columns: 1.1fr .9fr;
-    gap: 18px;
-    align-items: start;
-  }
-}
-/* ✅ FIX: navbar এর নিচে image ঢোকা বন্ধ */
-.pdGallery{
-  margin-top: 14px;
-}
+          <div className="muted">Delivery time: {p.deliveryDays}</div>
 
-/* যদি কিছু device এ এখনও 1px overlap থাকে */
-@supports (padding-top: env(safe-area-inset-top)) {
-  .pdPage{
-    padding-top: calc(14px + env(safe-area-inset-top));
-  }
+          {p.variants?.length ? (
+            <div className="box">
+              <div className="lbl">Available variant:</div>
+              <select value={variant} onChange={(e) => setVariant(e.target.value)} className="input">
+                {p.variants.map((v, i) => (
+                  <option key={i} value={v.name}>
+                    {v.name} (Stock: {v.stock})
+                  </option>
+                ))}
+              </select>
+            </div>
+          ) : null}
+
+          <div className="box">
+            <div className="lbl">Quantity</div>
+            <div className="qtyRow">
+              <button className="btnGhost" onClick={() => setQty((q) => Math.max(1, q - 1))} type="button">
+                -
+              </button>
+
+              <input
+                className="qtyInput"
+                value={qty}
+                onChange={(e) => setQty(Number(e.target.value || 1))}
+                inputMode="numeric"
+              />
+
+              <button className="btnGhost" onClick={() => setQty((q) => q + 1)} type="button">
+                +
+              </button>
+            </div>
+          </div>
+
+          <div className="pdBtns">
+            <button
+              className="btnPinkFull"
+              onClick={() => {
+                add(cartItem);
+                nav("/cart");
+              }}
+              type="button"
+            >
+              Add to Cart
+            </button>
+
+            <button
+              className="btnDarkFull"
+              onClick={() => {
+                add(cartItem);
+                nav("/checkout");
+              }}
+              type="button"
+            >
+              Buy Now
+            </button>
+          </div>
+
+          <div className="box">
+            <h4>Description</h4>
+            <p className="muted">{p.description || "No description yet."}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
