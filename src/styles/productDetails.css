@@ -1,0 +1,158 @@
+/* src/styles/productDetails.css */
+
+.pd{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  padding-bottom: calc(var(--bottomNavH, 72px) + env(safe-area-inset-bottom) + 16px);
+}
+
+/* desktop */
+@media (min-width: 900px){
+  .pd{
+    grid-template-columns: 1.1fr .9fr;
+    align-items: start;
+  }
+}
+
+/* main image */
+.pdImg{
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+  border-radius: 18px;
+  display: block;
+  background: #fff;
+  box-shadow: 0 10px 22px rgba(0,0,0,.08);
+}
+
+@media (max-width: 420px){
+  .pdImg{ height: 250px; }
+}
+
+/* right panel */
+.pdRight{
+  background: #e6f6ef;
+  border-radius: 18px;
+  padding: 14px;
+}
+
+.pdRight h2{
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: 900;
+  color: #0b3d2e;
+}
+
+/* price row */
+.priceRow{
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 8px 0 10px;
+}
+
+.price{
+  font-size: 22px;
+  font-weight: 900;
+  color: #0f766e;
+}
+
+.cut{
+  font-size: 14px;
+  font-weight: 800;
+  color: rgba(0,0,0,.45);
+  text-decoration: line-through;
+}
+
+/* shared boxes */
+.box{
+  margin-top: 12px;
+  background: rgba(255,255,255,.6);
+  border: 1px solid rgba(11,61,46,.10);
+  border-radius: 16px;
+  padding: 12px;
+}
+
+.lbl{
+  font-size: 12px;
+  font-weight: 900;
+  color: rgba(11,61,46,.75);
+  margin-bottom: 6px;
+}
+
+.input{
+  width: 100%;
+  height: 42px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,.12);
+  padding: 0 12px;
+  font-weight: 800;
+  outline: none;
+  background: #fff;
+}
+
+.input:focus{
+  border-color: #0f766e;
+  box-shadow: 0 0 0 3px rgba(15,118,110,.12);
+}
+
+/* qty */
+.qtyRow{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.qtyInput{
+  width: 70px;
+  height: 42px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,.12);
+  text-align: center;
+  font-weight: 900;
+  outline: none;
+  background: #fff;
+}
+
+/* buttons */
+.pdBtns{
+  margin-top: 12px;
+  display: grid;
+  gap: 10px;
+}
+
+.btnPinkFull,
+.btnDarkFull{
+  width: 100%;
+  border: none;
+  border-radius: 999px;
+  padding: 12px 14px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.btnPinkFull{
+  background: #75d84b;
+  color: #000;
+}
+
+.btnDarkFull{
+  background: #0f766e;
+  color: #fff;
+}
+
+.btnGhost{
+  border: 1px solid rgba(0,0,0,.12);
+  background: #fff;
+  border-radius: 999px;
+  padding: 10px 12px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.muted{
+  color: rgba(0,0,0,.65);
+  font-weight: 700;
+  font-size: 13px;
+}
