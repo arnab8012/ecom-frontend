@@ -219,5 +219,5 @@
 
 /* ✅ ProductDetails page: navbar overlap prevent */
 .pd{
-  padding-top: calc(var(--navH) + 10px);
+  padding-top: calc(var(--navH) + 1px);
 }
