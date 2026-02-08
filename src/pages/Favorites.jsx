@@ -1,11 +1,10 @@
-// src/pages/Favorites.jsx
 import "../styles/favorites.css";
 
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import { useFavorites } from "../context/FavoritesContext";
 import { useAuth } from "../context/AuthContext";
-import { useCart } from "../context/CartContext";
+import { useCart } from "../context/CartContext"; // ✅ add
 import { api } from "../api/api";
 
 export default function Favorites() {
@@ -13,9 +12,8 @@ export default function Favorites() {
   const { pathname } = useLocation();
   const fav = useFavorites();
   const { user } = useAuth();
-  const { buyNow } = useCart();
+  const { buyNow } = useCart(); // ✅ add
 
-  // ✅ admin panel এ hide
   if (pathname.startsWith("/admin")) return null;
 
   const favIds = Array.isArray(fav?.favIds) ? fav.favIds : [];
@@ -76,6 +74,7 @@ export default function Favorites() {
     if (fav?.clear) return fav.clear();
     if (fav?.clearAll) return fav.clearAll();
     if (fav?.reset) return fav.reset();
+
     favIds.forEach((id) => doRemove(id));
   };
 
@@ -86,19 +85,15 @@ export default function Favorites() {
     return products.find((p) => String(p?._id) === firstFavId) || null;
   }, [firstFavId, products]);
 
-  // ✅ FIX: Favorites Checkout => BuyNow item set করে Checkout এ যাবে (Cart add হবে না)
+  // ✅ Favorites থেকে Checkout => ProductDetails এ না গিয়ে Checkout (buy mode)
   const checkoutFirst = () => {
-    if (!user) {
-      nav("/login");
-      return;
-    }
+    if (!user) return nav("/login");
 
     if (firstFavProduct?._id) {
-      buyNow(firstFavProduct, "", 1); // ✅ only 1 item checkout
-      nav("/checkout?mode=buy");      // ✅ checkout page buy-now mode
+      buyNow(firstFavProduct, "", 1);
+      nav("/checkout?mode=buy");
       return;
     }
-
     nav("/shop");
   };
 
