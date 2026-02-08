@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { api } from "../api/api";
@@ -55,50 +55,40 @@ function loadBook() {
 
 export default function Checkout() {
   const nav = useNavigate();
+  const [sp] = useSearchParams();
 
-  // ✅ এখানে checkoutItem + clearBuyNow নিলাম
-  const { items, checkoutItem, clear, clearBuyNow } = useCart();
-
+  const { items, clear, checkoutItem, clearBuyNow } = useCart();
   const { user } = useAuth();
 
-  // token useAuth এ নেই (তোমার AuthContext অনুযায়ী token localStorage এ)
   const token = api.token();
+
+  // ✅ buy-now mode (product details / favorites থেকে)
+  const buyMode = sp.get("mode") === "buy";
+
+  // ✅ order items decide
+  const orderItems = useMemo(() => {
+    if (buyMode) return checkoutItem ? [checkoutItem] : [];
+    return Array.isArray(items) ? items : [];
+  }, [buyMode, items, checkoutItem]);
 
   const [book, setBook] = useState(loadBook());
   const [useNew, setUseNew] = useState(false);
   const [selectedId, setSelectedId] = useState(book.selectedId || "");
-
   const [shipping, setShipping] = useState(emptyShipping(user));
 
   const [paymentMethod, setPaymentMethod] = useState("COD");
   const deliveryCharge = 110;
 
-  // ✅ Buy Now mode detect
-  const isBuyNow = !!checkoutItem?.productId;
-
-  // ✅ orderItems: BuyNow থাকলে একটাই, না থাকলে cart items
-  const orderItems = useMemo(() => {
-    if (isBuyNow) return [checkoutItem];
-    return Array.isArray(items) ? items : [];
-  }, [isBuyNow, checkoutItem, items]);
-
   const subTotal = useMemo(
-    () =>
-      orderItems.reduce(
-        (s, it) => s + Number(it.price || 0) * Number(it.qty || 0),
-        0
-      ),
+    () => orderItems.reduce((s, it) => s + Number(it.price || 0) * Number(it.qty || 0), 0),
     [orderItems]
   );
-
   const total = subTotal + deliveryCharge;
 
-  // ✅ when user loads / book changes -> set initial shipping
   useEffect(() => {
     const b = loadBook();
     setBook(b);
 
-    // if selectedId missing but have items -> pick first
     const sid = b.selectedId || b.items?.[0]?.id || "";
     setSelectedId(sid);
 
@@ -119,7 +109,6 @@ export default function Checkout() {
     // eslint-disable-next-line
   }, [user?.id]);
 
-  // ✅ when selectedId changes -> update shipping from book (only if not useNew)
   useEffect(() => {
     if (useNew) return;
     const found = book.items.find((x) => x.id === selectedId);
@@ -129,11 +118,13 @@ export default function Checkout() {
     // eslint-disable-next-line
   }, [selectedId]);
 
-  // ✅ Empty state:
-  // - BuyNow: checkoutItem না থাকলে empty
-  // - Cart: items empty হলে empty
+  // ✅ empty handling
   if (!orderItems.length) {
-    return <div className="container">{isBuyNow ? "No item selected" : "Cart empty"}</div>;
+    return (
+      <div className="container">
+        {buyMode ? "No buy-now item selected" : "Cart empty"}
+      </div>
+    );
   }
 
   const validateShipping = () => {
@@ -149,12 +140,9 @@ export default function Checkout() {
   const saveToBook = (ship) => {
     const current = loadBook();
 
-    // if editing existing selected
     if (!useNew && selectedId) {
       const nextItems = current.items.map((x) =>
-        x.id === selectedId
-          ? { ...x, shipping: ship, label: x.label || makeLabel(ship) }
-          : x
+        x.id === selectedId ? { ...x, shipping: ship, label: x.label || makeLabel(ship) } : x
       );
 
       const next = { ...current, selectedId, items: nextItems };
@@ -163,12 +151,8 @@ export default function Checkout() {
       return;
     }
 
-    // else add new
     const id = uid();
-    const nextItems = [
-      { id, label: makeLabel(ship), shipping: ship },
-      ...(current.items || [])
-    ];
+    const nextItems = [{ id, label: makeLabel(ship), shipping: ship }, ...(current.items || [])];
 
     const next = { selectedId: id, items: nextItems };
     localStorage.setItem(BOOK_KEY, JSON.stringify(next));
@@ -182,8 +166,7 @@ export default function Checkout() {
     const current = loadBook();
     const nextItems = (current.items || []).filter((x) => x.id !== id);
 
-    const nextSelected =
-      current.selectedId === id ? (nextItems[0]?.id || "") : current.selectedId;
+    const nextSelected = current.selectedId === id ? nextItems[0]?.id || "" : current.selectedId;
 
     const next = { selectedId: nextSelected, items: nextItems };
     localStorage.setItem(BOOK_KEY, JSON.stringify(next));
@@ -210,7 +193,6 @@ export default function Checkout() {
     const msg = validateShipping();
     if (msg) return alert(msg);
 
-    // ✅ save shipping always (edit existing OR add new)
     saveToBook(shipping);
 
     const payload = {
@@ -226,12 +208,9 @@ export default function Checkout() {
     const r = await api.post("/api/orders", payload, token);
     if (!r?.ok) return alert(r?.message || "Order failed");
 
-    // ✅ clear đúngভাবে
-    if (isBuyNow) {
-      clearBuyNow();
-    } else {
-      clear();
-    }
+    // ✅ IMPORTANT: buy-mode হলে cart clear হবে না
+    if (buyMode) clearBuyNow?.();
+    else clear?.();
 
     alert("✅ Order placed!");
     nav("/profile");
@@ -241,7 +220,6 @@ export default function Checkout() {
     <div className="container">
       <h2>Shipping Details</h2>
 
-      {/* ✅ Saved addresses */}
       {book.items?.length > 0 && (
         <div className="box" style={{ marginBottom: 14 }}>
           <div className="rowBetween">
@@ -371,7 +349,6 @@ export default function Checkout() {
           onChange={(e) => setShipping({ ...shipping, note: e.target.value })}
         />
 
-        {/* ✅ Save button (only meaningful when useNew OR editing existing) */}
         <div className="rowBetween" style={{ marginTop: 10 }}>
           <button
             type="button"
