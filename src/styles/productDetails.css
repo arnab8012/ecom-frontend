@@ -1,84 +1,34 @@
+/* src/styles/productDetails.css */
+
+/* ✅ ProductDetails page should never go under sticky navbar */
+.pdPage{
+  padding-top: 14px; /* শুধু একটু breathing space */
+  padding-bottom: 90px; /* bottom nav থাকলে */
+}
+
+/* ✅ Layout */
 .pd{
   display: grid;
   grid-template-columns: 1fr;
   gap: 14px;
-  padding-bottom: 90px; /* bottom nav overlap avoid */
 }
 
-@media (min-width: 900px){
-  .pd{
-    grid-template-columns: 1fr 1fr;
-    gap: 18px;
-    align-items: start;
-  }
-}
-
-.pdLeft{ min-width: 0; }
-.pdRight{ min-width: 0; }
-
-.pdImgWrap{
+/* ✅ Gallery */
+.pdGallery{
   position: relative;
-  border-radius: 16px;
-  overflow: hidden;
-  background: #000;
 }
 
 .pdImg{
   width: 100%;
-  height: 260px;
-  object-fit: cover;
+  height: auto;          /* ✅ NEVER force small height */
   display: block;
+  border-radius: 16px;
+  object-fit: contain;   /* ✅ cover দিলে crop হয়, contain দিলে কাটা যাবে না */
+  background: #fff;
 }
 
-@media (min-width: 420px){
-  .pdImg{ height: 300px; }
-}
-
-@media (min-width: 900px){
-  .pdImg{ height: 360px; }
-}
-
-.pdArrow{
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 40px;
-  height: 40px;
-  border-radius: 999px;
-  border: none;
-  cursor: pointer;
-  background: rgba(0,0,0,0.45);
-  color: #fff;
-  font-size: 22px;
-}
-
-.pdArrow.left{ left: 10px; }
-.pdArrow.right{ right: 10px; }
-
-.pdDots{
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 10px;
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-}
-
-.pdDot{
-  width: 10px;
-  height: 10px;
-  border-radius: 999px;
-  border: none;
-  cursor: pointer;
-  background: rgba(0,0,0,0.25);
-}
-
-.pdDot.active{
-  background: #111;
-}
-
-.pdThumbs{
+/* ✅ Thumb row */
+.pdThumbRow{
   display: flex;
   gap: 10px;
   margin-top: 12px;
@@ -87,7 +37,7 @@
 }
 
 .pdThumbBtn{
-  border: 1px solid #eee;
+  border: 1px solid #e5e7eb;
   border-radius: 12px;
   padding: 2px;
   background: #fff;
@@ -107,55 +57,60 @@
   display: block;
 }
 
-.pdTitle{
-  margin: 0 0 10px;
-  font-size: 26px;
-  line-height: 1.15;
-  font-weight: 900;
-  color: #0b1220;
-  word-break: break-word;
+/* ✅ Right side */
+.pdRight{
+  background: #e9f7f2;
+  border-radius: 18px;
+  padding: 16px;
 }
 
+/* Common UI (তোমার class নাম অনুযায়ী) */
 .priceRow{
   display: flex;
   align-items: baseline;
-  gap: 12px;
-  margin-bottom: 6px;
+  gap: 10px;
+  margin: 8px 0;
 }
 
 .price{
-  font-size: 22px;
+  font-size: 28px;
   font-weight: 900;
   color: #0f5f5c;
 }
 
 .cut{
+  font-size: 18px;
+  color: rgba(0,0,0,.45);
   text-decoration: line-through;
-  opacity: .55;
   font-weight: 800;
 }
 
 .muted{
-  opacity: .75;
+  color: rgba(0,0,0,.55);
   font-weight: 600;
 }
 
 .box{
-  margin-top: 14px;
+  background: rgba(255,255,255,.55);
+  border: 1px solid rgba(0,0,0,.06);
+  border-radius: 16px;
+  padding: 14px;
+  margin-top: 12px;
 }
 
 .lbl{
-  font-weight: 800;
+  font-weight: 900;
   margin-bottom: 8px;
+  color: rgba(0,0,0,.65);
 }
 
 .input{
   width: 100%;
-  height: 46px;
   border-radius: 14px;
-  border: 1px solid rgba(0,0,0,0.12);
-  padding: 0 14px;
-  font-weight: 800;
+  border: 1px solid rgba(0,0,0,.12);
+  padding: 12px 12px;
+  background: #fff;
+  font-weight: 700;
   outline: none;
 }
 
@@ -167,53 +122,62 @@
 }
 
 .btnGhost{
-  height: 46px;
+  height: 44px;
   border-radius: 14px;
-  border: 1px solid rgba(0,0,0,0.12);
+  border: 1px solid rgba(0,0,0,.12);
   background: #fff;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 900;
   cursor: pointer;
 }
 
 .qtyInput{
-  height: 46px;
+  height: 44px;
   border-radius: 14px;
-  border: 1px solid rgba(0,0,0,0.12);
-  text-align: center;
-  font-weight: 900;
+  border: 1px solid rgba(0,0,0,.12);
+  padding: 0 12px;
   font-size: 16px;
+  font-weight: 900;
   outline: none;
+  background: #fff;
+  text-align: center;
 }
 
 .pdBtns{
   display: grid;
-  gap: 12px;
+  gap: 10px;
   margin-top: 14px;
 }
 
-.btnPinkFull,
-.btnDarkFull{
+.btnPinkFull{
   width: 100%;
-  height: 56px;
-  border-radius: 999px;
+  height: 54px;
   border: none;
+  border-radius: 999px;
   cursor: pointer;
   font-weight: 900;
   font-size: 18px;
-}
-
-.btnPinkFull{
-  background: linear-gradient(90deg, #7ae34f, #7bd3ff);
+  background: linear-gradient(90deg, #7ce34a, #86c7ff);
   color: #0b1220;
 }
 
 .btnDarkFull{
-  background: #0f5f5c;
+  width: 100%;
+  height: 54px;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 900;
+  font-size: 18px;
+  background: #0f6b63;
   color: #fff;
 }
 
-/* ✅ ProductDetails page: navbar overlap prevent */
-.pd{
-  padding-top: calc(var(--navH) + 1px);
+/* Desktop */
+@media (min-width: 900px){
+  .pd{
+    grid-template-columns: 1.1fr .9fr;
+    gap: 18px;
+    align-items: start;
+  }
 }
