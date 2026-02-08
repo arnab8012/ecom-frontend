@@ -20,63 +20,30 @@ export default function Navbar() {
   };
 
   return (
-    <header className="topbar" role="banner">
+    <header className="topbar">
       <div className="topbarInner">
 
-        {/* =====================
-            BRAND LOGO
-        ===================== */}
-        <Link
-          to="/"
-          className="topBrand"
-          aria-label="Go to homepage"
-        >
-          <img
-            src={logo}
-            alt="The Curious Empire"
-            className="topLogo"
-            loading="eager"
-          />
+        {/* BRAND LOGO */}
+        <Link to="/" className="topBrand">
+          <img src={logo} alt="The Curious Empire" className="topLogo" />
         </Link>
 
-        {/* =====================
-            BRAND TEXT (IMAGE STYLE)
-        ===================== */}
+        {/* BRAND TEXT (IMAGE STYLE) */}
         <div className="brandTextWrap">
-          <span className="brandTextMain">
-            The Curious Empire
-          </span>
-          <span className="brandTextSub">
-            Premium Shopping Experience
-          </span>
+          <span className="brandTextMain">The Curious Empire</span>
+          <span className="brandTextSub">Premium Shopping Experience</span>
         </div>
 
-        {/* =====================
-            SEARCH
-        ===================== */}
-        <form
-          className="topSearch"
-          onSubmit={doSearch}
-          role="search"
-          aria-label="Search products"
-        >
+        {/* SEARCH */}
+        <form className="topSearch" onSubmit={doSearch}>
           <div className="topSearchBox">
             <input
               className="topSearchInput"
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder="Search"
-              autoComplete="off"
-              inputMode="search"
-              aria-label="Search products"
             />
-            <button
-              className="topSearchBtn"
-              type="submit"
-              aria-label="Search"
-            >
-              🔍
-            </button>
+            <button className="topSearchBtn" type="submit">🔍</button>
           </div>
         </form>
 
