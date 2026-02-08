@@ -7,7 +7,7 @@ import { useCart } from "../context/CartContext";
 export default function ProductDetails() {
   const { id } = useParams();
   const nav = useNavigate();
-  const { add, buyNow } = useCart(); // ✅ buyNow নিলাম
+  const { add, buyNow } = useCart(); // ✅ buyNow যোগ
 
   const [p, setP] = useState(null);
   const [variant, setVariant] = useState("");
@@ -62,7 +62,7 @@ export default function ProductDetails() {
     image: imgs[0] || mainImg,
     variant,
     qty,
-    price: p.price,
+    price: p.price
   };
 
   const prev = () => {
@@ -106,7 +106,7 @@ export default function ProductDetails() {
                     cursor: "pointer",
                     background: "rgba(0,0,0,0.45)",
                     color: "#fff",
-                    fontSize: 20,
+                    fontSize: 20
                   }}
                 >
                   ‹
@@ -127,7 +127,7 @@ export default function ProductDetails() {
                     cursor: "pointer",
                     background: "rgba(0,0,0,0.45)",
                     color: "#fff",
-                    fontSize: 20,
+                    fontSize: 20
                   }}
                 >
                   ›
@@ -145,7 +145,7 @@ export default function ProductDetails() {
                   bottom: 10,
                   display: "flex",
                   justifyContent: "center",
-                  gap: 8,
+                  gap: 8
                 }}
               >
                 {imgs.map((_, i) => (
@@ -159,7 +159,7 @@ export default function ProductDetails() {
                       borderRadius: 999,
                       border: "none",
                       cursor: "pointer",
-                      background: i === idx ? "#111" : "rgba(0,0,0,0.25)",
+                      background: i === idx ? "#111" : "rgba(0,0,0,0.25)"
                     }}
                     aria-label={`img-${i}`}
                   />
@@ -176,7 +176,7 @@ export default function ProductDetails() {
                 gap: 10,
                 marginTop: 12,
                 overflowX: "auto",
-                paddingBottom: 6,
+                paddingBottom: 6
               }}
             >
               {imgs.map((url, i) => (
@@ -190,7 +190,7 @@ export default function ProductDetails() {
                     padding: 2,
                     background: "#fff",
                     cursor: "pointer",
-                    flex: "0 0 auto",
+                    flex: "0 0 auto"
                   }}
                   title={`Image ${i + 1}`}
                 >
@@ -221,11 +221,7 @@ export default function ProductDetails() {
           {p.variants?.length ? (
             <div className="box">
               <div className="lbl">Available variant:</div>
-              <select
-                value={variant}
-                onChange={(e) => setVariant(e.target.value)}
-                className="input"
-              >
+              <select value={variant} onChange={(e) => setVariant(e.target.value)} className="input">
                 {p.variants.map((v, i) => (
                   <option key={i} value={v.name}>
                     {v.name} (Stock: {v.stock})
@@ -245,25 +241,19 @@ export default function ProductDetails() {
               >
                 -
               </button>
-
               <input
                 className="qtyInput"
                 value={qty}
                 onChange={(e) => setQty(Math.max(1, Number(e.target.value || 1)))}
               />
-
-              <button
-                className="btnGhost"
-                onClick={() => setQty((q) => q + 1)}
-                type="button"
-              >
+              <button className="btnGhost" onClick={() => setQty((q) => q + 1)} type="button">
                 +
               </button>
             </div>
           </div>
 
           <div className="pdBtns">
-            {/* ✅ Add to Cart: cart এ add, checkout এ যাবে না */}
+            {/* ✅ Add to Cart => cart এ যাবে */}
             <button
               className="btnPinkFull"
               onClick={() => {
@@ -275,12 +265,12 @@ export default function ProductDetails() {
               Add to Cart
             </button>
 
-            {/* ✅ Buy Now: cart এ add হবে না, শুধু buyNow item set করে checkout যাবে */}
+            {/* ✅ Buy Now => cart এ add হবে না */}
             <button
               className="btnDarkFull"
               onClick={() => {
-                buyNow(p, variant, qty);   // ✅ শুধু এই product
-                nav("/checkout");          // ✅ shipping/checkout page
+                buyNow(p, variant, qty);
+                nav("/checkout?mode=buy");
               }}
               type="button"
             >
