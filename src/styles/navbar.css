@@ -17,7 +17,7 @@
   -webkit-backdrop-filter: blur(12px);
 
   border-bottom: 1px solid rgba(255,255,255,0.08);
-  padding: 8px 12px;
+  padding: 10px 12px;
 }
 
 .topbarInner{
@@ -54,6 +54,7 @@
   min-width: 0;
   text-align: center;
   line-height: 1.1;
+  padding-top: 2px;
 }
 
 /* MAIN SCRIPT TEXT */
