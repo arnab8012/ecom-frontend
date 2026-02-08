@@ -13,22 +13,7 @@ export default function ProductDetails() {
   const [variant, setVariant] = useState("");
   const [qty, setQty] = useState(1);
 
-  // ✅ gallery state
   const [idx, setIdx] = useState(0);
-
-  // ✅ helper: Home.jsx এর মতো relative image হলে BASE যোগ করবে + space encode
-  const absUrl = (u) => {
-    if (!u) return "";
-    let s = String(u).trim();
-
-    // space encode
-    s = s.replace(/ /g, "%20");
-
-    if (s.startsWith("http://") || s.startsWith("https://")) return s;
-
-    // "/uploads/.." বা "uploads/.." দুইটাই handle
-    return `${api.BASE}${s.startsWith("/") ? "" : "/"}${s}`;
-  };
 
   useEffect(() => {
     let alive = true;
@@ -41,8 +26,6 @@ export default function ProductDetails() {
         setP(r.product);
         const firstVar = r.product.variants?.[0]?.name || "";
         setVariant(firstVar);
-
-        // ✅ reset gallery index
         setIdx(0);
       } else {
         alert(r.message || "Not found");
@@ -54,10 +37,9 @@ export default function ProductDetails() {
 
   const imgs = useMemo(() => {
     const arr = Array.isArray(p?.images) ? p.images : [];
-    return arr.map(absUrl).filter(Boolean);
-  }, [p?.images]); // eslint-disable-line react-hooks/exhaustive-deps
+    return arr.filter(Boolean);
+  }, [p?.images]);
 
-  // ✅ auto image change
   useEffect(() => {
     if (imgs.length <= 1) return;
     const t = setInterval(() => {
@@ -68,7 +50,7 @@ export default function ProductDetails() {
 
   if (!p) return <div className="container">Loading...</div>;
 
-  const mainImg = imgs[idx] || "https://via.placeholder.com/800x500";
+  const mainImg = imgs[idx] || "https://via.placeholder.com/800x500?text=Product";
 
   const cartItem = {
     productId: p._id,
@@ -90,42 +72,84 @@ export default function ProductDetails() {
   };
 
   return (
-    <div className="container">
+    <div className="container pdPage">
       <div className="pd">
         {/* ✅ LEFT: Gallery */}
-        <div className="pdLeft">
-          <div className="pdImgWrap">
-            <img
-              className="pdImg"
-              src={mainImg}
-              alt={p.title}
-              onError={(e) => {
-                e.currentTarget.onerror = null;
-                e.currentTarget.src = "https://via.placeholder.com/800x500";
-              }}
-            />
+        <div className="pdGallery">
+          <div style={{ position: "relative" }}>
+            <img className="pdImg" src={mainImg} alt={p.title} />
 
-            {/* ✅ arrow buttons */}
             {imgs.length > 1 && (
               <>
-                <button type="button" onClick={prev} className="pdArrow left" aria-label="Prev">
+                <button
+                  type="button"
+                  onClick={prev}
+                  style={{
+                    position: "absolute",
+                    left: 10,
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    width: 40,
+                    height: 40,
+                    borderRadius: 999,
+                    border: "none",
+                    cursor: "pointer",
+                    background: "rgba(0,0,0,0.45)",
+                    color: "#fff",
+                    fontSize: 20,
+                  }}
+                >
                   ‹
                 </button>
-                <button type="button" onClick={next} className="pdArrow right" aria-label="Next">
+
+                <button
+                  type="button"
+                  onClick={next}
+                  style={{
+                    position: "absolute",
+                    right: 10,
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    width: 40,
+                    height: 40,
+                    borderRadius: 999,
+                    border: "none",
+                    cursor: "pointer",
+                    background: "rgba(0,0,0,0.45)",
+                    color: "#fff",
+                    fontSize: 20,
+                  }}
+                >
                   ›
                 </button>
               </>
             )}
 
-            {/* ✅ dots */}
             {imgs.length > 1 && (
-              <div className="pdDots">
+              <div
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  right: 0,
+                  bottom: 10,
+                  display: "flex",
+                  justifyContent: "center",
+                  gap: 8,
+                }}
+              >
                 {imgs.map((_, i) => (
                   <button
                     key={i}
                     type="button"
                     onClick={() => setIdx(i)}
-                    className={`pdDot ${i === idx ? "active" : ""}`}
+                    style={{
+                      width: 10,
+                      height: 10,
+                      borderRadius: 999,
+                      border: "none",
+                      cursor: "pointer",
+                      background: i === idx ? "#111" : "rgba(0,0,0,0.25)",
+                    }}
                     aria-label={`img-${i}`}
                   />
                 ))}
@@ -133,9 +157,8 @@ export default function ProductDetails() {
             )}
           </div>
 
-          {/* ✅ thumbnails */}
           {imgs.length > 1 && (
-            <div className="pdThumbs">
+            <div className="pdThumbRow">
               {imgs.map((url, i) => (
                 <button
                   key={i}
@@ -144,7 +167,7 @@ export default function ProductDetails() {
                   className={`pdThumbBtn ${i === idx ? "active" : ""}`}
                   title={`Image ${i + 1}`}
                 >
-                  <img src={url} alt="" className="pdThumbImg" />
+                  <img className="pdThumbImg" src={url} alt="" />
                 </button>
               ))}
             </div>
@@ -153,7 +176,7 @@ export default function ProductDetails() {
 
         {/* ✅ RIGHT: Details */}
         <div className="pdRight">
-          <h2 className="pdTitle">{p.title}</h2>
+          <h2>{p.title}</h2>
 
           <div className="priceRow">
             <span className="price">৳ {p.price}</span>
@@ -178,21 +201,10 @@ export default function ProductDetails() {
           <div className="box">
             <div className="lbl">Quantity</div>
             <div className="qtyRow">
-              <button
-                className="btnGhost"
-                onClick={() => setQty((q) => Math.max(1, q - 1))}
-                type="button"
-              >
+              <button className="btnGhost" onClick={() => setQty((q) => Math.max(1, q - 1))} type="button">
                 -
               </button>
-
-              <input
-                className="qtyInput"
-                value={qty}
-                onChange={(e) => setQty(Number(e.target.value || 1))}
-                inputMode="numeric"
-              />
-
+              <input className="qtyInput" value={qty} onChange={(e) => setQty(Number(e.target.value || 1))} />
               <button className="btnGhost" onClick={() => setQty((q) => q + 1)} type="button">
                 +
               </button>
