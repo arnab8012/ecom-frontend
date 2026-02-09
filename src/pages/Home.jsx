@@ -34,6 +34,7 @@ export default function Home() {
     (async () => {
       try {
         setLoading(true);
+
         const [c, r, p] = await Promise.all([
           api.get("/api/categories"),
           api.get("/api/banners"),
@@ -55,13 +56,11 @@ export default function Home() {
 
   useEffect(() => {
     if (bannerUrls.length <= 1) return;
-    const id = setInterval(
-      () => setSlide((s) => (s + 1) % bannerUrls.length),
-      3500
-    );
+    const id = setInterval(() => setSlide((s) => (s + 1) % bannerUrls.length), 3500);
     return () => clearInterval(id);
   }, [bannerUrls.length]);
 
+  // products group by category
   const byCat = useMemo(() => {
     const map = new Map();
     for (const p of allProducts) {
@@ -71,18 +70,6 @@ export default function Home() {
       map.get(cid).push(p);
     }
     return map;
-  }, [allProducts]);
-
-  const newArrivals = useMemo(() => {
-    // নতুনগুলো আগে দেখাতে চাইলে createdAt থাকলে sort করা যাবে
-    const arr = Array.isArray(allProducts) ? [...allProducts] : [];
-    // যদি createdAt না থাকে, এই sort কাজ নাও করতে পারে, তাই safe রাখলাম
-    arr.sort((a, b) => {
-      const da = a?.createdAt ? new Date(a.createdAt).getTime() : 0;
-      const db = b?.createdAt ? new Date(b.createdAt).getTime() : 0;
-      return db - da;
-    });
-    return arr.slice(0, 6);
   }, [allProducts]);
 
   return (
@@ -116,46 +103,47 @@ export default function Home() {
         </div>
       )}
 
-      {/* ===== BANNER TEXT ===== */}
+      {/* ===== TEXT BELOW BANNER ===== */}
       <div className="homeHeroText">
         <div className="homeHeroTitle">The Curious Empire</div>
         <div className="homeHeroSub">Premium Shopping Experience</div>
       </div>
 
-      {/* =========================
-          ✅ CATEGORIES SECTION
-          (ডান থেকে বামে, এক লাইনে scroll)
-         ========================= */}
+      {/* ===== CATEGORIES + BEST OFFERS ===== */}
       <div className="catSection">
         <div className="catHeader">
           <h3>Categories</h3>
+
           <button
-            type="button"
             className="seeMore"
+            type="button"
             onClick={() => nav("/shop")}
+            title="See more"
           >
-            See more →
+            See more
           </button>
         </div>
 
+        {/* ✅ RTL scroll row */}
         <div className="catGrid">
-          {cats.map((c) => (
-            <button
-              type="button"
+          {(cats || []).map((c) => (
+            <div
               key={c._id}
               className="catCard"
               onClick={() => nav(`/shop?category=${c.slug || c._id}`)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") nav(`/shop?category=${c.slug || c._id}`);
+              }}
             >
-              <img
-                src={absUrl(c.image) || "https://via.placeholder.com/80"}
-                alt={c.name}
-              />
+              <img src={absUrl(c.image) || "https://via.placeholder.com/80"} alt={c.name} />
               <p>{c.name}</p>
-            </button>
+            </div>
           ))}
         </div>
 
-        {/* ✅ bottom options (2টা) */}
+        {/* ✅ 2 options under categories */}
         <div className="catOptions">
           <div className="optionCard">
             🚚 <span>Free Delivery</span>
@@ -167,54 +155,34 @@ export default function Home() {
         </div>
       </div>
 
-      {/* ===== NEW ARRIVALS (example section) ===== */}
-      <div className="homeSection">
-        <div className="rowBetween homeSectionHeader">
-          <h3 className="homeSectionTitle">NEW ARRIVALS</h3>
-          <Link className="seeMoreLink" to="/shop">
-            See More →
-          </Link>
+      {/* ===== PRODUCTS SECTIONS (by category) ===== */}
+      {loading ? (
+        <div className="box" style={{ marginTop: 14 }}>
+          Loading...
         </div>
+      ) : cats.length === 0 ? null : (
+        cats.map((c) => {
+          const items = byCat.get(c._id) || [];
+          if (!items.length) return null;
 
-        {loading ? (
-          <div className="box">Loading...</div>
-        ) : newArrivals.length === 0 ? (
-          <div className="box">No products yet</div>
-        ) : (
-          <div className="grid">
-            {newArrivals.map((p) => (
-              <ProductCard key={p._id} p={p} />
-            ))}
-          </div>
-        )}
-      </div>
+          return (
+            <div key={c._id} style={{ marginTop: 14 }}>
+              <div className="rowBetween" style={{ marginBottom: 10 }}>
+                <h3 style={{ margin: 0, fontWeight: 900 }}>{c.name}</h3>
+                <Link className="seeMore" to={`/shop?category=${c.slug || c._id}`}>
+                  See More →
+                </Link>
+              </div>
 
-      {/* ===== CATEGORY WISE SECTIONS (optional but সুন্দর লাগে) ===== */}
-      {cats.map((c) => {
-        const list = byCat.get(c._id) || [];
-        if (!list.length) return null;
-
-        return (
-          <div className="homeSection" key={c._id}>
-            <div className="rowBetween homeSectionHeader">
-              <h3 className="homeSectionTitle">{c.name}</h3>
-              <button
-                type="button"
-                className="seeMoreLink"
-                onClick={() => nav(`/shop?category=${c.slug || c._id}`)}
-              >
-                See More →
-              </button>
+              <div className="homeTwoGrid">
+                {items.slice(0, 4).map((p) => (
+                  <ProductCard key={p._id} p={p} />
+                ))}
+              </div>
             </div>
-
-            <div className="grid">
-              {list.slice(0, 6).map((p) => (
-                <ProductCard key={p._id} p={p} />
-              ))}
-            </div>
-          </div>
-        );
-      })}
+          );
+        })
+      )}
     </div>
   );
 }
