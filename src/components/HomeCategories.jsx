@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function HomeCategories({ cats }) {
   const nav = useNavigate();
@@ -7,23 +7,29 @@ function HomeCategories({ cats }) {
   if (!Array.isArray(cats) || cats.length === 0) return null;
 
   return (
-    <div className="catSection">
-      <div className="catHeader">
-        <h3>Categories</h3>
+    <div className="homeSection">
+      {/* Header */}
+      <div className="rowBetween" style={{ alignItems: "center" }}>
+        <h3 style={{ margin: 0 }}>Categories</h3>
 
-        <Link className="seeMore" to="/shop">
+        <button
+          type="button"
+          className="btnGhost"
+          onClick={() => nav("/shop")}
+          style={{ padding: "8px 12px" }}
+        >
           See more
-        </Link>
+        </button>
       </div>
 
-      {/* ✅ right-to-left row */}
+      {/* Categories Row (RTL) */}
       <div className="catRow">
         {cats.map((c) => (
           <button
-            key={c._id}
+            key={c._id} // ✅ stable key
             className="catItem"
             type="button"
-            onClick={() => nav(`/shop?category=${c.slug || c._id}`)}
+            onClick={() => nav(`/shop?category=${c._id}`)}
           >
             <div className="catIcon">
               <img
@@ -36,20 +42,16 @@ function HomeCategories({ cats }) {
                 }}
               />
             </div>
+
             <div className="catName">{c.name}</div>
           </button>
         ))}
       </div>
 
-      {/* ✅ 2 options under categories */}
+      {/* ✅ Bottom 2 Options */}
       <div className="catOptions">
-        <div className="optionCard">
-          🚚 <span>Free Delivery</span>
-        </div>
-
-        <div className="optionCard">
-          🛍️ <span>Best Offers</span>
-        </div>
+        <div className="optionCard">🚚 <span>Free Delivery</span></div>
+        <div className="optionCard">🛍️ <span>Best Offers</span></div>
       </div>
     </div>
   );
