@@ -110,6 +110,8 @@ export default function Home() {
         <div className="homeHeroSub">Premium Shopping Experience</div>
       </div>
 
+<HomeCategories cats={cats} />
+
       {/* ===== CATEGORIES + BEST OFFERS ===== */}
       <div className="catSection">
         <div className="catHeader">
