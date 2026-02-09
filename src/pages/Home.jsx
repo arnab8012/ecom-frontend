@@ -16,8 +16,9 @@ export default function Home() {
 
   const absUrl = (u) => {
     if (!u) return "";
-    if (u.startsWith("http")) return u;
-    return `${api.BASE}${u.startsWith("/") ? "" : "/"}${u}`;
+    const s = String(u);
+    if (s.startsWith("http://") || s.startsWith("https://")) return s;
+    return `${api.BASE}${s.startsWith("/") ? "" : "/"}${s}`;
   };
 
   const bannerUrls = useMemo(() => {
@@ -72,6 +73,18 @@ export default function Home() {
     return map;
   }, [allProducts]);
 
+  const newArrivals = useMemo(() => {
+    // নতুনগুলো আগে দেখাতে চাইলে createdAt থাকলে sort করা যাবে
+    const arr = Array.isArray(allProducts) ? [...allProducts] : [];
+    // যদি createdAt না থাকে, এই sort কাজ নাও করতে পারে, তাই safe রাখলাম
+    arr.sort((a, b) => {
+      const da = a?.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const db = b?.createdAt ? new Date(b.createdAt).getTime() : 0;
+      return db - da;
+    });
+    return arr.slice(0, 6);
+  }, [allProducts]);
+
   return (
     <div className="container homeWrap">
       {/* ===== BANNER ===== */}
@@ -95,6 +108,7 @@ export default function Home() {
                   key={i}
                   className={`dot ${i === slide ? "active" : ""}`}
                   onClick={() => setSlide(i)}
+                  type="button"
                 />
               ))}
             </div>
@@ -102,42 +116,105 @@ export default function Home() {
         </div>
       )}
 
-      {/* ===== BANNER TEXT (MARKED AREA) ===== */}
+      {/* ===== BANNER TEXT ===== */}
       <div className="homeHeroText">
         <div className="homeHeroTitle">The Curious Empire</div>
         <div className="homeHeroSub">Premium Shopping Experience</div>
       </div>
 
+      {/* =========================
+          ✅ CATEGORIES SECTION
+          (ডান থেকে বামে, এক লাইনে scroll)
+         ========================= */}
+      <div className="catSection">
+        <div className="catHeader">
+          <h3>Categories</h3>
+          <button
+            type="button"
+            className="seeMore"
+            onClick={() => nav("/shop")}
+          >
+            See more →
+          </button>
+        </div>
 
-<div className="catSection">
-  <div className="catHeader">
-    <h3>Categories</h3>
-    <span className="seeMore">See more</span>
-  </div>
+        <div className="catGrid">
+          {cats.map((c) => (
+            <button
+              type="button"
+              key={c._id}
+              className="catCard"
+              onClick={() => nav(`/shop?category=${c.slug || c._id}`)}
+            >
+              <img
+                src={absUrl(c.image) || "https://via.placeholder.com/80"}
+                alt={c.name}
+              />
+              <p>{c.name}</p>
+            </button>
+          ))}
+        </div>
 
-  <div className="catGrid">
-    {cats.map((c) => (
-      <div
-        key={c._id}
-        className="catCard"
-        onClick={() => nav(`/shop?category=${c.slug || c._id}`)}
-      >
-        <img
-          src={c.image || "https://via.placeholder.com/80"}
-          alt={c.name}
-        />
-        <p>{c.name}</p>
+        {/* ✅ bottom options (2টা) */}
+        <div className="catOptions">
+          <div className="optionCard">
+            🚚 <span>Free Delivery</span>
+          </div>
+
+          <div className="optionCard">
+            🛍️ <span>Best Offers</span>
+          </div>
+        </div>
       </div>
-    ))}
-  </div>
 
-  {/* bottom options */}
-  <div className="catOptions">
-    <div className="optionCard">
-      🚚 <span>Free Delivery</span>
-    </div>
+      {/* ===== NEW ARRIVALS (example section) ===== */}
+      <div className="homeSection">
+        <div className="rowBetween homeSectionHeader">
+          <h3 className="homeSectionTitle">NEW ARRIVALS</h3>
+          <Link className="seeMoreLink" to="/shop">
+            See More →
+          </Link>
+        </div>
 
-    <div className="optionCard">
-      🛍️ <span>Best Offers</span>
+        {loading ? (
+          <div className="box">Loading...</div>
+        ) : newArrivals.length === 0 ? (
+          <div className="box">No products yet</div>
+        ) : (
+          <div className="grid">
+            {newArrivals.map((p) => (
+              <ProductCard key={p._id} p={p} />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* ===== CATEGORY WISE SECTIONS (optional but সুন্দর লাগে) ===== */}
+      {cats.map((c) => {
+        const list = byCat.get(c._id) || [];
+        if (!list.length) return null;
+
+        return (
+          <div className="homeSection" key={c._id}>
+            <div className="rowBetween homeSectionHeader">
+              <h3 className="homeSectionTitle">{c.name}</h3>
+              <button
+                type="button"
+                className="seeMoreLink"
+                onClick={() => nav(`/shop?category=${c.slug || c._id}`)}
+              >
+                See More →
+              </button>
+            </div>
+
+            <div className="grid">
+              {list.slice(0, 6).map((p) => (
+                <ProductCard key={p._id} p={p} />
+              ))}
+            </div>
+          </div>
+        );
+      })}
     </div>
-  </div>
+  );
+}
