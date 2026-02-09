@@ -1,0 +1,132 @@
+/* =========================
+   Admin Orders – Premium UI
+   NO logic change
+========================= */
+
+.container {
+  max-width: 1100px;
+}
+
+/* page header */
+.rowBetween {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* =========================
+   ORDER CARD
+========================= */
+.box {
+  background: #fff;
+  border-radius: 18px;
+  border: 1px solid #eee;
+  box-shadow: 0 12px 28px rgba(0,0,0,.06);
+  padding: 14px;
+  margin-top: 14px;
+}
+
+/* order header row */
+.box > .rowBetween {
+  margin-bottom: 8px;
+}
+
+/* order number */
+.box b,
+.box strong {
+  font-size: 16px;
+  font-weight: 900;
+}
+
+/* date text */
+.box .muted {
+  font-size: 13px;
+  color: rgba(0,0,0,.55);
+}
+
+/* =========================
+   CUSTOMER INFO
+========================= */
+.box > div:nth-child(2) {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+/* =========================
+   ORDER ITEMS
+========================= */
+.box hr {
+  border: none;
+  border-top: 1px dashed #e6e6e6;
+  margin: 10px 0;
+}
+
+.box p {
+  margin: 0;
+}
+
+/* product row */
+.box p strong {
+  font-weight: 800;
+  line-height: 1.35;
+  display: block;
+}
+
+/* variant text */
+.box p span,
+.box p em {
+  display: block;
+  font-size: 13px;
+  color: rgba(0,0,0,.6);
+  margin-top: 2px;
+}
+
+/* qty & price align */
+.box p + div,
+.box p + span {
+  white-space: nowrap;
+}
+
+/* =========================
+   TOTAL + STATUS
+========================= */
+.box > .rowBetween:last-child {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+}
+
+/* total amount */
+.box .price,
+.box b:last-child {
+  font-size: 18px;
+  font-weight: 900;
+}
+
+/* status dropdown */
+select {
+  border-radius: 14px;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  font-weight: 800;
+  background: #fff;
+}
+
+/* =========================
+   RESPONSIVE (Mobile)
+========================= */
+@media (max-width: 768px) {
+  .box {
+    padding: 12px;
+  }
+
+  .box p strong {
+    font-size: 14px;
+  }
+
+  select {
+    font-size: 14px;
+  }
+}
