@@ -48,8 +48,8 @@ export default function ProductCard({ p }) {
       qty: 1,
     });
 
-    // ✅ cart page এ যাবে
-    nav("/cart");
+    // ✅ Add হবে, কিন্তু cart page এ যাবে না
+    // nav("/cart");  <-- এটা বাদ
   };
 
   return (
