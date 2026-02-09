@@ -186,6 +186,6 @@
 @media (max-width: 520px){
   .authCard{ padding: 16px 14px; border-radius: 18px; 
   }
-}
   .twoCol{ grid-template-columns: 1fr; }
+ }
 }
