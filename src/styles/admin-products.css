@@ -150,6 +150,7 @@ input[type="file"] {
   .twoCol {
     grid-template-columns: 1fr;
   }
+}
 
   .grid {
     grid-template-columns: 1fr;
