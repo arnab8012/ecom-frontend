@@ -16,7 +16,7 @@ function Inner() {
     try {
       setLoading(true);
 
-      // ✅ admin token সহ get
+      
       const rr = await api.getAuth("/api/admin/orders", t);
 
       if (!rr?.ok) {
@@ -37,7 +37,7 @@ function Inner() {
   }, []);
 
   const setStatus = async (id, status) => {
-    // ❌ api.putAuth নেই — ✅ তোমার api.put ব্যবহার করো
+    
     const rr = await api.put(`/api/admin/orders/${id}/status`, { status }, t);
     if (!rr?.ok) return alert(rr?.message || "Failed to update status");
     load();
