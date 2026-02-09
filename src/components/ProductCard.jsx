@@ -3,12 +3,15 @@ import { Link, useNavigate } from "react-router-dom";
 import { useFavorites } from "../context/FavoritesContext";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
+import { useState } from "react";
 
 export default function ProductCard({ p }) {
   const nav = useNavigate();
   const fav = useFavorites();
   const { user } = useAuth();
   const { add } = useCart();
+
+  const [added, setAdded] = useState(false);
 
   const isFav = Array.isArray(fav?.favIds) ? fav.favIds.includes(p?._id) : false;
 
@@ -19,7 +22,6 @@ export default function ProductCard({ p }) {
 
   const productLink = "/product/" + p?._id;
 
-  // ✅ prevent parent click (Home এর category button / wrapper)
   const stop = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -27,8 +29,6 @@ export default function ProductCard({ p }) {
 
   const onFav = (e) => {
     stop(e);
-
-    // ✅ login ছাড়া priyo না
     if (!user) {
       nav("/login");
       return;
@@ -48,50 +48,39 @@ export default function ProductCard({ p }) {
       qty: 1,
     });
 
-    // ✅ Add হবে, কিন্তু cart page এ যাবে না
-    // nav("/cart");  <-- এটা বাদ
+    // ✅ show toast
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1200);
   };
 
   return (
     <div className="pCard">
-      {/* image area */}
+      {/* ✅ Toast */}
+      {added && <div className="toastAdded">✓ Added to cart</div>}
+
       <div className="pImgWrap">
         <Link to={productLink} onClick={(e) => e.stopPropagation()}>
-          <img
-            className="pImg"
-            src={img}
-            alt={p?.title || "product"}
-            loading="lazy"
-            onError={(e) => {
-              e.currentTarget.onerror = null;
-              e.currentTarget.src = "https://via.placeholder.com/300";
-            }}
-          />
+          <img className="pImg" src={img} alt={p?.title} />
         </Link>
 
-        {/* favorite */}
-        <button className="pFav" type="button" onClick={onFav} title="Priyo">
+        <button className="pFav" type="button" onClick={onFav}>
           {isFav ? "❤️" : "🤍"}
         </button>
       </div>
 
-      {/* body */}
-      <div className="pBody" onClick={(e) => e.stopPropagation()}>
-        <Link to={productLink} className="pTitle" onClick={(e) => e.stopPropagation()}>
+      <div className="pBody">
+        <Link to={productLink} className="pTitle">
           {p?.title}
         </Link>
 
-        <div className="pPriceRow">
-          <div className="pPrice">৳ {p?.price}</div>
-        </div>
+        <div className="pPrice">৳ {p?.price}</div>
 
         <div className="pActions">
-          {/* ✅ Premium 2-button: View + Add */}
-          <Link to={productLink} className="btnSoft" onClick={(e) => e.stopPropagation()}>
+          <Link to={productLink} className="btnSoft">
             View
           </Link>
 
-          <button className="btnPrimary" type="button" onClick={onAddCart}>
+          <button className="btnPrimary" onClick={onAddCart}>
             Add
           </button>
         </div>
