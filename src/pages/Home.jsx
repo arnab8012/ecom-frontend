@@ -108,30 +108,37 @@ export default function Home() {
         <div className="homeHeroSub">Premium Shopping Experience</div>
       </div>
 
-      {/* ===== CATEGORIES ===== */}
-      {cats.map((c) => {
-        const list = byCat.get(c._id) || [];
-        if (!list.length) return null;
 
-        return (
-          <div className="homeSection" key={c._id}>
-            <div className="catHeaderRow">
-              <div className="catHeaderTitle">{c.name.toUpperCase()}</div>
-              <Link to={`/shop?category=${c._id}`} className="seeMoreBtn">
-                See More →
-              </Link>
-            </div>
+<div className="catSection">
+  <div className="catHeader">
+    <h3>Categories</h3>
+    <span className="seeMore">See more</span>
+  </div>
 
-            <div className="homeTwoGrid">
-              {list.slice(0, 2).map((p) => (
-                <ProductCard key={p._id} p={p} />
-              ))}
-            </div>
-          </div>
-        );
-      })}
+  <div className="catGrid">
+    {cats.map((c) => (
+      <div
+        key={c._id}
+        className="catCard"
+        onClick={() => nav(`/shop?category=${c.slug || c._id}`)}
+      >
+        <img
+          src={c.image || "https://via.placeholder.com/80"}
+          alt={c.name}
+        />
+        <p>{c.name}</p>
+      </div>
+    ))}
+  </div>
 
-      {loading && <p>Loading...</p>}
+  {/* bottom options */}
+  <div className="catOptions">
+    <div className="optionCard">
+      🚚 <span>Free Delivery</span>
     </div>
-  );
-}
+
+    <div className="optionCard">
+      🛍️ <span>Best Offers</span>
+    </div>
+  </div>
+</div>
