@@ -28,7 +28,7 @@ body{
 
 /* ✅ BottomNav fixed থাকলে footer overlap বন্ধ করবে */
 :root{
-  --bottom-nav-h: 72px; /* তোমার bottom nav height */
+  --bottom-nav-h: 72px;
 }
 
 body{
