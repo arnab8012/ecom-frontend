@@ -141,4 +141,3 @@ export default function Home() {
       🛍️ <span>Best Offers</span>
     </div>
   </div>
-</div>
