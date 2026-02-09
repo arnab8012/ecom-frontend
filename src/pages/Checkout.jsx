@@ -1,3 +1,4 @@
+import "../styles/checkout.css";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useCart } from "../context/CartContext";
