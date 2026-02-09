@@ -1,3 +1,4 @@
+// src/context/CartContext.jsx
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 const CartContext = createContext(null);
@@ -43,11 +44,43 @@ export function CartProvider({ children }) {
       let next;
       if (i >= 0) {
         next = prev.map((x, idx) =>
-          idx === i ? { ...x, qty: x.qty + item.qty } : x
+          idx === i ? { ...x, qty: Number(x.qty || 0) + Number(item.qty || 0) } : x
         );
       } else {
-        next = [...prev, item];
+        next = [...prev, { ...item, qty: Number(item.qty || 1) }];
       }
+
+      saveCart(next);
+      return next;
+    });
+  };
+
+  // ✅ INC qty
+  const inc = (productId, variant = "") => {
+    setItems((prev) => {
+      const next = prev.map((x) => {
+        const same =
+          String(x.productId) === String(productId) &&
+          String(x.variant || "") === String(variant || "");
+        if (!same) return x;
+        return { ...x, qty: Number(x.qty || 0) + 1 };
+      });
+
+      saveCart(next);
+      return next;
+    });
+  };
+
+  // ✅ DEC qty (qty 1 এর নিচে যাবে না)
+  const dec = (productId, variant = "") => {
+    setItems((prev) => {
+      const next = prev.map((x) => {
+        const same =
+          String(x.productId) === String(productId) &&
+          String(x.variant || "") === String(variant || "");
+        if (!same) return x;
+        return { ...x, qty: Math.max(1, Number(x.qty || 0) - 1) };
+      });
 
       saveCart(next);
       return next;
@@ -59,7 +92,7 @@ export function CartProvider({ children }) {
       const next = prev.filter(
         (x) =>
           !(
-            x.productId === productId &&
+            String(x.productId) === String(productId) &&
             String(x.variant || "") === String(variant || "")
           )
       );
@@ -106,6 +139,8 @@ export function CartProvider({ children }) {
     // cart
     items,
     add,
+    inc, // ✅ added
+    dec, // ✅ added
     remove,
     clear,
     cartCount,
