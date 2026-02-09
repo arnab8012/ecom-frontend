@@ -253,4 +253,24 @@
   .cartTitleH{
     font-size: 26px;
   }
+
+.toastAdded {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: #16a34a;
+  color: #fff;
+  font-size: 13px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+  animation: toastFade 1.2s ease forwards;
+  z-index: 10;
+}
+
+@keyframes toastFade {
+  0% { opacity: 0; transform: translateY(-6px); }
+  15% { opacity: 1; transform: translateY(0); }
+  85% { opacity: 1; }
+  100% { opacity: 0; }
 }
