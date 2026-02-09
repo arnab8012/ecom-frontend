@@ -94,8 +94,25 @@ export default function ProductCard({ p }) {
           {p?.title}
         </Link>
 
-        <div className="pPriceRow">
-          <div className="pPrice">৳ {p?.price}</div>
+        {/* PRICE */}
+<div className="pcPriceRow">
+  <span className="pcPrice">৳ {p?.price || 0}</span>
+
+  {p?.compareAtPrice ? (
+    <span className="pcCut">৳ {p.compareAtPrice}</span>
+  ) : null}
+</div>
+
+{/* RATING + SOLD (optional) */}
+<div className="pcMetaRow">
+  <span className="pcStar">⭐</span>
+  <span className="pcRating">
+    {Number(p?.rating || 0)}/5 ({Number(p?.ratingCount || 0)})
+  </span>
+  <span className="pcDot">•</span>
+  <span className="pcSold">{Number(p?.sold || 0)} Sold</span>
+</div>
+
         </div>
 
         <div className="pActions">
