@@ -6,6 +6,9 @@
   padding: 10px 2px 4px;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
+
+  direction: rtl;              /* ✅ ডান থেকে বামে */
+  justify-content: flex-start;
 }
 
 .catRow::-webkit-scrollbar{
@@ -62,4 +65,24 @@
   padding: 10px;
   border-radius: 18px;
   margin-bottom: 10px;
+}
+
+/* ✅ Bottom Options */
+.catOptions{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.optionCard{
+  background: #fff1f1;
+  border-radius: 18px;
+  padding: 14px 14px;
+  font-size: 15px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 10px 22px rgba(0,0,0,.06);
 }
