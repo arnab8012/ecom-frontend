@@ -112,52 +112,7 @@ export default function Home() {
 
 <HomeCategories cats={cats} />
 
-      {/* ===== CATEGORIES + BEST OFFERS ===== */}
-      <div className="catSection">
-        <div className="catHeader">
-          <h3>Categories</h3>
-
-          <button
-            className="seeMore"
-            type="button"
-            onClick={() => nav("/shop")}
-            title="See more"
-          >
-            See more
-          </button>
-        </div>
-
-        {/* ✅ RTL scroll row */}
-        <div className="catGrid">
-          {(cats || []).map((c) => (
-            <div
-              key={c._id}
-              className="catCard"
-              onClick={() => nav(`/shop?category=${c.slug || c._id}`)}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") nav(`/shop?category=${c.slug || c._id}`);
-              }}
-            >
-              <img src={absUrl(c.image) || "https://via.placeholder.com/80"} alt={c.name} />
-              <p>{c.name}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* ✅ 2 options under categories */}
-        <div className="catOptions">
-          <div className="optionCard">
-            🚚 <span>Free Delivery</span>
-          </div>
-
-          <div className="optionCard">
-            🛍️ <span>Best Offers</span>
-          </div>
-        </div>
-      </div>
-
+      
       {/* ===== PRODUCTS SECTIONS (by category) ===== */}
       {loading ? (
         <div className="box" style={{ marginTop: 14 }}>
