@@ -1,3 +1,4 @@
+import "../../styles/admin-banners.css";
 import { useEffect, useRef, useState, useMemo } from "react";
 import { api } from "../../api/api";
 import AdminRoute from "../../components/AdminRoute";
