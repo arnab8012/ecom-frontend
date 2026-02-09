@@ -1,13 +1,15 @@
-
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { api } from "../api/api";
 import { useCart } from "../context/CartContext";
 
+// ✅ যদি তোমার css ফাইল থাকে, এই লাইনটা রাখো/যোগ করো
+// import "../styles/productDetails.css";
+
 export default function ProductDetails() {
   const { id } = useParams();
   const nav = useNavigate();
-  const { add, buyNow } = useCart(); // ✅ buyNow যোগ
+  const { add, buyNow } = useCart();
 
   const [p, setP] = useState(null);
   const [variant, setVariant] = useState("");
@@ -15,6 +17,9 @@ export default function ProductDetails() {
 
   // ✅ gallery state
   const [idx, setIdx] = useState(0);
+
+  // ✅ toast
+  const [toast, setToast] = useState("");
 
   useEffect(() => {
     let alive = true;
@@ -27,8 +32,7 @@ export default function ProductDetails() {
         setP(r.product);
         const firstVar = r.product.variants?.[0]?.name || "";
         setVariant(firstVar);
-
-        // ✅ reset gallery index
+        setQty(1);
         setIdx(0);
       } else {
         alert(r.message || "Not found");
@@ -73,6 +77,12 @@ export default function ProductDetails() {
   const next = () => {
     if (!imgs.length) return;
     setIdx((x) => (x + 1) % imgs.length);
+  };
+
+  const showToast = (msg) => {
+    setToast(msg);
+    window.clearTimeout(showToast._t);
+    showToast._t = window.setTimeout(() => setToast(""), 1200);
   };
 
   return (
@@ -208,7 +218,27 @@ export default function ProductDetails() {
         </div>
 
         {/* ✅ RIGHT: Details */}
-        <div className="pdRight">
+        <div className="pdRight" style={{ position: "relative" }}>
+          {/* ✅ Toast */}
+          {toast ? (
+            <div
+              style={{
+                position: "sticky",
+                top: 8,
+                zIndex: 20,
+                background: "rgba(0,0,0,0.78)",
+                color: "#fff",
+                padding: "10px 14px",
+                borderRadius: 12,
+                width: "fit-content",
+                fontWeight: 800,
+                marginBottom: 10
+              }}
+            >
+              ✓ {toast}
+            </div>
+          ) : null}
+
           <h2>{p.title}</h2>
 
           <div className="priceRow">
@@ -221,7 +251,11 @@ export default function ProductDetails() {
           {p.variants?.length ? (
             <div className="box">
               <div className="lbl">Available variant:</div>
-              <select value={variant} onChange={(e) => setVariant(e.target.value)} className="input">
+              <select
+                value={variant}
+                onChange={(e) => setVariant(e.target.value)}
+                className="input"
+              >
                 {p.variants.map((v, i) => (
                   <option key={i} value={v.name}>
                     {v.name} (Stock: {v.stock})
@@ -233,32 +267,37 @@ export default function ProductDetails() {
 
           <div className="box">
             <div className="lbl">Quantity</div>
+
+            {/* ✅ সুন্দর qtyRow */}
             <div className="qtyRow">
               <button
-                className="btnGhost"
+                className="qtyBtn"
                 onClick={() => setQty((q) => Math.max(1, q - 1))}
                 type="button"
               >
-                -
+                −
               </button>
+
               <input
                 className="qtyInput"
                 value={qty}
                 onChange={(e) => setQty(Math.max(1, Number(e.target.value || 1)))}
+                inputMode="numeric"
               />
-              <button className="btnGhost" onClick={() => setQty((q) => q + 1)} type="button">
+
+              <button className="qtyBtn" onClick={() => setQty((q) => q + 1)} type="button">
                 +
               </button>
             </div>
           </div>
 
           <div className="pdBtns">
-            {/* ✅ Add to Cart => cart এ যাবে */}
+            {/* ✅ Add to Cart => cart এ add হবে, কিন্তু /cart এ যাবে না */}
             <button
               className="btnPinkFull"
               onClick={() => {
                 add(cartItem);
-                nav("/cart");
+                showToast("Added to cart");
               }}
               type="button"
             >
