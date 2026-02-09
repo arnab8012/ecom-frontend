@@ -48,6 +48,7 @@ export default function Cart() {
             {list.map((x, idx) => {
               // ✅ IMPORTANT: productId আগে (তোমার context এ এটাই থাকে)
               const id = x?.productId || x?._id || x?.id;
+              const variant = (x?.variant || "").toString(); // ✅ variant support
               const title = x?.title || "Product";
 
               const img =
@@ -59,8 +60,10 @@ export default function Cart() {
               const price = Number(x?.price) || 0;
               const qty = Number(x?.qty) || 1;
 
+              const key = `${id || title}-${variant || "novar"}-${idx}`;
+
               return (
-                <div className="cartItem cartItemPremium" key={id || `${title}-${idx}`}>
+                <div className="cartItem cartItemPremium" key={key}>
                   <Link to={id ? `/product/${id}` : "#"} className="cartThumb cartThumbPremium">
                     <img
                       src={img}
@@ -88,7 +91,7 @@ export default function Cart() {
                       <div className="qtyBox qtyBoxPremium">
                         <button
                           type="button"
-                          onClick={() => id && dec(String(id))}
+                          onClick={() => id && dec(String(id), variant)}
                           className="qtyBtn qtyBtnPremium"
                           aria-label="Decrease quantity"
                           disabled={!id}
@@ -100,7 +103,7 @@ export default function Cart() {
 
                         <button
                           type="button"
-                          onClick={() => id && inc(String(id))}
+                          onClick={() => id && inc(String(id), variant)}
                           className="qtyBtn qtyBtnPremium"
                           aria-label="Increase quantity"
                           disabled={!id}
@@ -112,7 +115,7 @@ export default function Cart() {
                       <button
                         type="button"
                         className="btnDanger btnDangerPremium"
-                        onClick={() => id && remove(String(id))}
+                        onClick={() => id && remove(String(id), variant)}
                         disabled={!id}
                       >
                         Remove
