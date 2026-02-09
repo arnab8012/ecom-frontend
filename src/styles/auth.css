@@ -7,7 +7,7 @@
   justify-content:center;
   padding: 22px 14px;
 
-  /* premium light background */
+  
   background:
     radial-gradient(900px 520px at 20% 10%, rgba(117,216,75,0.22) 0%, rgba(117,216,75,0.0) 60%),
     radial-gradient(900px 520px at 80% 0%, rgba(119,183,255,0.22) 0%, rgba(119,183,255,0.0) 55%),
@@ -21,7 +21,7 @@
   border-radius: 22px;
   padding: 18px 16px;
 
-  /* glass + premium */
+  
   background: rgba(255,255,255,0.78);
   border: 1px solid rgba(0,0,0,0.08);
   backdrop-filter: blur(12px);
@@ -57,7 +57,7 @@
   font-weight: 1000;
   letter-spacing: .3px;
 
-  /* premium gradient text */
+  
   background: linear-gradient(90deg, #0f5f5c 0%, #75d84b 55%, #77b7ff 100%);
   -webkit-background-clip: text;
   background-clip: text;
