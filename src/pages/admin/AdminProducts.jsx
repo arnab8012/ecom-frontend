@@ -1,5 +1,4 @@
-// src/pages/admin/AdminProducts.jsx
-
+import "../../styles/admin-products.css";
 import { useEffect, useRef, useState } from "react";
 import { api } from "../../api/api";
 import AdminRoute from "../../components/AdminRoute";
