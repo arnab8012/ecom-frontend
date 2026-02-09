@@ -1,52 +1,35 @@
-/* =========================
+/* ================================
    Admin Banners – Premium UI
-   ONLY CSS (no logic change)
-========================= */
+   NO LOGIC CHANGE
+================================ */
 
+/* container একটু সুন্দর */
 .container {
   max-width: 1100px;
 }
 
-/* page header */
-.rowBetween {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-/* Back button consistent */
-a.btnGhost, .btnGhost {
-  border-radius: 999px;
-}
-
-/* common box */
-.box {
-  background: #fff;
-  border: 1px solid #eee;
+/* common admin card */
+.adminCard {
+  background: #ffffff;
   border-radius: 18px;
-  box-shadow: 0 12px 28px rgba(0,0,0,.06);
+  border: 1px solid #eee;
   padding: 14px;
   margin-top: 14px;
-}
-
-/* section titles */
-.box b, .box strong, h2, h3 {
-  font-weight: 900;
+  box-shadow: 0 12px 28px rgba(0,0,0,.06);
 }
 
 /* labels */
 .lbl {
-  display: block;
-  margin-top: 10px;
-  margin-bottom: 6px;
   font-size: 13px;
   font-weight: 800;
   color: rgba(0,0,0,.7);
+  margin-bottom: 6px;
+  display: block;
 }
 
 /* inputs */
-.input, input[type="text"], input[type="url"], input[type="file"], select {
+.input,
+input[type="file"] {
   width: 100%;
   border-radius: 14px;
   border: 1px solid #ddd;
@@ -55,116 +38,94 @@ a.btnGhost, .btnGhost {
   background: #fff;
 }
 
-/* file input look nicer */
-input[type="file"] {
-  padding: 10px;
+/* muted text */
+.muted {
+  font-size: 13px;
+  color: rgba(0,0,0,.55);
 }
 
-/* top upload area layout (responsive grid) */
-.adminBannerTop {
+/* ================================
+   Banner thumbnail grid
+================================ */
+.bannerThumbGrid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(2, 1fr);
   gap: 12px;
 }
 
-@media (min-width: 900px) {
-  .adminBannerTop {
-    grid-template-columns: 1fr 1fr;
-    align-items: start;
-  }
-}
-
-/* url add row */
-.adminBannerUrlRow {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.adminBannerUrlRow .input {
-  flex: 1;
-}
-
-.adminBannerUrlRow button {
-  white-space: nowrap;
-  border-radius: 14px;
-  padding: 10px 14px;
-}
-
-/* pending text */
-.muted {
-  color: rgba(0,0,0,.55);
-  font-size: 13px;
-}
-
-/* =========================
-   LIVE BANNERS GRID
-========================= */
-.adminBannerGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 14px;
-  margin-top: 12px;
-}
-
 @media (min-width: 720px) {
-  .adminBannerGrid {
-    grid-template-columns: repeat(2, 1fr);
+  .bannerThumbGrid {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
-/* banner card */
-.adminBannerCard {
+@media (min-width: 1000px) {
+  .bannerThumbGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* single banner thumb */
+.bannerThumb {
   position: relative;
   background: #fff;
-  border: 1px solid #eee;
-  border-radius: 18px;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 10px 22px rgba(0,0,0,.06);
+  border: 1px solid #eee;
+  box-shadow: 0 8px 18px rgba(0,0,0,.08);
 }
 
-/* image fits nicely (no giant height) */
-.adminBannerCard img {
+/* banner image size control */
+.bannerThumb img {
   width: 100%;
-  height: 210px;
+  height: 180px;
   object-fit: cover;
   display: block;
 }
 
 @media (min-width: 720px) {
-  .adminBannerCard img {
-    height: 240px;
+  .bannerThumb img {
+    height: 200px;
   }
 }
 
-/* delete button on top-right */
-.adminBannerDelete {
+/* ❌ remove (pending) */
+.thumbX {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 40px;
-  height: 40px;
+  top: 8px;
+  right: 8px;
+  width: 34px;
+  height: 34px;
   border-radius: 999px;
   border: none;
   cursor: pointer;
-  font-weight: 900;
-  background: rgba(255,255,255,.92);
-  box-shadow: 0 10px 20px rgba(0,0,0,.12);
+  font-size: 14px;
+  background: rgba(255,255,255,.95);
+  box-shadow: 0 8px 16px rgba(0,0,0,.15);
 }
 
-/* little hover */
-.adminBannerDelete:active {
-  transform: scale(.98);
+/* 🗑 delete (live) */
+.thumbBin {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  background: rgba(255,255,255,.95);
+  box-shadow: 0 8px 18px rgba(0,0,0,.18);
 }
 
-/* optional small footer row if you have it */
-.adminBannerCardFooter {
-  padding: 10px 12px;
-  border-top: 1px solid #f0f0f0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  font-size: 13px;
-  color: rgba(0,0,0,.65);
+/* button feedback */
+.thumbX:active,
+.thumbBin:active {
+  transform: scale(.96);
+}
+
+/* save button spacing */
+.btnPinkFull {
+  border-radius: 999px;
 }
