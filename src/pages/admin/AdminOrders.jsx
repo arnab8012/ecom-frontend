@@ -1,3 +1,4 @@
+import "../../styles/admin-orders.css";
 import { useEffect, useState } from "react";
 import { api } from "../../api/api";
 import AdminRoute from "../../components/AdminRoute";
