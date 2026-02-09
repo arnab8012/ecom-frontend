@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "../api/api";
 import ProductCard from "../components/ProductCard";
+import HomeCategories from "../components/HomeCategories";
 
 export default function Home() {
   const nav = useNavigate();
