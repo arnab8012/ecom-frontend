@@ -1,15 +1,18 @@
 import { Link, useNavigate } from "react-router-dom";
+import "../../styles/admin-dashboard.css"; // ✅ এই লাইনটা নতুন
 
 export default function AdminDashboard() {
   const nav = useNavigate();
 
   return (
     <div className="container">
-      <div className="rowBetween">
-        <h2 style={{ margin: 0 }}>Admin Dashboard</h2>
+      <div className="adminTopRow">
+        <h2 className="adminTitle" style={{ margin: 0 }}>
+          Admin Dashboard
+        </h2>
 
         <button
-          className="btnGhost"
+          className="adminLogout"
           type="button"
           onClick={() => {
             localStorage.removeItem("admin_token");
@@ -20,45 +23,61 @@ export default function AdminDashboard() {
         </button>
       </div>
 
-      {/* ✅ Premium quick actions */}
-      <div className="adminDashGrid" style={{ marginTop: 14 }}>
+      {/* ✅ Premium quick actions (same links, nothing removed) */}
+      <div className="adminDashGrid">
         <Link className="adminDashCard" to="/admin/products">
-          <div className="adminDashIcon">🛍️</div>
-          <div className="adminDashTitle">Products</div>
-          <div className="adminDashSub">Add / Edit / Delete products</div>
+          <div className="adminDashIconWrap">
+            <div className="adminDashIcon">🛍️</div>
+          </div>
+          <div className="adminDashText">
+            <div className="adminDashTitle">Products</div>
+            <div className="adminDashSub">Add / Edit / Delete products</div>
+          </div>
         </Link>
 
         <Link className="adminDashCard" to="/admin/categories">
-          <div className="adminDashIcon">🗂️</div>
-          <div className="adminDashTitle">Categories</div>
-          <div className="adminDashSub">Manage category list</div>
+          <div className="adminDashIconWrap">
+            <div className="adminDashIcon">🗂️</div>
+          </div>
+          <div className="adminDashText">
+            <div className="adminDashTitle">Categories</div>
+            <div className="adminDashSub">Manage category list</div>
+          </div>
         </Link>
 
         <Link className="adminDashCard" to="/admin/orders">
-          <div className="adminDashIcon">📦</div>
-          <div className="adminDashTitle">Orders</div>
-          <div className="adminDashSub">View & update orders</div>
+          <div className="adminDashIconWrap">
+            <div className="adminDashIcon">📦</div>
+          </div>
+          <div className="adminDashText">
+            <div className="adminDashTitle">Orders</div>
+            <div className="adminDashSub">View & update orders</div>
+          </div>
         </Link>
 
         <Link className="adminDashCard" to="/admin/banners">
-          <div className="adminDashIcon">🖼️</div>
-          <div className="adminDashTitle">Banners</div>
-          <div className="adminDashSub">Upload & manage banners</div>
+          <div className="adminDashIconWrap">
+            <div className="adminDashIcon">🖼️</div>
+          </div>
+          <div className="adminDashText">
+            <div className="adminDashTitle">Banners</div>
+            <div className="adminDashSub">Upload & manage banners</div>
+          </div>
         </Link>
       </div>
 
       {/* ✅ Keep your existing chips row too (same links) */}
-      <div className="cats" style={{ marginTop: 14 }}>
-        <Link className="chip active" to="/admin/products">
+      <div className="adminChips">
+        <Link className="adminChip" to="/admin/products">
           Products
         </Link>
-        <Link className="chip active" to="/admin/categories">
+        <Link className="adminChip" to="/admin/categories">
           Categories
         </Link>
-        <Link className="chip active" to="/admin/orders">
+        <Link className="adminChip" to="/admin/orders">
           Orders
         </Link>
-        <Link className="chip active" to="/admin/banners">
+        <Link className="adminChip" to="/admin/banners">
           Banners
         </Link>
       </div>
