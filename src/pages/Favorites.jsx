@@ -15,31 +15,6 @@ export default function Favorites() {
   const { user } = useAuth();
   const { buyNow } = useCart();
 
-  // ✅ SEO: don't index favorites page (SPA safe with cleanup)
-  useEffect(() => {
-    // admin page হলে কিছুই না (optional, safe)
-    if (pathname.startsWith("/admin")) return;
-
-    let tag = document.querySelector('meta[name="robots"]');
-    const prev = tag?.getAttribute("content") || null;
-
-    if (!tag) {
-      tag = document.createElement("meta");
-      tag.setAttribute("name", "robots");
-      document.head.appendChild(tag);
-    }
-
-    tag.setAttribute("content", "noindex, nofollow");
-
-    return () => {
-      // আগের robots meta ফিরিয়ে দাও
-      const current = document.querySelector('meta[name="robots"]');
-      if (!current) return;
-
-      if (prev) current.setAttribute("content", prev);
-      else current.remove(); // আগে ছিল না, তাই remove
-    };
-  }, [pathname]);
 
   // ✅ admin panel এ hide
   if (pathname.startsWith("/admin")) return null;
