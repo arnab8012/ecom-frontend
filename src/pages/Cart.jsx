@@ -4,11 +4,23 @@ import "../styles/cart.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
+import { useEffect } from "react"; // ✅ ADD THIS
 
 export default function Cart() {
   const nav = useNavigate();
   const { user } = useAuth();
   const { items, inc, dec, remove, clear } = useCart();
+
+  // ✅ SEO: don't index cart page
+  useEffect(() => {
+    let tag = document.querySelector('meta[name="robots"]');
+    if (!tag) {
+      tag = document.createElement("meta");
+      tag.setAttribute("name", "robots");
+      document.head.appendChild(tag);
+    }
+    tag.setAttribute("content", "noindex, nofollow");
+  }, []);
 
   const list = Array.isArray(items) ? items : [];
 
@@ -46,9 +58,8 @@ export default function Cart() {
         <>
           <div className="cartList cartListPremium">
             {list.map((x, idx) => {
-              // ✅ IMPORTANT: productId আগে (তোমার context এ এটাই থাকে)
               const id = x?.productId || x?._id || x?.id;
-              const variant = (x?.variant || "").toString(); // ✅ variant support
+              const variant = (x?.variant || "").toString();
               const title = x?.title || "Product";
 
               const img =
@@ -120,9 +131,6 @@ export default function Cart() {
                       >
                         Remove
                       </button>
-
-                      {/* ✅ Debug help (চাইলে পরে মুছবে) */}
-                      {/* {!id ? <small style={{ color: "red" }}>Missing product id</small> : null} */}
                     </div>
                   </div>
                 </div>
