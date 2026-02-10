@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://YOUR_FRONTEND_DOMAIN/sitemap.xml
+Sitemap: https://thecuriousempire.com/sitemap.xml
