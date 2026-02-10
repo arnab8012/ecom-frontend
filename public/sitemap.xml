@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://YOUR_FRONTEND_DOMAIN/</loc></url>
-  <url><loc>https://YOUR_FRONTEND_DOMAIN/shop</loc></url>
-  <url><loc>https://YOUR_FRONTEND_DOMAIN/cart</loc></url>
-  <url><loc>https://YOUR_FRONTEND_DOMAIN/priyo</loc></url>
-  <url><loc>https://YOUR_FRONTEND_DOMAIN/profile</loc></url>
-  <url><loc>https://YOUR_FRONTEND_DOMAIN/login</loc></url>
-  <url><loc>https://YOUR_FRONTEND_DOMAIN/register</loc></url>
+
+  <url><loc>https://thecuriousempire.com/</loc></url>
+  <url><loc>https://thecuriousempire.com/shop</loc></url>
+  <url><loc>https://thecuriousempire.com/cart</loc></url>
+  <url><loc>https://thecuriousempire.com/priyo</loc></url>
+  <url><loc>https://thecuriousempire.com/profile</loc></url>
+  <url><loc>https://thecuriousempire.com/login</loc></url>
+  <url><loc>https://thecuriousempire.com/register</loc></url>
+
 </urlset>
