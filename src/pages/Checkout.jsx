@@ -1,3 +1,4 @@
+// src/pages/Checkout.jsx
 import "../styles/checkout.css";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -13,7 +14,7 @@ const DIVISIONS = [
   "Barishal",
   "Sylhet",
   "Rangpur",
-  "Mymensingh"
+  "Mymensingh",
 ];
 
 const BOOK_KEY = "shipping_book_v1";
@@ -27,7 +28,7 @@ function emptyShipping(user) {
     district: "",
     upazila: "",
     addressLine: "",
-    note: ""
+    note: "",
   };
 }
 
@@ -47,7 +48,7 @@ function loadBook() {
     const b = JSON.parse(localStorage.getItem(BOOK_KEY) || "{}");
     return {
       selectedId: b?.selectedId || "",
-      items: Array.isArray(b?.items) ? b.items : []
+      items: Array.isArray(b?.items) ? b.items : [],
     };
   } catch {
     return { selectedId: "", items: [] };
@@ -57,17 +58,37 @@ function loadBook() {
 export default function Checkout() {
   const nav = useNavigate();
   const [sp] = useSearchParams();
-  const buyMode = sp.get("mode") === "buy"; // ✅ buy now mode
+  const buyMode = sp.get("mode") === "buy";
 
-  const { items, clear, checkoutItem, clearBuyNow } = useCart(); // ✅ checkoutItem + clearBuyNow যোগ
+  const { items, clear, checkoutItem, clearBuyNow } = useCart();
   const { user } = useAuth();
 
   const token = api.token();
 
+  // ✅ SEO: checkout should NOT be indexed (SPA safe cleanup)
+  useEffect(() => {
+    let tag = document.querySelector('meta[name="robots"]');
+    const prev = tag?.getAttribute("content") || null;
+
+    if (!tag) {
+      tag = document.createElement("meta");
+      tag.setAttribute("name", "robots");
+      document.head.appendChild(tag);
+    }
+
+    tag.setAttribute("content", "noindex, nofollow");
+
+    return () => {
+      const current = document.querySelector('meta[name="robots"]');
+      if (!current) return;
+      if (prev) current.setAttribute("content", prev);
+      else current.remove();
+    };
+  }, []);
+
   const [book, setBook] = useState(loadBook());
   const [useNew, setUseNew] = useState(false);
   const [selectedId, setSelectedId] = useState(book.selectedId || "");
-
   const [shipping, setShipping] = useState(emptyShipping(user));
 
   const [paymentMethod, setPaymentMethod] = useState("COD");
@@ -119,9 +140,19 @@ export default function Checkout() {
       setShipping({ ...emptyShipping(user), ...found.shipping });
     }
     // eslint-disable-next-line
-  }, [selectedId]);
+  }, [selectedId, useNew, book.items, user]);
 
-  if (!orderItems.length) return <div className="container">No item selected</div>;
+  // ✅ buyMode: checkoutItem না থাকলে user কে shop এ পাঠাবে
+  if (!orderItems.length) {
+    return (
+      <div className="container">
+        No item selected{" "}
+        <button className="btnGhost" type="button" onClick={() => nav("/shop")}>
+          Go shop
+        </button>
+      </div>
+    );
+  }
 
   const validateShipping = () => {
     if (!shipping.fullName) return "Name required";
@@ -195,10 +226,10 @@ export default function Checkout() {
       items: orderItems.map((x) => ({
         productId: x.productId,
         qty: x.qty,
-        variant: x.variant
+        variant: x.variant,
       })),
       shipping,
-      paymentMethod
+      paymentMethod,
     };
 
     const r = await api.post("/api/orders", payload, token);
@@ -245,7 +276,7 @@ export default function Checkout() {
                     border: "1px solid #eee",
                     borderRadius: 8,
                     marginBottom: 8,
-                    background: selectedId === x.id ? "#f7f7ff" : "#fff"
+                    background: selectedId === x.id ? "#f7f7ff" : "#fff",
                   }}
                 >
                   <label style={{ cursor: "pointer", flex: 1 }}>
