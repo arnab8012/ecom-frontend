@@ -5,6 +5,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { api } from "../api/api";
+import useNoIndex from "../utils/useNoIndex";
 
 const DIVISIONS = [
   "Dhaka",
@@ -58,6 +59,7 @@ function loadBook() {
 export default function Checkout() {
   const nav = useNavigate();
   const [sp] = useSearchParams();
+useNoIndex(); // ✅ checkout page noindex
   const buyMode = sp.get("mode") === "buy";
 
   const { items, clear, checkoutItem, clearBuyNow } = useCart();
