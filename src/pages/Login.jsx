@@ -29,7 +29,9 @@ export default function Login() {
 
   return (
     <div className="container authPage" style={{ maxWidth: 520 }}>
-      <h2 className="authH" style={{ marginTop: 8 }}>Login</h2>
+      <h2 className="authH" style={{ marginTop: 8 }}>
+        Login
+      </h2>
 
       <form onSubmit={onSubmit} className="box authCard" style={{ marginTop: 10 }}>
         <label className="lbl">Phone</label>
@@ -40,7 +42,9 @@ export default function Login() {
           placeholder="01XXXXXXXXX"
         />
 
-        <label className="lbl" style={{ marginTop: 10 }}>Password</label>
+        <label className="lbl" style={{ marginTop: 10 }}>
+          Password
+        </label>
         <input
           className="input"
           type="password"
@@ -48,6 +52,16 @@ export default function Login() {
           onChange={(e) => setPassword(e.target.value)}
           placeholder="••••••••"
         />
+
+        {/* ✅ Forgot Password link */}
+        <div style={{ marginTop: 10, textAlign: "right" }}>
+          <Link
+            to="/forgot-password"
+            style={{ fontWeight: 900, textDecoration: "none" }}
+          >
+            Forgot Password?
+          </Link>
+        </div>
 
         <button
           className="btnPrimary authBtn"
