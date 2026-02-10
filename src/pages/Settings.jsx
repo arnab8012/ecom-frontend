@@ -3,8 +3,10 @@ import "../styles/settings.css";
 
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import useNoIndex from "../utils/useNoIndex";
 
 export default function Settings() {
+  useNoIndex("noindex, nofollow");
   const nav = useNavigate();
   const { user, logout } = useAuth();
 
