@@ -5,8 +5,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { useEffect } from "react"; // ✅ ADD THIS
+import useNoIndex from "../utils/useNoIndex";
 
 export default function Cart() {
+  useNoIndex("noindex, nofollow");
   const nav = useNavigate();
   const { user } = useAuth();
   const { items, inc, dec, remove, clear } = useCart();
