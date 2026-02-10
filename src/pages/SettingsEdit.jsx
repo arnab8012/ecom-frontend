@@ -5,8 +5,10 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { api } from "../api/api";
+import useNoIndex from "../utils/useNoIndex";
 
 export default function SettingsEdit() {
+  useNoIndex("noindex, nofollow");
   const nav = useNavigate();
   const { user } = useAuth(); // (optional) refreshMe থাকলে destructure করতে পারবে
 
