@@ -1,10 +1,11 @@
+// src/pages/Favorites.jsx
 import "../styles/favorites.css";
 
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import { useFavorites } from "../context/FavoritesContext";
 import { useAuth } from "../context/AuthContext";
-import { useCart } from "../context/CartContext"; // ✅ add
+import { useCart } from "../context/CartContext";
 import { api } from "../api/api";
 
 export default function Favorites() {
@@ -12,8 +13,35 @@ export default function Favorites() {
   const { pathname } = useLocation();
   const fav = useFavorites();
   const { user } = useAuth();
-  const { buyNow } = useCart(); // ✅ add
+  const { buyNow } = useCart();
 
+  // ✅ SEO: don't index favorites page (SPA safe with cleanup)
+  useEffect(() => {
+    // admin page হলে কিছুই না (optional, safe)
+    if (pathname.startsWith("/admin")) return;
+
+    let tag = document.querySelector('meta[name="robots"]');
+    const prev = tag?.getAttribute("content") || null;
+
+    if (!tag) {
+      tag = document.createElement("meta");
+      tag.setAttribute("name", "robots");
+      document.head.appendChild(tag);
+    }
+
+    tag.setAttribute("content", "noindex, nofollow");
+
+    return () => {
+      // আগের robots meta ফিরিয়ে দাও
+      const current = document.querySelector('meta[name="robots"]');
+      if (!current) return;
+
+      if (prev) current.setAttribute("content", prev);
+      else current.remove(); // আগে ছিল না, তাই remove
+    };
+  }, [pathname]);
+
+  // ✅ admin panel এ hide
   if (pathname.startsWith("/admin")) return null;
 
   const favIds = Array.isArray(fav?.favIds) ? fav.favIds : [];
@@ -23,6 +51,7 @@ export default function Favorites() {
 
   const formatBDT = (n) => `৳ ${Math.round(Number(n) || 0).toLocaleString("en-US")}`;
 
+  // ✅ favIds পরিবর্তন হলে product details load
   useEffect(() => {
     let alive = true;
 
@@ -75,6 +104,7 @@ export default function Favorites() {
     if (fav?.clearAll) return fav.clearAll();
     if (fav?.reset) return fav.reset();
 
+    // fallback: সব id remove
     favIds.forEach((id) => doRemove(id));
   };
 
