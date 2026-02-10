@@ -2,7 +2,7 @@
 
 // ✅ PROD এ localhost থাকলে Network error হবে
 // ✅ তাই env না থাকলে PROD এ Render backend ধরছি।
-const PROD_FALLBACK = "https://ecom-backend-rql0.onrender.com";
+const PROD_FALLBACK = "https://api.thecuriousempire.com";
 
 // ✅ VITE_API_BASE দিলে সেটাই নেবে
 // ✅ না দিলে: PROD -> fallback, DEV -> localhost
