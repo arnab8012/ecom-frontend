@@ -3,8 +3,10 @@ import { useNavigate, Link } from "react-router-dom";
 import { api } from "../api/api";
 import "../styles/auth.css"; // তোমার existing auth.css থাকলে এটা রাখো
 import "../styles/forgot-password.css";
+import useNoIndex from "../utils/useNoIndex";
 
 export default function ForgotPassword() {
+  useNoIndex("noindex, nofollow");
   const nav = useNavigate();
 
   const [phone, setPhone] = useState("");
