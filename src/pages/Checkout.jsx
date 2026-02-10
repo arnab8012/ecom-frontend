@@ -65,26 +65,7 @@ export default function Checkout() {
 
   const token = api.token();
 
-  // ✅ SEO: checkout should NOT be indexed (SPA safe cleanup)
-  useEffect(() => {
-    let tag = document.querySelector('meta[name="robots"]');
-    const prev = tag?.getAttribute("content") || null;
-
-    if (!tag) {
-      tag = document.createElement("meta");
-      tag.setAttribute("name", "robots");
-      document.head.appendChild(tag);
-    }
-
-    tag.setAttribute("content", "noindex, nofollow");
-
-    return () => {
-      const current = document.querySelector('meta[name="robots"]');
-      if (!current) return;
-      if (prev) current.setAttribute("content", prev);
-      else current.remove();
-    };
-  }, []);
+ 
 
   const [book, setBook] = useState(loadBook());
   const [useNew, setUseNew] = useState(false);
