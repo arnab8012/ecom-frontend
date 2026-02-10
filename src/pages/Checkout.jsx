@@ -57,9 +57,9 @@ function loadBook() {
 }
 
 export default function Checkout() {
+  useNoIndex("noindex, nofollow");
   const nav = useNavigate();
   const [sp] = useSearchParams();
-useNoIndex(); // ✅ checkout page noindex
   const buyMode = sp.get("mode") === "buy";
 
   const { items, clear, checkoutItem, clearBuyNow } = useCart();
