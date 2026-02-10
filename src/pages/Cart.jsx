@@ -11,16 +11,6 @@ export default function Cart() {
   const { user } = useAuth();
   const { items, inc, dec, remove, clear } = useCart();
 
-  // ✅ SEO: don't index cart page
-  useEffect(() => {
-    let tag = document.querySelector('meta[name="robots"]');
-    if (!tag) {
-      tag = document.createElement("meta");
-      tag.setAttribute("name", "robots");
-      document.head.appendChild(tag);
-    }
-    tag.setAttribute("content", "noindex, nofollow");
-  }, []);
 
   const list = Array.isArray(items) ? items : [];
 
