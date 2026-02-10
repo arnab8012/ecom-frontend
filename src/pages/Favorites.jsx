@@ -7,8 +7,11 @@ import { useFavorites } from "../context/FavoritesContext";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import { api } from "../api/api";
+import useNoIndex from "../utils/useNoIndex";
+
 
 export default function Favorites() {
+  useNoIndex("noindex, nofollow");
   const nav = useNavigate();
   const { pathname } = useLocation();
   const fav = useFavorites();
