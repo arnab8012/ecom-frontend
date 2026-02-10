@@ -18,7 +18,7 @@ export default function ProductCard({ p }) {
       ? p.images[0]
       : p?.image || "https://via.placeholder.com/300";
 
-  const productLink = "/product/" + p?._id;
+  const productLink = "/product/" + (p?._id || "");
 
   // ✅ toast
   const [toast, setToast] = useState({ show: false, text: "" });
@@ -88,35 +88,41 @@ export default function ProductCard({ p }) {
         </button>
       </div>
 
-      {/* body */}
+      {/* body + actions (সব একই wrapper এ থাকবে) */}
       <div className="pBody" onClick={(e) => e.stopPropagation()}>
-        <Link to={productLink} className="pTitle" onClick={(e) => e.stopPropagation()}>
+        <Link
+          to={productLink}
+          className="pTitle"
+          onClick={(e) => e.stopPropagation()}
+        >
           {p?.title}
         </Link>
 
         {/* PRICE */}
-<div className="pcPriceRow">
-  <span className="pcPrice">৳ {p?.price || 0}</span>
+        <div className="pcPriceRow">
+          <span className="pcPrice">৳ {p?.price || 0}</span>
 
-  {p?.compareAtPrice ? (
-    <span className="pcCut">৳ {p.compareAtPrice}</span>
-  ) : null}
-</div>
+          {p?.compareAtPrice ? (
+            <span className="pcCut">৳ {p.compareAtPrice}</span>
+          ) : null}
+        </div>
 
-{/* RATING + SOLD (optional) */}
-<div className="pcMetaRow">
-  <span className="pcStar">⭐</span>
-  <span className="pcRating">
-    {Number(p?.rating || 0)}/5 ({Number(p?.ratingCount || 0)})
-  </span>
-  <span className="pcDot">•</span>
-  <span className="pcSold">{Number(p?.sold || 0)} Sold</span>
-</div>
-
+        {/* RATING + SOLD (optional) */}
+        <div className="pcMetaRow">
+          <span className="pcStar">⭐</span>
+          <span className="pcRating">
+            {Number(p?.rating || 0)}/5 ({Number(p?.ratingCount || 0)})
+          </span>
+          <span className="pcDot">•</span>
+          <span className="pcSold">{Number(p?.sold || 0)} Sold</span>
         </div>
 
         <div className="pActions">
-          <Link to={productLink} className="btnSoft" onClick={(e) => e.stopPropagation()}>
+          <Link
+            to={productLink}
+            className="btnSoft"
+            onClick={(e) => e.stopPropagation()}
+          >
             View
           </Link>
 
