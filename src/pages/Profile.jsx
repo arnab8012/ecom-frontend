@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { api } from "../api/api";
+import useNoIndex from "../utils/useNoIndex";
 
 const TABS = [
   { key: "PLACED", label: "Placed" },
@@ -28,6 +29,7 @@ function statusClass(s) {
 }
 
 export default function Profile() {
+  useNoIndex("noindex, nofollow");
   const { user, logout } = useAuth();
   const nav = useNavigate();
 
