@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import useNoIndex from "../utils/useNoIndex";
 
 export default function Login() {
+  useNoIndex("noindex, nofollow");
   const nav = useNavigate();
   const loc = useLocation();
   const { login } = useAuth();
