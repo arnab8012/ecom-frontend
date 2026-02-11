@@ -41,6 +41,11 @@ function Inner() {
     load();
   };
 
+  const statusLabel = (s) => {
+    const v = String(s || "PLACED");
+    return v.replaceAll("_", " ");
+  };
+
   return (
     <div className="container adminOrdersWrap">
       <div className="rowBetween adminOrdersHeader">
@@ -63,42 +68,39 @@ function Inner() {
             <div className="box adminOrderCard" key={o._id}>
               {/* top */}
               <div className="adminOrderTop">
-                <div>
-                  <div className="adminOrderNo">
-                    Order {o.orderNo || o._id}
+                <div className="adminOrderTopLeft">
+                  <div className="adminOrderNoRow">
+                    <div className="adminOrderNo">Order {o.orderNo || o._id}</div>
+
+                    <span className={`adminStatusBadge st-${String(o.status || "PLACED")}`}>
+                      {statusLabel(o.status)}
+                    </span>
                   </div>
 
+                  {/* ✅ FULL SHIPPING DETAILS (সব দেখাবে) */}
                   <div className="adminOrderMeta">
-  <div style={{ fontWeight: 700 }}>
-    {shipping.fullName || "No name"}
-  </div>
+                    <div className="shipName">{shipping.fullName || "No name"}</div>
 
-  <div>
-    {shipping.phone1 || "No phone"}
-    {shipping.phone2 ? `, ${shipping.phone2}` : ""}
-  </div>
+                    <div className="shipPhones">
+                      {shipping.phone1 || "No phone"}
+                      {shipping.phone2 ? `, ${shipping.phone2}` : ""}
+                    </div>
 
-  <div style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
-    {shipping.addressLine || "No address"}
-  </div>
+                    <div className="shipAddress">{shipping.addressLine || "No address"}</div>
 
-  <div>
-    {shipping.upazila ? `${shipping.upazila}, ` : ""}
-    {shipping.district || "—"}, {shipping.division || "—"}
-  </div>
+                    <div className="shipArea">
+                      {shipping.upazila ? `${shipping.upazila}, ` : ""}
+                      {shipping.district || "—"}, {shipping.division || "—"}
+                    </div>
 
-  {shipping.note ? (
-    <div style={{ marginTop: 4, fontStyle: "italic" }}>
-      Note: {shipping.note}
-    </div>
-  ) : null}
-</div>
-
-
+                    {shipping.note ? <div className="shipNote">Note: {shipping.note}</div> : null}
+                  </div>
                 </div>
 
-                <div className="adminOrderTime">
-                  {o.createdAt ? new Date(o.createdAt).toLocaleString() : "—"}
+                <div className="adminOrderTopRight">
+                  <div className="adminOrderTime">
+                    {o.createdAt ? new Date(o.createdAt).toLocaleString() : "—"}
+                  </div>
                 </div>
               </div>
 
@@ -118,9 +120,7 @@ function Inner() {
                       <div className="adminItem" key={i}>
                         <div className="adminItemInfo">
                           <div className="adminItemTitle">{it?.title || "No title"}</div>
-                          {it?.variant ? (
-                            <div className="adminItemVar">{it.variant}</div>
-                          ) : null}
+                          {it?.variant ? <div className="adminItemVar">{it.variant}</div> : null}
                         </div>
 
                         <div className="adminItemRight">
@@ -137,17 +137,19 @@ function Inner() {
               <div className="adminBottom">
                 <div className="adminTotal">Total: ৳ {o.total ?? "—"}</div>
 
-                <select
-                  className="adminStatusSelect"
-                  value={o.status || "PLACED"}
-                  onChange={(e) => setStatus(o._id, e.target.value)}
-                >
-                  {STATUSES.map((s) => (
-                    <option key={s} value={s}>
-                      {s}
-                    </option>
-                  ))}
-                </select>
+                <div className="adminBottomRight">
+                  <select
+                    className="adminStatusSelect"
+                    value={o.status || "PLACED"}
+                    onChange={(e) => setStatus(o._id, e.target.value)}
+                  >
+                    {STATUSES.map((s) => (
+                      <option key={s} value={s}>
+                        {s}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
             </div>
           );
