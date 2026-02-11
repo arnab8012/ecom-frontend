@@ -67,10 +67,34 @@ function Inner() {
                   <div className="adminOrderNo">
                     Order {o.orderNo || o._id}
                   </div>
+
                   <div className="adminOrderMeta">
-                    {shipping.fullName || "No name"} — {shipping.phone1 || "No phone"} —{" "}
-                    {shipping.division || "—"}, {shipping.district || "—"}
-                  </div>
+  <div style={{ fontWeight: 700 }}>
+    {shipping.fullName || "No name"}
+  </div>
+
+  <div>
+    {shipping.phone1 || "No phone"}
+    {shipping.phone2 ? `, ${shipping.phone2}` : ""}
+  </div>
+
+  <div style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+    {shipping.addressLine || "No address"}
+  </div>
+
+  <div>
+    {shipping.upazila ? `${shipping.upazila}, ` : ""}
+    {shipping.district || "—"}, {shipping.division || "—"}
+  </div>
+
+  {shipping.note ? (
+    <div style={{ marginTop: 4, fontStyle: "italic" }}>
+      Note: {shipping.note}
+    </div>
+  ) : null}
+</div>
+
+
                 </div>
 
                 <div className="adminOrderTime">
