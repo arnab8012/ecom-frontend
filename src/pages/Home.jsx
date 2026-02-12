@@ -154,15 +154,16 @@ return (
                   </Link>
                 </div>
 
-                <div className="homeTwoGrid">
-                  {items.slice(0, 4).map((p) => (
-                    <ProductCard key={p._id} p={p} />
-                  ))}
-                </div>
-              </div>
-            );
-          })
-        )}
-      </div>
-    </>
-  );
+          <div className="homeTwoGrid">
+          {items.slice(0, 4).map((p) => (
+       <ProductCard key={p._id} p={p} />
+               ))}  
+          </div>  
+        </div>  
+      );  
+    })  
+  )}  
+</div>
+
+);
+}
