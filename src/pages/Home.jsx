@@ -1,7 +1,10 @@
+import "../styles/home.css";
+import "../styles/categories.css";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "../api/api";
 import ProductCard from "../components/ProductCard";
+import HomeCategories from "../components/HomeCategories";
 
 export default function Home() {
   const nav = useNavigate();
@@ -10,12 +13,20 @@ export default function Home() {
   const [allProducts, setAllProducts] = useState([]);
   const [banners, setBanners] = useState([]);
   const [loading, setLoading] = useState(false);
-
   const [slide, setSlide] = useState(0);
 
+  const absUrl = (u) => {
+    if (!u) return "";
+    const s = String(u);
+    if (s.startsWith("http://") || s.startsWith("https://")) return s;
+    return `${api.BASE}${s.startsWith("/") ? "" : "/"}${s}`;
+  };
+
   const bannerUrls = useMemo(() => {
-    const arr = Array.isArray(banners) ? banners : [];
-    return arr.map((b) => (typeof b === "string" ? b : b?.url)).filter(Boolean);
+    return (banners || [])
+      .map((b) => (typeof b === "string" ? b : b?.url))
+      .map(absUrl)
+      .filter(Boolean);
   }, [banners]);
 
   useEffect(() => {
@@ -24,6 +35,7 @@ export default function Home() {
     (async () => {
       try {
         setLoading(true);
+
         const [c, r, p] = await Promise.all([
           api.get("/api/categories"),
           api.get("/api/banners"),
@@ -31,11 +43,10 @@ export default function Home() {
         ]);
 
         if (!alive) return;
+
         if (c?.ok) setCats(c.categories || []);
         if (r?.ok) setBanners(r.banners || []);
         if (p?.ok) setAllProducts(p.products || []);
-      } catch (e) {
-        console.log("Home Load Error", e);
       } finally {
         if (alive) setLoading(false);
       }
@@ -46,54 +57,34 @@ export default function Home() {
 
   useEffect(() => {
     if (bannerUrls.length <= 1) return;
-    const id = setInterval(() => {
-      setSlide((s) => (s + 1) % bannerUrls.length);
-    }, 3500);
+    const id = setInterval(() => setSlide((s) => (s + 1) % bannerUrls.length), 3500);
     return () => clearInterval(id);
   }, [bannerUrls.length]);
 
+  // products group by category
   const byCat = useMemo(() => {
     const map = new Map();
-    for (const p of allProducts || []) {
-      const cid = p?.category?._id || "uncat";
+    for (const p of allProducts) {
+      const cid = p?.category?._id;
+      if (!cid) continue;
       if (!map.has(cid)) map.set(cid, []);
       map.get(cid).push(p);
     }
     return map;
   }, [allProducts]);
 
-  const take = (arr, n) => (Array.isArray(arr) ? arr.slice(0, n) : []);
-
   return (
     <div className="container homeWrap">
-      {/* ✅ Slim glass welcome bar */}
-      <div className="welcomeBar glass">
-        <div className="welcomeLeft">
-          <div className="welcomeTitle">The Curious Empire</div>
-          <div className="welcomeSub">Premium Shopping Experience</div>
-        </div>
-
-        {/* optional small badge */}
-        <div className="welcomeBadge">✨ Premium</div>
-      </div>
-
-      {/* ✅ Banner (glass frame + slim height) */}
+      {/* ===== BANNER ===== */}
       {bannerUrls.length > 0 && (
-        <div className="bannerBox glass bannerSlim" style={{ marginBottom: 14 }}>
+        <div className="homeBanner">
           <div
-            className="bannerTrack"
-            style={{
-              width: `${bannerUrls.length * 100}%`,
-              transform: `translateX(-${slide * (100 / bannerUrls.length)}%)`,
-            }}
+            className="bannerSlideTrack"
+            style={{ transform: `translateX(-${slide * 100}%)` }}
           >
             {bannerUrls.map((url, i) => (
-              <div
-                key={i}
-                className="bannerSlide"
-                style={{ width: `${100 / bannerUrls.length}%` }}
-              >
-                <img className="bannerImg" src={url} alt="banner" />
+              <div className="bannerSlide" key={i}>
+                <img src={url} className="bannerImg" alt="Banner" />
               </div>
             ))}
           </div>
@@ -106,7 +97,6 @@ export default function Home() {
                   className={`dot ${i === slide ? "active" : ""}`}
                   onClick={() => setSlide(i)}
                   type="button"
-                  aria-label={`banner-${i}`}
                 />
               ))}
             </div>
@@ -114,67 +104,43 @@ export default function Home() {
         </div>
       )}
 
-      {/* ✅ Categories slider */}
-      {cats.length > 0 && (
-        <div className="homeSection">
-          <div className="secTop">
-            <h3 className="secTitle">Categories</h3>
-            <Link className="seeMore" to="/shop">
-              See more
-            </Link>
-          </div>
+      {/* ===== TEXT BELOW BANNER ===== */}
+      <div className="homeHeroText">
+        <div className="homeHeroTitle">The Curious Empire</div>
+        <div className="homeHeroSub">Premium Shopping Experience</div>
+      </div>
 
-          <div className="catRow">
-            {cats.map((c) => (
-              <button
-                key={c._id}
-                className="catItem"
-                type="button"
-                onClick={() => nav(`/shop?category=${c._id}`)}
-                style={{
-                  background: "transparent",
-                  border: "none",
-                  padding: 0,
-                  cursor: "pointer",
-                }}
-              >
-                <div className="catIcon glass">
-                  <img
-                    src={c.image || "https://via.placeholder.com/80"}
-                    alt={c.name}
-                  />
-                </div>
-                <div className="catName">{c.name}</div>
-              </button>
-            ))}
-          </div>
+<HomeCategories cats={cats} />
+
+      
+      {/* ===== PRODUCTS SECTIONS (by category) ===== */}
+      {loading ? (
+        <div className="box" style={{ marginTop: 14 }}>
+          Loading...
         </div>
+      ) : cats.length === 0 ? null : (
+        cats.map((c) => {
+          const items = byCat.get(c._id) || [];
+          if (!items.length) return null;
+
+          return (
+            <div key={c._id} style={{ marginTop: 14 }}>
+              <div className="rowBetween" style={{ marginBottom: 10 }}>
+                <h3 style={{ margin: 0, fontWeight: 900 }}>{c.name}</h3>
+                <Link className="seeMore" to={`/shop?category=${c.slug || c._id}`}>
+                  See More →
+                </Link>
+              </div>
+
+              <div className="homeTwoGrid">
+                {items.slice(0, 4).map((p) => (
+                  <ProductCard key={p._id} p={p} />
+                ))}
+              </div>
+            </div>
+          );
+        })
       )}
-
-      {loading && <p style={{ padding: "12px 0" }}>Loading...</p>}
-
-      {/* ✅ Products grouped by category */}
-      {cats.map((c) => {
-        const list = byCat.get(c._id) || [];
-        if (!list.length) return null;
-
-        return (
-          <div className="homeSection" key={c._id}>
-            <div className="secTop">
-              <h3 className="secTitle">{c.name}</h3>
-              <Link className="seeMoreBtn" to={`/shop?category=${c._id}`}>
-                See More →
-              </Link>
-            </div>
-
-            <div className="homeGrid4">
-              {take(list, 8).map((p) => (
-                <ProductCard key={p._id} p={p} />
-              ))}
-            </div>
-          </div>
-        );
-      })}
     </div>
   );
 }

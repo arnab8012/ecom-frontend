@@ -1,73 +1,83 @@
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import "./PublicAuth.css";
+import useNoIndex from "../utils/useNoIndex";
 
 export default function Login() {
+  useNoIndex("noindex, nofollow");
   const nav = useNavigate();
-  const { user, login } = useAuth();
+  const loc = useLocation();
+  const { login } = useAuth();
 
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // ✅ already logged in -> login page এ থাকবেই না
-  useEffect(() => {
-    if (user) nav("/profile", { replace: true });
-  }, [user, nav]);
-
-  const submit = async (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    if (!phone || !password) return alert("Phone & Password required");
-
     try {
       setLoading(true);
       const r = await login(phone, password);
+      if (r?.ok === false) throw new Error(r.message || "Login failed");
 
-      if (!r?.ok) {
-        alert(r?.message || "Login failed");
-        return;
-      }
-
-      // ✅ login success -> Home এ যাও
-      nav("/", { replace: true });
+      const back = loc.state?.from || "/profile";
+      nav(back, { replace: true });
+    } catch (err) {
+      alert(err.message || "Login failed");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="authWrap">
-      <div className="authCard">
-        <h2 className="authTitle">Login</h2>
+    <div className="container authPage" style={{ maxWidth: 520 }}>
+      <h2 className="authH" style={{ marginTop: 8 }}>
+        Login
+      </h2>
 
-        <form onSubmit={submit}>
-          <label className="lbl">Phone Number</label>
-          <input
-            className="input"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            placeholder="01xxxxxxxxx"
-          />
+      <form onSubmit={onSubmit} className="box authCard" style={{ marginTop: 10 }}>
+        <label className="lbl">Phone</label>
+        <input
+          className="input"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          placeholder="01XXXXXXXXX"
+        />
 
-          <label className="lbl">Password</label>
-          <input
-            className="input"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="******"
-          />
+        <label className="lbl" style={{ marginTop: 10 }}>
+          Password
+        </label>
+        <input
+          className="input"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="••••••••"
+        />
 
-          <button className="btnPinkFull" disabled={loading}>
-            {loading ? "Please wait..." : "Login"}
-          </button>
+        {/* ✅ Forgot Password link */}
+        <div style={{ marginTop: 10, textAlign: "right" }}>
+          <Link
+            to="/forgot-password"
+            style={{ fontWeight: 900, textDecoration: "none" }}
+          >
+            Forgot Password?
+          </Link>
+        </div>
 
-          <div className="muted" style={{ marginTop: 10 }}>
-            No account? <Link to="/register">Register</Link>
-          </div>
-        </form>
-      </div>
+        <button
+          className="btnPrimary authBtn"
+          disabled={loading}
+          style={{ marginTop: 14, width: "100%" }}
+          type="submit"
+        >
+          {loading ? "Loading..." : "Login"}
+        </button>
+
+        <div className="muted" style={{ marginTop: 10 }}>
+          No account? <Link to="/register">Register</Link>
+        </div>
+      </form>
     </div>
   );
 }

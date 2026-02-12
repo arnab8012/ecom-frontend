@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import "../../styles/admin-banners.css";
+import { useEffect, useRef, useState, useMemo } from "react";
 import { api } from "../../api/api";
 import AdminRoute from "../../components/AdminRoute";
 import { Link } from "react-router-dom";
@@ -15,6 +16,16 @@ function Inner() {
 
   // ✅ link input
   const [linkUrl, setLinkUrl] = useState("");
+
+  // ✅ helper: relative url হলে BASE যোগ করবে (যাতে admin panel এও ছবি ঠিক আসে)
+  const absUrl = useMemo(() => {
+    return (u) => {
+      if (!u) return "";
+      const s = String(u);
+      if (s.startsWith("http://") || s.startsWith("https://")) return s;
+      return `${api.BASE}${s.startsWith("/") ? "" : "/"}${s}`;
+    };
+  }, []);
 
   const load = async () => {
     setLoading(true);
@@ -46,7 +57,7 @@ function Inner() {
       const res = await fetch(`${api.BASE}/api/admin/upload/banner-images`, {
         method: "POST",
         headers: { Authorization: `Bearer ${t}` },
-        body: fd
+        body: fd,
       });
 
       const data = await res.json();
@@ -57,7 +68,9 @@ function Inner() {
       }
 
       const uploaded = Array.isArray(data.banners) ? data.banners : [];
-      setPending((p) => [...p, ...uploaded].slice(0, 10));
+      // ✅ ensure url absolute
+      const fixed = uploaded.map((x) => ({ ...x, url: absUrl(x?.url) }));
+      setPending((p) => [...p, ...fixed].slice(0, 10));
     } catch {
       alert("Upload error");
     } finally {
@@ -108,7 +121,7 @@ function Inner() {
     const t = api.adminToken();
     const res = await fetch(`${api.BASE}/api/admin/banners/${id}`, {
       method: "DELETE",
-      headers: { Authorization: `Bearer ${t}` }
+      headers: { Authorization: `Bearer ${t}` },
     });
     const data = await res.json();
 
@@ -119,11 +132,14 @@ function Inner() {
   return (
     <div className="container">
       <div className="rowBetween">
-        <h2>Admin Banners</h2>
-        <Link className="btnGhost" to="/admin">← Back</Link>
+        <h2 style={{ margin: 0 }}>Admin Banners</h2>
+        <Link className="btnGhost" to="/admin">
+          ← Back
+        </Link>
       </div>
 
-      <div className="box">
+      {/* ✅ Upload + link card */}
+      <div className="box adminCard">
         <label className="lbl">Upload Banner Images (Max 10)</label>
         <input
           ref={fileRef}
@@ -134,7 +150,11 @@ function Inner() {
           onChange={(e) => uploadBannerImages(e.target.files)}
         />
 
-        {uploading && <div className="muted" style={{ marginTop: 8 }}>Uploading...</div>}
+        {uploading && (
+          <div className="muted" style={{ marginTop: 8 }}>
+            Uploading...
+          </div>
+        )}
 
         <hr style={{ margin: "12px 0" }} />
 
@@ -157,27 +177,15 @@ function Inner() {
 
         {pending.length > 0 ? (
           <>
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 10 }}>
+            <div className="bannerThumbGrid">
               {pending.map((b, i) => (
-                <div key={b.public_id + i} style={{ position: "relative" }}>
-                  <img
-                    src={b.url}
-                    alt=""
-                    height="120"
-                    style={{ borderRadius: 12, border: "1px solid #eee" }}
-                  />
+                <div key={b.public_id + i} className="bannerThumb">
+                  <img src={absUrl(b.url)} alt="" />
                   <button
                     type="button"
+                    className="thumbX"
                     onClick={() => removePending(i)}
-                    style={{
-                      position: "absolute",
-                      top: -8,
-                      right: -8,
-                      borderRadius: 999,
-                      border: "none",
-                      padding: "4px 8px",
-                      cursor: "pointer"
-                    }}
+                    aria-label="remove"
                   >
                     ✕
                   </button>
@@ -195,39 +203,34 @@ function Inner() {
             </button>
           </>
         ) : (
-          <div className="muted" style={{ marginTop: 8 }}>No pending banners</div>
+          <div className="muted" style={{ marginTop: 8 }}>
+            No pending banners
+          </div>
         )}
       </div>
 
-      <div className="box">
+      {/* ✅ Live banners card */}
+      <div className="box adminCard">
         <b>Live banners on website</b>
 
         {loading ? (
-          <div className="muted" style={{ marginTop: 8 }}>Loading...</div>
+          <div className="muted" style={{ marginTop: 8 }}>
+            Loading...
+          </div>
         ) : banners.length === 0 ? (
-          <div className="muted" style={{ marginTop: 8 }}>No banners yet</div>
+          <div className="muted" style={{ marginTop: 8 }}>
+            No banners yet
+          </div>
         ) : (
-          <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 10 }}>
+          <div className="bannerThumbGrid" style={{ marginTop: 10 }}>
             {banners.map((b) => (
-              <div key={b._id} style={{ position: "relative" }}>
-                <img
-                  src={b.url}
-                  alt=""
-                  height="120"
-                  style={{ borderRadius: 12, border: "1px solid #eee" }}
-                />
+              <div key={b._id} className="bannerThumb">
+                <img src={absUrl(b.url)} alt="" />
                 <button
                   type="button"
+                  className="thumbBin"
                   onClick={() => deleteBanner(b._id)}
-                  style={{
-                    position: "absolute",
-                    top: -8,
-                    right: -8,
-                    borderRadius: 999,
-                    border: "none",
-                    padding: "4px 8px",
-                    cursor: "pointer"
-                  }}
+                  aria-label="delete"
                 >
                   🗑
                 </button>

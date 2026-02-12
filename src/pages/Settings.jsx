@@ -1,41 +1,59 @@
+// src/pages/Settings.jsx
+import "../styles/settings.css";
+
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import useNoIndex from "../utils/useNoIndex";
 
 export default function Settings() {
-  const { user, logout } = useAuth();
+  useNoIndex("noindex, nofollow");
   const nav = useNavigate();
+  const { user, logout } = useAuth();
+
+  // ✅ login না থাকলে login এ যাবে
+  if (!user) {
+    nav("/login");
+    return null;
+  }
+
+  const doLogout = () => {
+    const ok = window.confirm("Logout করবেন?");
+    if (!ok) return;
+
+    logout();
+    nav("/login");
+  };
 
   return (
-    <div className="container">
-      <div className="rowBetween" style={{ marginBottom: 14 }}>
-        <h2>Settings</h2>
-        <Link className="btnGhost" to="/profile">← Back</Link>
+    <div className="container settingsPage">
+      {/* ✅ Header */}
+      <div className="settingsHead">
+        <h2 className="settingsTitle">Settings</h2>
+
+        <button className="settingsBackBtn" type="button" onClick={() => nav(-1)}>
+          ← Back
+        </button>
       </div>
 
-      <div className="box">
-        <div className="muted">Name</div>
-        <div style={{ fontWeight: 800, marginBottom: 10 }}>
-          {user?.fullName || "—"}
+      {/* ✅ Card */}
+      <div className="settingsCard premiumCard">
+        <div className="settingsRow">
+          <div className="settingsLabel">Name</div>
+          <div className="settingsValue">{user?.fullName || "—"}</div>
         </div>
 
-        <div className="muted">Phone</div>
-        <div style={{ fontWeight: 800, marginBottom: 10 }}>
-          {user?.phone || "—"}
+        <div className="settingsRow">
+          <div className="settingsLabel">Phone</div>
+          <div className="settingsValue">{user?.phone || "—"}</div>
         </div>
 
-        <div className="rowBetween" style={{ gap: 10, marginTop: 12 }}>
-          <button className="btnPink" type="button" onClick={() => nav("/settings/edit")}>
+        <div className="settingsBtns">
+          {/* ✅ SettingsEdit.jsx এ যাবে */}
+          <Link to="/settings/edit" className="settingsBtn editBtn">
             Edit Profile
-          </button>
+          </Link>
 
-          <button
-            className="btnGhost"
-            type="button"
-            onClick={() => {
-              logout();
-              nav("/login");
-            }}
-          >
+          <button type="button" className="settingsBtn logoutBtn" onClick={doLogout}>
             Logout
           </button>
         </div>

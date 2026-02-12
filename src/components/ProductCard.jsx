@@ -1,154 +1,132 @@
-import { useEffect, useMemo, useState } from "react";
+import "../styles/product-card.css";
 import { Link, useNavigate } from "react-router-dom";
-import { useCart } from "../context/CartContext";
 import { useFavorites } from "../context/FavoritesContext";
 import { useAuth } from "../context/AuthContext";
+import { useCart } from "../context/CartContext";
+import { useEffect, useState } from "react";
 
 export default function ProductCard({ p }) {
   const nav = useNavigate();
-  const { add } = useCart();
+  const fav = useFavorites();
   const { user } = useAuth();
+  const { add } = useCart();
 
-  // ✅ আগে destructure
-  const { isFav, toggle } = useFavorites();
+  const isFav = Array.isArray(fav?.favIds) ? fav.favIds.includes(p?._id) : false;
 
-  const imgs = useMemo(() => {
-    const arr = Array.isArray(p?.images) ? p.images : [];
-    return arr.filter(Boolean);
-  }, [p?._id]); // ✅ stable
+  const img =
+    Array.isArray(p?.images) && p.images.length
+      ? p.images[0]
+      : p?.image || "https://via.placeholder.com/300";
 
-  const [idx, setIdx] = useState(0);
+  const productLink = "/product/" + (p?._id || "");
 
-  // ✅ Auto image change
+  // ✅ toast
+  const [toast, setToast] = useState({ show: false, text: "" });
+
   useEffect(() => {
-    if (imgs.length <= 1) return;
-    setIdx(0);
+    if (!toast.show) return;
+    const t = setTimeout(() => setToast({ show: false, text: "" }), 1200);
+    return () => clearTimeout(t);
+  }, [toast.show]);
 
-    const t = setInterval(() => {
-      setIdx((x) => (x + 1) % imgs.length);
-    }, 2500);
-
-    return () => clearInterval(t);
-  }, [imgs.length]);
-
-  const img = imgs[idx] || "https://via.placeholder.com/400x300?text=Product";
-
-  const onFav = (e) => {
+  // ✅ prevent parent click (Home এর category button / wrapper)
+  const stop = (e) => {
     e.preventDefault();
     e.stopPropagation();
+  };
 
-    // ✅ যদি তুমি চাও login ছাড়া fav না হোক:
+  const onFav = (e) => {
+    stop(e);
+
+    // ✅ login ছাড়া priyo না
     if (!user) {
       nav("/login");
       return;
     }
+    fav?.toggle?.(p._id);
+  };
 
-    toggle(p._id);
+  const onAddCart = (e) => {
+    stop(e);
+
+    add?.({
+      productId: p?._id,
+      title: p?.title,
+      price: p?.price,
+      image: img,
+      variant: "",
+      qty: 1,
+    });
+
+    // ✅ only toast (no navigation)
+    setToast({ show: true, text: "✓ Added to cart" });
   };
 
   return (
-    <div className="card" style={{ position: "relative" }}>
-      {/* ✅ image area */}
-      <div style={{ position: "relative" }}>
-        <Link to={`/product/${p._id}`}>
-          <img className="cardImg" src={img} alt={p?.title || ""} />
+    <div className="pCard">
+      {/* ✅ bottom toast */}
+      {toast.show && <div className="toastBottom">{toast.text}</div>}
+
+      {/* image area */}
+      <div className="pImgWrap">
+        <Link to={productLink} onClick={(e) => e.stopPropagation()}>
+          <img
+            className="pImg"
+            src={img}
+            alt={p?.title || "product"}
+            loading="lazy"
+            onError={(e) => {
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = "https://via.placeholder.com/300";
+            }}
+          />
         </Link>
 
-        {/* ❤️ Favorite icon (top-right) */}
-        <button
-          type="button"
-          onClick={onFav}
-          title="Priyo"
-          style={{
-            position: "absolute",
-            top: 10,
-            right: 10,
-            width: 36,
-            height: 36,
-            borderRadius: 999,
-            border: "none",
-            cursor: "pointer",
-            background: "rgba(255,255,255,0.9)",
-            boxShadow: "0 6px 20px rgba(0,0,0,0.12)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 5
-          }}
-        >
-          <span style={{ fontSize: 18, lineHeight: 1 }}>
-            {isFav(p._id) ? "❤️" : "🤍"}
-          </span>
+        {/* favorite */}
+        <button className="pFav" type="button" onClick={onFav} title="Priyo">
+          {isFav ? "❤️" : "🤍"}
         </button>
-
-        {/* ✅ dots (only if multi images) */}
-        {imgs.length > 1 && (
-          <div
-            style={{
-              position: "absolute",
-              bottom: 10,
-              left: 0,
-              right: 0,
-              display: "flex",
-              justifyContent: "center",
-              gap: 6,
-              zIndex: 4
-            }}
-          >
-            {imgs.map((_, i) => (
-              <button
-                key={i}
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setIdx(i);
-                }}
-                aria-label={`img-${i}`}
-                style={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: 999,
-                  border: "none",
-                  cursor: "pointer",
-                  opacity: i === idx ? 1 : 0.35,
-                  background: "#111"
-                }}
-              />
-            ))}
-          </div>
-        )}
       </div>
 
-      <div className="cardBody">
-        <Link className="cardTitle" to={`/product/${p._id}`}>
-          {p.title}
+      {/* body + actions (সব একই wrapper এ থাকবে) */}
+      <div className="pBody" onClick={(e) => e.stopPropagation()}>
+        <Link
+          to={productLink}
+          className="pTitle"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {p?.title}
         </Link>
 
-        <div className="priceRow">
-          <span className="price">৳ {p.price}</span>
+        {/* PRICE */}
+        <div className="pcPriceRow">
+          <span className="pcPrice">৳ {p?.price || 0}</span>
+
+          {p?.compareAtPrice ? (
+            <span className="pcCut">৳ {p.compareAtPrice}</span>
+          ) : null}
         </div>
 
-        <div className="rowBetween" style={{ marginTop: 8 }}>
-          <button className="btnGhost" type="button" onClick={() => nav(`/product/${p._id}`)}>
-            View Product
-          </button>
+        {/* RATING + SOLD (optional) */}
+        <div className="pcMetaRow">
+          <span className="pcStar">⭐</span>
+          <span className="pcRating">
+            {Number(p?.rating || 0)}/5 ({Number(p?.ratingCount || 0)})
+          </span>
+          <span className="pcDot">•</span>
+          <span className="pcSold">{Number(p?.sold || 0)} Sold</span>
+        </div>
 
-          <button
-            className="btnPink"
-            type="button"
-            onClick={() => {
-              add({
-                productId: p._id,
-                title: p.title,
-                price: p.price,
-                image: imgs[0] || "",
-                variant: "",
-                qty: 1
-              });
-              alert("✅ Added to cart");
-            }}
+        <div className="pActions">
+          <Link
+            to={productLink}
+            className="btnSoft"
+            onClick={(e) => e.stopPropagation()}
           >
+            View
+          </Link>
+
+          <button className="btnPrimary" type="button" onClick={onAddCart}>
             Add
           </button>
         </div>

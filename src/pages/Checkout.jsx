@@ -1,8 +1,11 @@
+// src/pages/Checkout.jsx
+import "../styles/checkout.css";
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { api } from "../api/api";
+import useNoIndex from "../utils/useNoIndex";
 
 const DIVISIONS = [
   "Dhaka",
@@ -12,7 +15,7 @@ const DIVISIONS = [
   "Barishal",
   "Sylhet",
   "Rangpur",
-  "Mymensingh"
+  "Mymensingh",
 ];
 
 const BOOK_KEY = "shipping_book_v1";
@@ -26,7 +29,7 @@ function emptyShipping(user) {
     district: "",
     upazila: "",
     addressLine: "",
-    note: ""
+    note: "",
   };
 }
 
@@ -46,7 +49,7 @@ function loadBook() {
     const b = JSON.parse(localStorage.getItem(BOOK_KEY) || "{}");
     return {
       selectedId: b?.selectedId || "",
-      items: Array.isArray(b?.items) ? b.items : []
+      items: Array.isArray(b?.items) ? b.items : [],
     };
   } catch {
     return { selectedId: "", items: [] };
@@ -54,26 +57,37 @@ function loadBook() {
 }
 
 export default function Checkout() {
+  useNoIndex("noindex, nofollow");
   const nav = useNavigate();
-  const { items, clear } = useCart();
+  const [sp] = useSearchParams();
+  const buyMode = sp.get("mode") === "buy";
+
+  const { items, clear, checkoutItem, clearBuyNow } = useCart();
   const { user } = useAuth();
 
-  // token useAuth এ নেই (তোমার AuthContext অনুযায়ী token localStorage এ)
   const token = api.token();
+
+ 
 
   const [book, setBook] = useState(loadBook());
   const [useNew, setUseNew] = useState(false);
   const [selectedId, setSelectedId] = useState(book.selectedId || "");
-
   const [shipping, setShipping] = useState(emptyShipping(user));
 
   const [paymentMethod, setPaymentMethod] = useState("COD");
   const deliveryCharge = 110;
 
+  // ✅ orderItems: buyMode হলে শুধু checkoutItem, না হলে cart items
+  const orderItems = useMemo(() => {
+    if (buyMode) return checkoutItem ? [checkoutItem] : [];
+    return Array.isArray(items) ? items : [];
+  }, [buyMode, items, checkoutItem]);
+
   const subTotal = useMemo(
-    () => items.reduce((s, it) => s + Number(it.price || 0) * Number(it.qty || 0), 0),
-    [items]
+    () => orderItems.reduce((s, it) => s + Number(it.price || 0) * Number(it.qty || 0), 0),
+    [orderItems]
   );
+
   const total = subTotal + deliveryCharge;
 
   // ✅ when user loads / book changes -> set initial shipping
@@ -81,7 +95,6 @@ export default function Checkout() {
     const b = loadBook();
     setBook(b);
 
-    // if selectedId missing but have items -> pick first
     const sid = b.selectedId || b.items?.[0]?.id || "";
     setSelectedId(sid);
 
@@ -110,9 +123,19 @@ export default function Checkout() {
       setShipping({ ...emptyShipping(user), ...found.shipping });
     }
     // eslint-disable-next-line
-  }, [selectedId]);
+  }, [selectedId, useNew, book.items, user]);
 
-  if (!items.length) return <div className="container">Cart empty</div>;
+  // ✅ buyMode: checkoutItem না থাকলে user কে shop এ পাঠাবে
+  if (!orderItems.length) {
+    return (
+      <div className="container">
+        No item selected{" "}
+        <button className="btnGhost" type="button" onClick={() => nav("/shop")}>
+          Go shop
+        </button>
+      </div>
+    );
+  }
 
   const validateShipping = () => {
     if (!shipping.fullName) return "Name required";
@@ -127,12 +150,9 @@ export default function Checkout() {
   const saveToBook = (ship) => {
     const current = loadBook();
 
-    // if editing existing selected
     if (!useNew && selectedId) {
       const nextItems = current.items.map((x) =>
-        x.id === selectedId
-          ? { ...x, shipping: ship, label: x.label || makeLabel(ship) }
-          : x
+        x.id === selectedId ? { ...x, shipping: ship, label: x.label || makeLabel(ship) } : x
       );
 
       const next = { ...current, selectedId, items: nextItems };
@@ -141,12 +161,8 @@ export default function Checkout() {
       return;
     }
 
-    // else add new
     const id = uid();
-    const nextItems = [
-      { id, label: makeLabel(ship), shipping: ship },
-      ...(current.items || [])
-    ];
+    const nextItems = [{ id, label: makeLabel(ship), shipping: ship }, ...(current.items || [])];
 
     const next = { selectedId: id, items: nextItems };
     localStorage.setItem(BOOK_KEY, JSON.stringify(next));
@@ -160,8 +176,7 @@ export default function Checkout() {
     const current = loadBook();
     const nextItems = (current.items || []).filter((x) => x.id !== id);
 
-    const nextSelected =
-      current.selectedId === id ? (nextItems[0]?.id || "") : current.selectedId;
+    const nextSelected = current.selectedId === id ? nextItems[0]?.id || "" : current.selectedId;
 
     const next = { selectedId: nextSelected, items: nextItems };
     localStorage.setItem(BOOK_KEY, JSON.stringify(next));
@@ -188,23 +203,25 @@ export default function Checkout() {
     const msg = validateShipping();
     if (msg) return alert(msg);
 
-    // ✅ save shipping always (edit existing OR add new)
     saveToBook(shipping);
 
     const payload = {
-      items: items.map((x) => ({
+      items: orderItems.map((x) => ({
         productId: x.productId,
         qty: x.qty,
-        variant: x.variant
+        variant: x.variant,
       })),
       shipping,
-      paymentMethod
+      paymentMethod,
     };
 
     const r = await api.post("/api/orders", payload, token);
     if (!r?.ok) return alert(r?.message || "Order failed");
 
-    clear();
+    // ✅ buyMode হলে cart clear করবে না
+    if (buyMode) clearBuyNow?.();
+    else clear?.();
+
     alert("✅ Order placed!");
     nav("/profile");
   };
@@ -242,7 +259,7 @@ export default function Checkout() {
                     border: "1px solid #eee",
                     borderRadius: 8,
                     marginBottom: 8,
-                    background: selectedId === x.id ? "#f7f7ff" : "#fff"
+                    background: selectedId === x.id ? "#f7f7ff" : "#fff",
                   }}
                 >
                   <label style={{ cursor: "pointer", flex: 1 }}>
@@ -343,7 +360,6 @@ export default function Checkout() {
           onChange={(e) => setShipping({ ...shipping, note: e.target.value })}
         />
 
-        {/* ✅ Save button (only meaningful when useNew OR editing existing) */}
         <div className="rowBetween" style={{ marginTop: 10 }}>
           <button
             type="button"

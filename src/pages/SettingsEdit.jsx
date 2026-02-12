@@ -1,61 +1,127 @@
+// src/pages/SettingsEdit.jsx
+import "../styles/settingsEdit.css";
+
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { api } from "../api/api";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { api } from "../api/api";
+import useNoIndex from "../utils/useNoIndex";
 
 export default function SettingsEdit() {
-  const { user } = useAuth();
+  useNoIndex("noindex, nofollow");
   const nav = useNavigate();
-  const token = api.token();
+  const { user } = useAuth(); // (optional) refreshMe থাকলে destructure করতে পারবে
 
   const [fullName, setFullName] = useState("");
-  const [permanentAddress, setPermanentAddress] = useState("");
-  const [gender, setGender] = useState("MALE");
-  const [loading, setLoading] = useState(false);
+  const [gender, setGender] = useState(""); // backend style: MALE/FEMALE/OTHER
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     setFullName(user?.fullName || "");
-    setPermanentAddress(user?.permanentAddress || "");
-    setGender(user?.gender || "MALE");
+
+    // ✅ normalize gender to MALE/FEMALE/OTHER
+    const g = String(user?.gender || "").toUpperCase();
+    if (g === "MALE" || g === "FEMALE" || g === "OTHER") setGender(g);
+    else setGender("");
   }, [user]);
 
-  const save = async () => {
+  const onSave = async (e) => {
+    e.preventDefault();
+
+    const name = fullName.trim();
+    if (!name) {
+      alert("Full Name required");
+      return;
+    }
+
     try {
-      setLoading(true);
-      const r = await api.put("/api/auth/me", { fullName, permanentAddress, gender }, token);
-      if (!r?.ok) return alert(r?.message || "Failed to update");
-      alert("✅ Updated");
-      nav("/profile");
+      setSaving(true);
+
+      const token = localStorage.getItem("token");
+      if (!token) {
+        nav("/login");
+        return;
+      }
+
+      // ✅ Backend route matches: PUT /api/auth/me
+      const r = await api.put(
+        "/api/auth/me",
+        {
+          fullName: name,
+          gender: gender || undefined
+        },
+        token
+      );
+
+      if (!r?.ok) {
+        alert(r?.message || "Save failed");
+        return;
+      }
+
+      // ✅ optional: যদি AuthContext এ refreshMe/addUserUpdate থাকে তাহলে এখান থেকে call করবে
+      // await refreshMe?.();
+
+      alert("Saved ✅");
+      nav("/settings");
+    } catch (err) {
+      alert(err?.message || "Save failed");
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
   return (
-    <div className="container">
-      <div className="rowBetween" style={{ marginBottom: 14 }}>
-        <h2>Edit Profile</h2>
-        <Link className="btnGhost" to="/settings">← Back</Link>
-      </div>
+    <div className="container editProfilePage">
+      {/* Header */}
+      <div className="editHead">
+        <h2 className="editTitle">Edit Profile</h2>
 
-      <div className="box">
-        <label className="lbl">Full Name</label>
-        <input className="input" value={fullName} onChange={(e) => setFullName(e.target.value)} />
-
-        <label className="lbl">Permanent Address</label>
-        <input className="input" value={permanentAddress} onChange={(e) => setPermanentAddress(e.target.value)} />
-
-        <label className="lbl">Gender</label>
-        <select className="input" value={gender} onChange={(e) => setGender(e.target.value)}>
-          <option value="MALE">MALE</option>
-          <option value="FEMALE">FEMALE</option>
-          <option value="OTHER">OTHER</option>
-        </select>
-
-        <button className="btnPinkFull" type="button" disabled={loading} onClick={save}>
-          {loading ? "Saving..." : "Save"}
+        <button className="editBackBtn" type="button" onClick={() => nav(-1)} disabled={saving}>
+          ← Back
         </button>
       </div>
+
+      {/* Card */}
+      <form className="editCard" onSubmit={onSave}>
+        <div className="editGrid">
+          {/* Full Name */}
+          <div className="field">
+            <label className="lbl">Full Name</label>
+            <input
+              className="inp"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              placeholder="Full name"
+              autoComplete="name"
+            />
+          </div>
+
+          {/* Gender */}
+          <div className="field">
+            <label className="lbl">Gender</label>
+            <select className="inp" value={gender} onChange={(e) => setGender(e.target.value)}>
+              <option value="">Select</option>
+              <option value="MALE">Male</option>
+              <option value="FEMALE">Female</option>
+              <option value="OTHER">Other</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Buttons */}
+        <div className="editBtns">
+          <button className="btnCancel" type="button" onClick={() => nav(-1)} disabled={saving}>
+            Cancel
+          </button>
+
+          <button className="btnSave" type="submit" disabled={saving}>
+            {saving ? "Saving..." : "Save"}
+          </button>
+        </div>
+      </form>
+
+      {/* bottom spacing so footer/nav never sticks */}
+      <div className="editBottomSpace" />
     </div>
   );
 }

@@ -1,4 +1,16 @@
-const BASE = import.meta.env.VITE_API_BASE || "http://localhost:5000";
+// src/api/api.js
+
+// ✅ PROD এ localhost থাকলে Network error হবে
+// ✅ তাই env না থাকলে PROD এ Render backend ধরছি।
+const PROD_FALLBACK = "https://api.thecuriousempire.com";
+
+// ✅ VITE_API_BASE দিলে সেটাই নেবে
+// ✅ না দিলে: PROD -> fallback, DEV -> localhost
+const BASE_RAW =
+  import.meta.env.VITE_API_BASE ||
+  (import.meta.env.PROD ? PROD_FALLBACK : "http://localhost:5000");
+
+const BASE = String(BASE_RAW).replace(/\/$/, ""); // শেষের / remove
 
 function getToken() {
   return localStorage.getItem("token") || "";
@@ -7,22 +19,44 @@ function getAdminToken() {
   return localStorage.getItem("admin_token") || "";
 }
 
-async function jsonFetch(url, opts) {
-  const r = await fetch(url, opts);
-  const data = await r.json().catch(() => ({}));
-  return data;
+async function jsonFetch(url, opts = {}) {
+  try {
+    const r = await fetch(url, {
+      ...opts,
+      // ✅ future-proof (cookie auth থাকলেও কাজ করবে)
+      credentials: "include",
+    });
+
+    const text = await r.text();
+    let data = {};
+    try {
+      data = text ? JSON.parse(text) : {};
+    } catch {
+      data = { ok: false, message: text || "Non-JSON response" };
+    }
+
+    // ✅ HTTP status hint add
+    if (!r.ok && data && typeof data === "object" && !("status" in data)) {
+      data.status = r.status;
+    }
+
+    return data;
+  } catch (e) {
+    return { ok: false, message: e?.message || "Network error" };
+  }
 }
 
 export const api = {
   BASE,
 
   get(path) {
-    return jsonFetch(`${BASE}${path}`);
+    return jsonFetch(`${BASE}${path}`, { method: "GET" });
   },
 
   getAuth(path, token) {
     return jsonFetch(`${BASE}${path}`, {
-      headers: token ? { Authorization: `Bearer ${token}` } : {}
+      method: "GET",
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
     });
   },
 
@@ -31,9 +65,21 @@ export const api = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {})
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
-      body: JSON.stringify(body || {})
+      body: JSON.stringify(body || {}),
+    });
+  },
+
+  // ✅ extra helper: POST with token (Settings/Checkout etc.)
+  postAuth(path, token, body) {
+    return jsonFetch(`${BASE}${path}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: JSON.stringify(body || {}),
     });
   },
 
@@ -42,28 +88,31 @@ export const api = {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {})
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
-      body: JSON.stringify(body || {})
+      body: JSON.stringify(body || {}),
     });
   },
 
-  // ✅ ADD THIS: delete (for product/category delete)
+  // ✅ extra helper: PUT with token (Edit Profile -> PUT /api/auth/me)
+  putAuth(path, token, body) {
+    return jsonFetch(`${BASE}${path}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: JSON.stringify(body || {}),
+    });
+  },
+
   delete(path, token) {
     return jsonFetch(`${BASE}${path}`, {
       method: "DELETE",
-      headers: token ? { Authorization: `Bearer ${token}` } : {}
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
     });
   },
 
-  // ✅ postAuth/putAuth (optional helper)
-  postAuth(path, body, token) {
-    return api.post(path, body, token);
-  },
-  putAuth(path, body, token) {
-    return api.put(path, body, token);
-  },
-
   token: getToken,
-  adminToken: getAdminToken
+  adminToken: getAdminToken,
 };

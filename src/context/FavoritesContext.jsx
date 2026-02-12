@@ -1,26 +1,58 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 const FavoritesCtx = createContext(null);
-const LS_KEY = "fav_v1";
 
-function loadFav() {
+const LS_GUEST = "fav_guest";
+const userFavKey = (uid) => `fav_user_${String(uid || "").trim()}`;
+
+function safeParse(raw, fallback) {
   try {
-    return JSON.parse(localStorage.getItem(LS_KEY) || "[]");
+    const v = JSON.parse(raw);
+    return v ?? fallback;
   } catch {
-    return [];
+    return fallback;
   }
+}
+function loadKey(key, fallback) {
+  const raw = localStorage.getItem(key);
+  return raw ? safeParse(raw, fallback) : fallback;
 }
 
 export function FavoritesProvider({ children }) {
-  const [favIds, setFavIds] = useState(loadFav());
+  const [activeKey, setActiveKey] = useState(LS_GUEST);
+
+  const [favIds, setFavIds] = useState(() => {
+    const d = loadKey(LS_GUEST, []);
+    return Array.isArray(d) ? d : [];
+  });
 
   useEffect(() => {
-    localStorage.setItem(LS_KEY, JSON.stringify(favIds));
-  }, [favIds]);
+    try {
+      localStorage.setItem(activeKey, JSON.stringify(favIds));
+    } catch {}
+  }, [favIds, activeKey]);
+
+  const useUserFav = (uidOrPhone) => {
+    const uid = String(uidOrPhone || "").trim();
+
+    if (!uid) {
+      setActiveKey(LS_GUEST);
+      const gf = loadKey(LS_GUEST, []);
+      setFavIds(Array.isArray(gf) ? gf : []);
+      return;
+    }
+
+    const k = userFavKey(uid);
+    setActiveKey(k);
+    const uf = loadKey(k, []);
+    setFavIds(Array.isArray(uf) ? uf : []);
+  };
 
   const value = useMemo(
     () => ({
       favIds,
+      useUserFav,
+
       isFav(id) {
         return favIds.includes(String(id));
       },
@@ -34,7 +66,7 @@ export function FavoritesProvider({ children }) {
       },
       clear() {
         setFavIds([]);
-      }
+      },
     }),
     [favIds]
   );

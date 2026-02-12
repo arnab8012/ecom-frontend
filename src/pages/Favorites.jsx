@@ -1,116 +1,201 @@
+// src/pages/Favorites.jsx
+import "../styles/favorites.css";
+
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import { useFavorites } from "../context/FavoritesContext";
 import { useAuth } from "../context/AuthContext";
-import PrivateRoute from "../components/PrivateRoute";
-import ProductCard from "../components/ProductCard";
-import { api } from "../api/api";
 import { useCart } from "../context/CartContext";
+import { api } from "../api/api";
+import useNoIndex from "../utils/useNoIndex";
 
-function FavoritesInner() {
-  const { favIds, clear } = useFavorites();
-  const { user } = useAuth();
-  const [products, setProducts] = useState([]);
-  const { buyNow } = useCart();
+
+export default function Favorites() {
+  useNoIndex("noindex, nofollow");
   const nav = useNavigate();
+  const { pathname } = useLocation();
+  const fav = useFavorites();
+  const { user } = useAuth();
+  const { buyNow } = useCart();
 
-  const ids = useMemo(() => favIds.map(String), [favIds]);
 
+  // ✅ admin panel এ hide
+  if (pathname.startsWith("/admin")) return null;
+
+  const favIds = Array.isArray(fav?.favIds) ? fav.favIds : [];
+
+  const [loading, setLoading] = useState(false);
+  const [products, setProducts] = useState([]);
+
+  const formatBDT = (n) => `৳ ${Math.round(Number(n) || 0).toLocaleString("en-US")}`;
+
+  // ✅ favIds পরিবর্তন হলে product details load
   useEffect(() => {
     let alive = true;
 
-    (async () => {
+    async function load() {
+      if (!favIds.length) {
+        setProducts([]);
+        return;
+      }
+
+      setLoading(true);
+
       try {
         const r = await api.get("/api/products");
         if (!alive) return;
 
-        const all = r?.ok ? r.products || [] : [];
-        setProducts(all.filter((p) => ids.includes(String(p._id))));
+        if (r?.ok && Array.isArray(r?.products)) {
+          const map = new Map(r.products.map((p) => [String(p._id), p]));
+          const list = favIds.map((id) => map.get(String(id))).filter(Boolean);
+          setProducts(list);
+        } else {
+          setProducts([]);
+        }
       } catch {
-        if (alive) setProducts([]);
+        if (!alive) return;
+        setProducts([]);
+      } finally {
+        if (!alive) return;
+        setLoading(false);
       }
-    })();
+    }
 
+    load();
     return () => {
       alive = false;
     };
-  }, [ids]);
+  }, [favIds.join("|")]);
 
+  const total = favIds.length;
+
+  const doRemove = (id) => {
+    if (fav?.remove) return fav.remove(id);
+    if (fav?.removeFav) return fav.removeFav(id);
+    if (fav?.removeFavorite) return fav.removeFavorite(id);
+    if (fav?.toggle) return fav.toggle(id);
+    if (fav?.toggleFav) return fav.toggleFav(id);
+  };
+
+  const doClear = () => {
+    if (fav?.clear) return fav.clear();
+    if (fav?.clearAll) return fav.clearAll();
+    if (fav?.reset) return fav.reset();
+
+    // fallback: সব id remove
+    favIds.forEach((id) => doRemove(id));
+  };
+
+  const firstFavId = favIds?.[0] ? String(favIds[0]) : null;
+
+  const firstFavProduct = useMemo(() => {
+    if (!firstFavId) return null;
+    return products.find((p) => String(p?._id) === firstFavId) || null;
+  }, [firstFavId, products]);
+
+  // ✅ Favorites থেকে Checkout => ProductDetails এ না গিয়ে Checkout (buy mode)
   const checkoutFirst = () => {
-    if (!products.length) return alert("No favorite product");
-    const p0 = products[0];
+    if (!user) return nav("/login");
 
-    // ✅ set single product for checkout
-    buyNow(p0, "", 1);
-    nav("/checkout");
+    if (firstFavProduct?._id) {
+      buyNow(firstFavProduct, "", 1);
+      nav("/checkout?mode=buy");
+      return;
+    }
+    nav("/shop");
   };
 
   return (
-    <div className="container">
-      <div className="rowBetween">
-        <h2>My Favorites</h2>
-        <Link className="btnGhost" to="/">
+    <div className="container favPage">
+      <div className="favHead">
+        <div>
+          <h2 className="favTitle" style={{ margin: 0 }}>
+            My Favorites
+          </h2>
+
+          <div className="favSub">
+            {user?.phone || user?.email || "Guest"} — <b>Total: {total}</b>
+          </div>
+        </div>
+
+        <button className="favBackBtn" type="button" onClick={() => nav(-1)}>
           ← Back
-        </Link>
+        </button>
       </div>
 
-      <div className="muted" style={{ marginBottom: 12 }}>
-        {user?.fullName || ""} — Total: {products.length}
-      </div>
-
-      {products.length === 0 ? (
-        <div className="box">No favorites yet</div>
+      {!total ? (
+        <div className="favEmpty">
+          No favorites yet. <Link to="/shop">Go to shop</Link>
+        </div>
       ) : (
         <>
-          {/* ✅ TOP CHECKOUT */}
-          <button className="btnPinkFull" type="button" onClick={checkoutFirst}>
-            Checkout (First Favorite)
-          </button>
+          <div className="favTopActions">
+            <button type="button" className="favPrimaryBtn" onClick={checkoutFirst}>
+              Checkout (First Favorite)
+            </button>
 
-          <button
-            className="btnGhost"
-            type="button"
-            onClick={clear}
-            style={{ margin: "12px 0" }}
-          >
-            Clear All
-          </button>
-
-          <div className="grid">
-            {products.map((p) => (
-              <div key={p._id} style={{ position: "relative" }}>
-                <ProductCard p={p} />
-
-                {/* ✅ PER PRODUCT BUY NOW */}
-                <button
-                  className="btnPink"
-                  type="button"
-                  style={{
-                    position: "absolute",
-                    right: 12,
-                    bottom: 12,
-                    zIndex: 5
-                  }}
-                  onClick={() => {
-                    buyNow(p, "", 1);
-                    nav("/checkout");
-                  }}
-                >
-                  Buy Now
-                </button>
-              </div>
-            ))}
+            <button type="button" className="favGhostBtn" onClick={doClear}>
+              Clear All
+            </button>
           </div>
+
+          {loading ? (
+            <div className="favEmpty">Loading favorites…</div>
+          ) : products.length ? (
+            <div className="favList">
+              {products.map((p, idx) => {
+                const id = String(p?._id || "");
+                const title = p?.title || "Product";
+                const price = Number(p?.price) || 0;
+                const img =
+                  p?.images?.[0] ||
+                  p?.image ||
+                  p?.thumb ||
+                  "https://via.placeholder.com/320x240?text=Product";
+
+                return (
+                  <div className="favItem" key={id || `${idx}`}>
+                    <Link to={`/product/${id}`} className="favThumb">
+                      <img
+                        src={img}
+                        alt={title}
+                        loading="lazy"
+                        onError={(e) => {
+                          e.currentTarget.src = "https://via.placeholder.com/320x240?text=Product";
+                        }}
+                      />
+                    </Link>
+
+                    <div className="favInfo">
+                      <Link to={`/product/${id}`} className="favItemTitle">
+                        {title}
+                      </Link>
+
+                      <div className="favPrice">{formatBDT(price)}</div>
+
+                      <div className="favBtns">
+                        <Link to={`/product/${id}`} className="favViewBtn">
+                          View
+                        </Link>
+
+                        <button type="button" className="favRemoveBtn" onClick={() => doRemove(id)}>
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="favEmpty">
+              Favorites আছে (IDs: {favIds.length}) কিন্তু product list এ match হয়নি।
+              <br />
+              (সম্ভবত /api/products এ এই আইডি গুলো নেই)
+            </div>
+          )}
         </>
       )}
     </div>
-  );
-}
-
-export default function Favorites() {
-  return (
-    <PrivateRoute>
-      <FavoritesInner />
-    </PrivateRoute>
   );
 }
