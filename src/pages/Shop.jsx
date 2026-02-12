@@ -84,7 +84,30 @@ export default function Shop() {
   const introDesc =
     "Browse products from The Curious Empire. Premium shopping experience with quality & care. Find items by category or search.";
 
+const canonical = `https://thecuriousempire.com/shop${search || ""}`;
+const title = q ? `Search "${q}" | The Curious Empire` : "Shop | The Curious Empire";
+const desc = q
+  ? `Search results for "${q}" at The Curious Empire.`
+  : category
+  ? `Shop ${category} products at The Curious Empire.`
+  : "Shop premium products at The Curious Empire.";
+
   return (
+     <>
+  <Helmet>
+    <title>{title}</title>
+    <meta name="description" content={desc} />
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={desc} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content="https://thecuriousempire.com/og.png" />
+  </Helmet>
+
+  {/* তোমার আগের JSX থাকবে */}
+</>
     // ✅ footer overlap fix: extra bottom padding
     <div className="container" style={{ paddingBottom: 140 }}>
       {/* ✅ ALWAYS visible content (Google bot will see text even if API fails) */}
