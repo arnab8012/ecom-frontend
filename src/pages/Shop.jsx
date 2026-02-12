@@ -106,8 +106,6 @@ const desc = q
     <meta property="og:image" content="https://thecuriousempire.com/og.png" />
   </Helmet>
 
-  {/* তোমার আগের JSX থাকবে */}
-</>
     // ✅ footer overlap fix: extra bottom padding
     <div className="container" style={{ paddingBottom: 140 }}>
       {/* ✅ ALWAYS visible content (Google bot will see text even if API fails) */}
