@@ -125,8 +125,16 @@ export default function Footer() {
             }}
           />
           <span className="footerDevText">
-            THIS WEBSITE DEVELOPED BY <strong>ARNAB CHOWDHURY (TONY)</strong>
-          </span>
+  THIS WEBSITE DEVELOPED BY{" "}
+         <a
+    href="https://www.facebook.com/tony5232"
+         target="_blank"
+         rel="noreferrer"
+         className="devLink"
+         >
+        <strong>ARNAB CHOWDHURY (TONY)</strong>
+          </a>
+        </span>
         </div>
       </div>
     </footer>
