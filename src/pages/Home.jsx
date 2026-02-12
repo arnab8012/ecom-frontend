@@ -77,13 +77,26 @@ export default function Home() {
   return (
      <>
   <Helmet>
-    <title>The Curious Empire | Premium Shopping Experience</title>
-    <meta name="description" content="Premium Shopping Experience — Unique products delivered with quality & care." />
-    <link rel="canonical" href="https://thecuriousempire.com/" />
-  </Helmet>
+  <title>The Curious Empire | Premium Shopping Experience</title>
 
-  {/* তোমার আগের home JSX */}
-</>
+  <meta
+    name="description"
+    content="The Curious Empire offers premium shopping with curated products, fast delivery, and trusted quality—shop confidently every day."
+  />
+
+  <link rel="canonical" href="https://thecuriousempire.com/" />
+
+  {/* Open Graph */}
+  <meta property="og:title" content="The Curious Empire | Premium Shopping Experience" />
+  <meta
+    property="og:description"
+    content="The Curious Empire offers premium shopping with curated products, fast delivery, and trusted quality—shop confidently every day."
+  />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://thecuriousempire.com/" />
+  <meta property="og:image" content="https://thecuriousempire.com/og.jpg" />
+</Helmet>
+
     <div className="container homeWrap">
       {/* ===== BANNER ===== */}
       {bannerUrls.length > 0 && (
