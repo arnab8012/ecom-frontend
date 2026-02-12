@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { api } from "../api/api";
 import ProductCard from "../components/ProductCard";
 import HomeCategories from "../components/HomeCategories";
+import { Helmet } from "react-helmet-async";
 
 export default function Home() {
   const nav = useNavigate();
@@ -74,6 +75,15 @@ export default function Home() {
   }, [allProducts]);
 
   return (
+     <>
+  <Helmet>
+    <title>The Curious Empire | Premium Shopping Experience</title>
+    <meta name="description" content="Premium Shopping Experience — Unique products delivered with quality & care." />
+    <link rel="canonical" href="https://thecuriousempire.com/" />
+  </Helmet>
+
+  {/* তোমার আগের home JSX */}
+</>
     <div className="container homeWrap">
       {/* ===== BANNER ===== */}
       {bannerUrls.length > 0 && (
