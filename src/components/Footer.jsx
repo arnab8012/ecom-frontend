@@ -44,7 +44,7 @@ export default function Footer() {
               </a>
               <a
                 className="socBtn"
-                href="https://youtube.com"
+                href="https://www.youtube.com/@thecuriousempire"
                 target="_blank"
                 rel="noreferrer"
                 aria-label="YouTube"
