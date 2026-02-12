@@ -94,7 +94,7 @@ return (
         />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://thecuriousempire.com/" />
-        <meta property="og:image" content="https://thecuriousempire.com/og.jpg" />
+        <meta property="og:image" content="https://thecuriousempire.com/og.png" />
       </Helmet>
 
       <div className="container homeWrap">
