@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { api } from "../api/api";
 import ProductCard from "../components/ProductCard";
+import { Helmet } from "react-helmet-async";
 
 export default function Shop() {
   const { search } = useLocation();
