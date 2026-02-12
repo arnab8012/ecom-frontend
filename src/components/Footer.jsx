@@ -35,7 +35,7 @@ export default function Footer() {
             <div className="footerSocial">
               <a
                 className="socBtn"
-                href="https://facebook.com"
+                href="https://facebook.com/TheCuriousEmpire"
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Facebook"
