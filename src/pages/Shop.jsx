@@ -105,6 +105,7 @@ const desc = q
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content="https://thecuriousempire.com/og.png" />
   </Helmet>
+      </>
 
     // ✅ footer overlap fix: extra bottom padding
     <div className="container" style={{ paddingBottom: 140 }}>
