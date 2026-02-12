@@ -3,9 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { api } from "../api/api";
 import { useCart } from "../context/CartContext";
-
-// ✅ যদি তোমার css ফাইল থাকে, এই লাইনটা রাখো/যোগ করো
-// import "../styles/productDetails.css";
+import { Helmet } from "react-helmet-async";
 
 export default function ProductDetails() {
   const { id } = useParams();
@@ -16,10 +14,10 @@ export default function ProductDetails() {
   const [variant, setVariant] = useState("");
   const [qty, setQty] = useState(1);
 
-  // ✅ gallery state
+  // gallery
   const [idx, setIdx] = useState(0);
 
-  // ✅ toast
+  // toast
   const [toast, setToast] = useState("");
 
   useEffect(() => {
@@ -36,7 +34,7 @@ export default function ProductDetails() {
         setQty(1);
         setIdx(0);
       } else {
-        alert(r.message || "Not found");
+        alert(r.message || "Product not found");
       }
     })();
 
@@ -48,7 +46,7 @@ export default function ProductDetails() {
     return arr.filter(Boolean);
   }, [p?.images]);
 
-  // ✅ auto image change
+  // auto image slide
   useEffect(() => {
     if (imgs.length <= 1) return;
     const t = setInterval(() => {
@@ -57,7 +55,7 @@ export default function ProductDetails() {
     return () => clearInterval(t);
   }, [imgs.length]);
 
-  if (!p) return <div className="container">Loading...</div>;
+  if (!p) return <div className="container">Loading…</div>;
 
   const mainImg = imgs[idx] || "https://via.placeholder.com/800x500?text=Product";
 
@@ -70,15 +68,11 @@ export default function ProductDetails() {
     price: p.price
   };
 
-  const prev = () => {
-    if (!imgs.length) return;
-    setIdx((x) => (x - 1 + imgs.length) % imgs.length);
-  };
-
-  const next = () => {
-    if (!imgs.length) return;
-    setIdx((x) => (x + 1) % imgs.length);
-  };
+  const canonical = `https://thecuriousempire.com/product/${p._id}`;
+  const title = `${p.title} | The Curious Empire`;
+  const desc =
+    p.description ||
+    "Shop premium products at The Curious Empire. Quality products with fast delivery.";
 
   const showToast = (msg) => {
     setToast(msg);
@@ -87,243 +81,133 @@ export default function ProductDetails() {
   };
 
   return (
-    <div className="container">
-      <div className="pd">
-        {/* ✅ LEFT: Gallery */}
-        <div>
-          <div style={{ position: "relative" }}>
-            <img
-              className="pdImg"
-              src={mainImg}
-              alt={p.title}
-              style={{ width: "100%", borderRadius: 14 }}
-            />
+    <>
+      {/* ================= SEO ================= */}
+      <Helmet>
+        <title>{title}</title>
+        <meta name="description" content={desc} />
+        <link rel="canonical" href={canonical} />
 
-            {/* ✅ arrow buttons */}
-            {imgs.length > 1 && (
-              <>
-                <button
-                  type="button"
-                  onClick={prev}
-                  style={{
-                    position: "absolute",
-                    left: 10,
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    width: 40,
-                    height: 40,
-                    borderRadius: 999,
-                    border: "none",
-                    cursor: "pointer",
-                    background: "rgba(0,0,0,0.45)",
-                    color: "#fff",
-                    fontSize: 20
-                  }}
-                >
-                  ‹
-                </button>
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={desc} />
+        <meta property="og:type" content="product" />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:image" content={imgs[0] || "https://thecuriousempire.com/og.png"} />
+      </Helmet>
 
-                <button
-                  type="button"
-                  onClick={next}
-                  style={{
-                    position: "absolute",
-                    right: 10,
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    width: 40,
-                    height: 40,
-                    borderRadius: 999,
-                    border: "none",
-                    cursor: "pointer",
-                    background: "rgba(0,0,0,0.45)",
-                    color: "#fff",
-                    fontSize: 20
-                  }}
-                >
-                  ›
-                </button>
-              </>
-            )}
+      <div className="container">
+        <div className="pd">
+          {/* ===== LEFT: Gallery ===== */}
+          <div>
+            <div style={{ position: "relative" }}>
+              <img
+                className="pdImg"
+                src={mainImg}
+                alt={p.title}
+                style={{ width: "100%", borderRadius: 14 }}
+              />
 
-            {/* ✅ dots */}
-            {imgs.length > 1 && (
-              <div
-                style={{
-                  position: "absolute",
-                  left: 0,
-                  right: 0,
-                  bottom: 10,
-                  display: "flex",
-                  justifyContent: "center",
-                  gap: 8
-                }}
-              >
-                {imgs.map((_, i) => (
+              {imgs.length > 1 && (
+                <>
                   <button
+                    onClick={() => setIdx((x) => (x - 1 + imgs.length) % imgs.length)}
+                    className="pdArrow left"
+                  >
+                    ‹
+                  </button>
+                  <button
+                    onClick={() => setIdx((x) => (x + 1) % imgs.length)}
+                    className="pdArrow right"
+                  >
+                    ›
+                  </button>
+                </>
+              )}
+            </div>
+
+            {imgs.length > 1 && (
+              <div className="pdThumbs">
+                {imgs.map((url, i) => (
+                  <img
                     key={i}
-                    type="button"
+                    src={url}
+                    alt=""
+                    className={i === idx ? "active" : ""}
                     onClick={() => setIdx(i)}
-                    style={{
-                      width: 10,
-                      height: 10,
-                      borderRadius: 999,
-                      border: "none",
-                      cursor: "pointer",
-                      background: i === idx ? "#111" : "rgba(0,0,0,0.25)"
-                    }}
-                    aria-label={`img-${i}`}
                   />
                 ))}
               </div>
             )}
           </div>
 
-          {/* ✅ thumbnails */}
-          {imgs.length > 1 && (
-            <div
-              style={{
-                display: "flex",
-                gap: 10,
-                marginTop: 12,
-                overflowX: "auto",
-                paddingBottom: 6
-              }}
-            >
-              {imgs.map((url, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  onClick={() => setIdx(i)}
-                  style={{
-                    border: i === idx ? "2px solid #ff007a" : "1px solid #eee",
-                    borderRadius: 12,
-                    padding: 2,
-                    background: "#fff",
-                    cursor: "pointer",
-                    flex: "0 0 auto"
-                  }}
-                  title={`Image ${i + 1}`}
+          {/* ===== RIGHT: Info ===== */}
+          <div className="pdRight">
+            {toast && <div className="pdToast">✓ {toast}</div>}
+
+            <h1>{p.title}</h1>
+
+            <div className="priceRow">
+              <span className="price">৳ {p.price}</span>
+              {p.compareAtPrice && <span className="cut">৳ {p.compareAtPrice}</span>}
+            </div>
+
+            <div className="muted">Delivery time: {p.deliveryDays}</div>
+
+            {p.variants?.length > 0 && (
+              <div className="box">
+                <div className="lbl">Variant</div>
+                <select
+                  value={variant}
+                  onChange={(e) => setVariant(e.target.value)}
+                  className="input"
                 >
-                  <img
-                    src={url}
-                    alt=""
-                    width="78"
-                    height="60"
-                    style={{ objectFit: "cover", borderRadius: 10 }}
-                  />
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
+                  {p.variants.map((v, i) => (
+                    <option key={i} value={v.name}>
+                      {v.name} (Stock: {v.stock})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
 
-        {/* ✅ RIGHT: Details */}
-        <div className="pdRight" style={{ position: "relative" }}>
-          {/* ✅ Toast */}
-          {toast ? (
-            <div
-              style={{
-                position: "sticky",
-                top: 8,
-                zIndex: 20,
-                background: "rgba(0,0,0,0.78)",
-                color: "#fff",
-                padding: "10px 14px",
-                borderRadius: 12,
-                width: "fit-content",
-                fontWeight: 800,
-                marginBottom: 10
-              }}
-            >
-              ✓ {toast}
-            </div>
-          ) : null}
-
-          <h2>{p.title}</h2>
-
-          <div className="priceRow">
-            <span className="price">৳ {p.price}</span>
-            {p.compareAtPrice ? <span className="cut">৳ {p.compareAtPrice}</span> : null}
-          </div>
-
-          <div className="muted">Delivery time: {p.deliveryDays}</div>
-
-          {p.variants?.length ? (
             <div className="box">
-              <div className="lbl">Available variant:</div>
-              <select
-                value={variant}
-                onChange={(e) => setVariant(e.target.value)}
-                className="input"
-              >
-                {p.variants.map((v, i) => (
-                  <option key={i} value={v.name}>
-                    {v.name} (Stock: {v.stock})
-                  </option>
-                ))}
-              </select>
+              <div className="lbl">Quantity</div>
+              <div className="qtyRow">
+                <button onClick={() => setQty((q) => Math.max(1, q - 1))}>−</button>
+                <input value={qty} readOnly />
+                <button onClick={() => setQty((q) => q + 1)}>+</button>
+              </div>
             </div>
-          ) : null}
 
-          <div className="box">
-            <div className="lbl">Quantity</div>
-
-            {/* ✅ সুন্দর qtyRow */}
-            <div className="qtyRow">
+            <div className="pdBtns">
               <button
-                className="qtyBtn"
-                onClick={() => setQty((q) => Math.max(1, q - 1))}
-                type="button"
+                className="btnPinkFull"
+                onClick={() => {
+                  add(cartItem);
+                  showToast("Added to cart");
+                }}
               >
-                −
+                Add to Cart
               </button>
 
-              <input
-                className="qtyInput"
-                value={qty}
-                onChange={(e) => setQty(Math.max(1, Number(e.target.value || 1)))}
-                inputMode="numeric"
-              />
-
-              <button className="qtyBtn" onClick={() => setQty((q) => q + 1)} type="button">
-                +
+              <button
+                className="btnDarkFull"
+                onClick={() => {
+                  buyNow(p, variant, qty);
+                  nav("/checkout?mode=buy");
+                }}
+              >
+                Buy Now
               </button>
             </div>
-          </div>
 
-          <div className="pdBtns">
-            {/* ✅ Add to Cart => cart এ add হবে, কিন্তু /cart এ যাবে না */}
-            <button
-              className="btnPinkFull"
-              onClick={() => {
-                add(cartItem);
-                showToast("Added to cart");
-              }}
-              type="button"
-            >
-              Add to Cart
-            </button>
-
-            {/* ✅ Buy Now => cart এ add হবে না */}
-            <button
-              className="btnDarkFull"
-              onClick={() => {
-                buyNow(p, variant, qty);
-                nav("/checkout?mode=buy");
-              }}
-              type="button"
-            >
-              Buy Now
-            </button>
-          </div>
-
-          <div className="box">
-            <h4>Description</h4>
-            <p className="muted">{p.description || "No description yet."}</p>
+            <div className="box">
+              <h4>Description</h4>
+              <p className="muted">{p.description || "No description available."}</p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
