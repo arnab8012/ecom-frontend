@@ -5,9 +5,6 @@ import { api } from "../api/api";
 import { useCart } from "../context/CartContext";
 import { Helmet } from "react-helmet-async";
 
-// ✅ যদি তোমার css ফাইল থাকে, এই লাইনটা রাখো/যোগ করো
-// import "../styles/productDetails.css";
-
 export default function ProductDetails() {
   const { id } = useParams();
   const nav = useNavigate();
@@ -32,7 +29,7 @@ export default function ProductDetails() {
 
       if (r.ok) {
         setP(r.product);
-        const firstVar = r.product.variants?.[0]?.name || "";
+        const firstVar = r.product?.variants?.[0]?.name || "";
         setVariant(firstVar);
         setQty(1);
         setIdx(0);
@@ -83,20 +80,58 @@ export default function ProductDetails() {
 
   const showToast = (msg) => {
     setToast(msg);
-    window.clearTimeout(showToast._t);
-    showToast._t = window.setTimeout(() => setToast(""), 1200);
+    // একাধিক click করলে আগের timeout cancel
+    if (window.__pd_toast_t) window.clearTimeout(window.__pd_toast_t);
+    window.__pd_toast_t = window.setTimeout(() => setToast(""), 1200);
   };
 
+  // =========================
   // ✅ SEO (Helmet) values
-  const canonical = p?._id ? `https://thecuriousempire.com/product/${p._id}` : `https://thecuriousempire.com/product/${id}`;
+  // =========================
+  const canonical = p?._id
+    ? `https://thecuriousempire.com/product/${p._id}`
+    : `https://thecuriousempire.com/product/${id}`;
+
   const title = p?.title ? `${p.title} | The Curious Empire` : "Product | The Curious Empire";
-  const desc =
+
+  const descRaw =
     p?.description ||
     "Shop premium products at The Curious Empire. Quality products with fast delivery.";
 
-  const ogImg =
-    imgs[0] ||
-    "https://thecuriousempire.com/og.png"; // তোমার public/og.png আছে, তাই এটা সেফ
+  // ✅ description ছোট (Google snippet friendly)
+  const desc = String(descRaw).replace(/\s+/g, " ").trim().slice(0, 180);
+
+  const ogImg = imgs[0] || "https://thecuriousempire.com/og.png";
+
+  // ✅ variant-based stock
+  const selectedVar = (p?.variants || []).find((v) => v.name === variant);
+  const inStock = (selectedVar?.stock ?? p?.variants?.[0]?.stock ?? 0) > 0;
+
+  const price = Number(p?.price || 0);
+  const brandName = "The Curious Empire";
+
+  // ✅ Product JSON-LD schema
+  const productSchema = p?._id
+    ? {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        name: p.title,
+        image: (imgs?.length ? imgs : [ogImg]).filter(Boolean),
+        description: desc,
+        sku: String(p._id),
+        brand: { "@type": "Brand", name: brandName },
+        offers: {
+          "@type": "Offer",
+          url: canonical,
+          priceCurrency: "BDT",
+          price: price || undefined,
+          availability: inStock
+            ? "https://schema.org/InStock"
+            : "https://schema.org/OutOfStock",
+          itemCondition: "https://schema.org/NewCondition"
+        }
+      }
+    : null;
 
   return (
     <>
@@ -112,6 +147,17 @@ export default function ProductDetails() {
         <meta property="og:type" content="product" />
         <meta property="og:url" content={canonical} />
         <meta property="og:image" content={ogImg} />
+
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={desc} />
+        <meta name="twitter:image" content={ogImg} />
+
+        {/* JSON-LD Product Schema */}
+        {productSchema && (
+          <script type="application/ld+json">{JSON.stringify(productSchema)}</script>
+        )}
       </Helmet>
 
       <div className="container">
@@ -146,6 +192,7 @@ export default function ProductDetails() {
                       color: "#fff",
                       fontSize: 20
                     }}
+                    aria-label="Previous image"
                   >
                     ‹
                   </button>
@@ -167,6 +214,7 @@ export default function ProductDetails() {
                       color: "#fff",
                       fontSize: 20
                     }}
+                    aria-label="Next image"
                   >
                     ›
                   </button>
@@ -231,6 +279,7 @@ export default function ProductDetails() {
                       flex: "0 0 auto"
                     }}
                     title={`Image ${i + 1}`}
+                    aria-label={`Thumbnail ${i + 1}`}
                   >
                     <img
                       src={url}
@@ -296,12 +345,12 @@ export default function ProductDetails() {
             <div className="box">
               <div className="lbl">Quantity</div>
 
-              {/* ✅ সুন্দর qtyRow */}
               <div className="qtyRow">
                 <button
                   className="qtyBtn"
                   onClick={() => setQty((q) => Math.max(1, q - 1))}
                   type="button"
+                  aria-label="Decrease quantity"
                 >
                   −
                 </button>
@@ -311,9 +360,16 @@ export default function ProductDetails() {
                   value={qty}
                   onChange={(e) => setQty(Math.max(1, Number(e.target.value || 1)))}
                   inputMode="numeric"
+                  type="number"
+                  min="1"
                 />
 
-                <button className="qtyBtn" onClick={() => setQty((q) => q + 1)} type="button">
+                <button
+                  className="qtyBtn"
+                  onClick={() => setQty((q) => q + 1)}
+                  type="button"
+                  aria-label="Increase quantity"
+                >
                   +
                 </button>
               </div>
