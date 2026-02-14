@@ -67,7 +67,12 @@ export default function Checkout() {
 
   const token = api.token();
 
- 
+  // ✅ ADD: DB-তে shippingAddress save করার helper (api.putAuth আছে বলেছো)
+  const saveShippingToDB = async (ship) => {
+    if (!token) return { ok: false, message: "No token" };
+    // backend route: PUT /api/auth/me  body: { shippingAddress: ship }
+    return await api.putAuth("/api/auth/me", token, { shippingAddress: ship });
+  };
 
   const [book, setBook] = useState(loadBook());
   const [useNew, setUseNew] = useState(false);
@@ -202,6 +207,10 @@ export default function Checkout() {
 
     const msg = validateShipping();
     if (msg) return alert(msg);
+
+    // ✅ ADD: DB-তে shippingAddress save (multi-device fix)
+    const db = await saveShippingToDB(shipping);
+    if (!db?.ok) return alert(db?.message || "Address DB save failed");
 
     saveToBook(shipping);
 
@@ -364,9 +373,14 @@ export default function Checkout() {
           <button
             type="button"
             className="btnGhost"
-            onClick={() => {
+            onClick={async () => {
               const msg = validateShipping();
               if (msg) return alert(msg);
+
+              // ✅ ADD: DB-তে shippingAddress save (multi-device fix)
+              const db = await saveShippingToDB(shipping);
+              if (!db?.ok) return alert(db?.message || "Address DB save failed");
+
               saveToBook(shipping);
               alert("✅ Address saved!");
             }}
