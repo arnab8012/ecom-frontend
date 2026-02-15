@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import "../styles/footer.css";
+import { MdEmail, MdPhone } from "react-icons/md";
 import logo from "../assets/logo.png";
 
 export default function Footer() {
@@ -107,8 +108,6 @@ export default function Footer() {
             </Link>
           </div>
         </div>
-
-import { MdEmail, MdPhone } from "react-icons/md";
 
 <div className="footer-contact">
   <h3>Contact Info</h3>
