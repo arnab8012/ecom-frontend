@@ -108,23 +108,21 @@ export default function Footer() {
           </div>
         </div>
 
-              {/* Contact Info */}
-         <div className="footer-section">
-   <h3 className="footer-title">Contact Info</h3>
+import { MdEmail, MdPhone } from "react-icons/md";
 
-        <p className="footer-text">
-          Email : <a
-href="mailto:thecuriousempire@gmail.com">
-      thecuriousempire@gmail.com
-        </a>
-       </p>
+<div className="footer-contact">
+  <h3>Contact Info</h3>
 
-        <p className="footer-text">
-        Phone Number : <a href="tel:    +8801799188274">
-      +880 1799-188274
-        </a>
-      </p>
-    </div>
+  <a href="mailto: thecuriousempire@gmail.com.com" className="contact-row">
+    <MdEmail />
+    <span>thecuriousempire@gmail.com</span>
+  </a>
+
+  <a href="tel:+8801799188274" className="contact-row">
+    <MdPhone />
+    <span>+880 1799-188274</span>
+  </a>
+</div>
 
         {/* Copyright */}
         <div className="footerBottom">
