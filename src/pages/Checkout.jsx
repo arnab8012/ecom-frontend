@@ -104,10 +104,16 @@ export default function Checkout() {
     setSelectedId(sid);
 
     if (!sid) {
-      setUseNew(true);
-      setShipping(emptyShipping(user));
-      return;
-    }
+  // 🔥 FIX: localStorage না থাকলে DB address ব্যবহার করো
+  if (user?.shippingAddress && Object.keys(user.shippingAddress).length > 0) {
+    setUseNew(false);
+    setShipping({ ...emptyShipping(user), ...user.shippingAddress });
+  } else {
+    setUseNew(true);
+    setShipping(emptyShipping(user));
+  }
+  return;
+}
 
     const found = b.items.find((x) => x.id === sid);
     if (found?.shipping) {
