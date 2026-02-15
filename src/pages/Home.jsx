@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { api } from "../api/api";
 import ProductCard from "../components/ProductCard";
 import HomeCategories from "../components/HomeCategories";
+import { Helmet } from "react-helmet-async";
 
 export default function Home() {
   const nav = useNavigate();
@@ -73,74 +74,96 @@ export default function Home() {
     return map;
   }, [allProducts]);
 
-  return (
-    <div className="container homeWrap">
-      {/* ===== BANNER ===== */}
-      {bannerUrls.length > 0 && (
-        <div className="homeBanner">
-          <div
-            className="bannerSlideTrack"
-            style={{ transform: `translateX(-${slide * 100}%)` }}
-          >
-            {bannerUrls.map((url, i) => (
-              <div className="bannerSlide" key={i}>
-                <img src={url} className="bannerImg" alt="Banner" />
-              </div>
-            ))}
-          </div>
+return (
+    <>
+      <Helmet>
+        <title>The Curious Empire | Premium Shopping Experience</title>
 
-          {bannerUrls.length > 1 && (
-            <div className="bannerDots">
-              {bannerUrls.map((_, i) => (
-                <button
-                  key={i}
-                  className={`dot ${i === slide ? "active" : ""}`}
-                  onClick={() => setSlide(i)}
-                  type="button"
-                />
+        <meta
+          name="description"
+          content="The Curious Empire offers premium shopping with curated products, fast delivery, and trusted quality—shop confidently every day."
+        />
+
+        <link rel="canonical" href="https://thecuriousempire.com/" />
+
+        {/* Open Graph */}
+        <meta property="og:title" content="The Curious Empire | Premium Shopping Experience" />
+        <meta
+          property="og:description"
+          content="The Curious Empire offers premium shopping with curated products, fast delivery, and trusted quality—shop confidently every day."
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://thecuriousempire.com/" />
+        <meta property="og:image" content="https://thecuriousempire.com/og.png" />
+      </Helmet>
+
+      <div className="container homeWrap">
+        {/* ===== BANNER ===== */}
+        {bannerUrls.length > 0 && (
+          <div className="homeBanner">
+            <div
+              className="bannerSlideTrack"
+              style={{ transform: `translateX(-${slide * 100}%)` }}
+            >
+              {bannerUrls.map((url, i) => (
+                <div className="bannerSlide" key={i}>
+                  <img src={url} className="bannerImg" alt="Banner" />
+                </div>
               ))}
             </div>
-          )}
-        </div>
-      )}
 
-      {/* ===== TEXT BELOW BANNER ===== */}
-      <div className="homeHeroText">
-        <div className="homeHeroTitle">The Curious Empire</div>
-        <div className="homeHeroSub">Premium Shopping Experience</div>
-      </div>
-
-<HomeCategories cats={cats} />
-
-      
-      {/* ===== PRODUCTS SECTIONS (by category) ===== */}
-      {loading ? (
-        <div className="box" style={{ marginTop: 14 }}>
-          Loading...
-        </div>
-      ) : cats.length === 0 ? null : (
-        cats.map((c) => {
-          const items = byCat.get(c._id) || [];
-          if (!items.length) return null;
-
-          return (
-            <div key={c._id} style={{ marginTop: 14 }}>
-              <div className="rowBetween" style={{ marginBottom: 10 }}>
-                <h3 style={{ margin: 0, fontWeight: 900 }}>{c.name}</h3>
-                <Link className="seeMore" to={`/shop?category=${c.slug || c._id}`}>
-                  See More →
-                </Link>
-              </div>
-
-              <div className="homeTwoGrid">
-                {items.slice(0, 4).map((p) => (
-                  <ProductCard key={p._id} p={p} />
+            {bannerUrls.length > 1 && (
+              <div className="bannerDots">
+                {bannerUrls.map((_, i) => (
+                  <button
+                    key={i}
+                    className={`dot ${i === slide ? "active" : ""}`}
+                    onClick={() => setSlide(i)}
+                    type="button"
+                  />
                 ))}
               </div>
-            </div>
-          );
-        })
-      )}
-    </div>
+            )}
+          </div>
+        )}
+
+        {/* ===== TEXT BELOW BANNER ===== */}
+        <div className="homeHeroText">
+          <div className="homeHeroTitle">The Curious Empire</div>
+          <div className="homeHeroSub">Premium Shopping Experience</div>
+        </div>
+
+        <HomeCategories cats={cats} />
+
+        {/* ===== PRODUCTS SECTIONS (by category) ===== */}
+        {loading ? (
+          <div className="box" style={{ marginTop: 14 }}>
+            Loading...
+          </div>
+        ) : cats.length === 0 ? null : (
+          cats.map((c) => {
+            const items = byCat.get(c._id) || [];
+            if (!items.length) return null;
+
+            return (
+              <div key={c._id} style={{ marginTop: 14 }}>
+                <div className="rowBetween" style={{ marginBottom: 10 }}>
+                  <h3 style={{ margin: 0, fontWeight: 900 }}>{c.name}</h3>
+                  <Link className="seeMore" to={`/shop?category=${c.slug || c._id}`}>
+                    See More →
+                  </Link>
+                </div>
+
+                <div className="homeTwoGrid">
+                  {items.slice(0, 4).map((p) => (
+                    <ProductCard key={p._id} p={p} />
+                  ))}
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+    </>
   );
 }

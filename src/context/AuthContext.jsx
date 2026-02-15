@@ -135,7 +135,8 @@ export function AuthProvider({ children }) {
     const t = localStorage.getItem("token");
     if (!t) return { ok: false, message: "No token" };
 
-    const r = await api.putAuth("/api/auth/me", payload, t);
+    // ✅ FIX: putAuth(path, token, body) — তোমারটা উল্টা ছিল
+    const r = await api.putAuth("/api/auth/me", t, payload);
     if (!r?.ok) return r;
 
     const u = r.user || null;

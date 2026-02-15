@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import "../styles/footer.css";
+import { MdEmail, MdPhone } from "react-icons/md";
 import logo from "../assets/logo.png";
 
 export default function Footer() {
@@ -107,6 +108,20 @@ export default function Footer() {
             </Link>
           </div>
         </div>
+
+<div className="footer-contact">
+  <h3>Contact Info</h3>
+
+  <a href="mailto: thecuriousempire@gmail.com" className="contact-row">
+    <MdEmail />
+    <span>thecuriousempire@gmail.com</span>
+  </a>
+
+  <a href="tel:+8801799188274" className="contact-row">
+    <MdPhone />
+    <span>+8801799-188274</span>
+  </a>
+</div>
 
         {/* Copyright */}
         <div className="footerBottom">
