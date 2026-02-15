@@ -112,14 +112,14 @@ export default function Footer() {
 <div className="footer-contact">
   <h3>Contact Info</h3>
 
-  <a href="mailto: thecuriousempire@gmail.com.com" className="contact-row">
+  <a href="mailto: thecuriousempire@gmail.com" className="contact-row">
     <MdEmail />
     <span>thecuriousempire@gmail.com</span>
   </a>
 
   <a href="tel:+8801799188274" className="contact-row">
     <MdPhone />
-    <span>+880 1799-188274</span>
+    <span>+8801799-188274</span>
   </a>
 </div>
 
