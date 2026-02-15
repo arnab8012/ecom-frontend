@@ -108,6 +108,24 @@ export default function Footer() {
           </div>
         </div>
 
+              {/* Contact Info */}
+         <div className="footer-section">
+   <h3 className="footer-title">Contact Info</h3>
+
+        <p className="footer-text">
+          Email : <a
+href="mailto:thecuriousempire@gmail.com">
+      thecuriousempire@gmail.com
+        </a>
+       </p>
+
+        <p className="footer-text">
+        Phone Number : <a href="tel:    +8801799188274">
+      +880 1799-188274
+        </a>
+      </p>
+    </div>
+
         {/* Copyright */}
         <div className="footerBottom">
           <span>© {new Date().getFullYear()} The Curious Empire. All rights reserved.</span>
