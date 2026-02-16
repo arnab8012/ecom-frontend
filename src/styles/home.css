@@ -256,9 +256,9 @@
   /* 🔥 NEW premium soft gradient */
   background: linear-gradient(
     135deg,
-    #e9f8f1,
-    #dff4e8,
-    #f6f2d8
+    #ff4ecd,
+    #7b5cff,
+    #00d4ff
   );
 
   box-shadow:
@@ -271,8 +271,7 @@
 
 .premiumIcon i{
   font-size: 28px;
-  color: #0b3d2e;          /* dark premium green */
-  opacity: 0.9;
+  color: #ffffff;   
 }
 
 /* mobile tap */
