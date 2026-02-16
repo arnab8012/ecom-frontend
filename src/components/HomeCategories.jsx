@@ -32,19 +32,21 @@ function HomeCategories({ cats }) {
             onClick={() => nav(`/shop?category=${c._id}`)}
           >
 
-           <div className="catIcon">
-        <i className={
-    c.name === "Mobile Accessories"
-      ? "ph ph-device-mobile"
-      : c.name === "HeadphoneS"
-      ? "ph ph-headphones"
-      : c.name === "Bluetooth Speakers"
-      ? "ph ph-speaker-high"
-      : c.name === "Data Cables"
-      ? "ph ph-plug"
-      : "ph ph-package"
-         }></i>
-       </div>
+         <div className="catIcon premiumIcon">
+  <i
+    className={
+      c.name === "Mobile Accessories"
+        ? "ph ph-device-mobile ph-bold"
+        : c.name === "HeadphoneS"
+        ? "ph ph-headphones ph-bold"
+        : c.name === "Bluetooth Speakers"
+        ? "ph ph-speaker-high ph-bold"
+        : c.name === "Data Cables"
+        ? "ph ph-plug ph-bold"
+        : "ph ph-package ph-bold"
+    }
+  ></i>
+</div>
 
       <div className="catName">{c.name}</div>
           </button>
