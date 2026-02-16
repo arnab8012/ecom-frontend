@@ -135,9 +135,6 @@ export default function Footer() {
             alt="Developer"
             className="footerDevImg"
             loading="lazy"
-            onError={(e) => {
-              e.currentTarget.style.display = "none";
-            }}
           />
           <span className="footerDevText">
   THIS WEBSITE DEVELOPED BY{" "}
