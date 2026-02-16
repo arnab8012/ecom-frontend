@@ -91,7 +91,7 @@ export default function Shop() {
     "Browse products from The Curious Empire. Premium shopping experience with quality & care. Find items by category or search.";
 
   return (
-    <>
+    <div className="page-enter">
       <Helmet>
         <title>{title}</title>
         <meta name="description" content={desc} />
@@ -179,6 +179,6 @@ export default function Shop() {
           </>
         )}
       </div>
-    </>
+    </div>
   );
 }
