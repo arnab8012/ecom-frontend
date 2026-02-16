@@ -7,7 +7,7 @@
   scroll-snap-type: none;
   -webkit-overflow-scrolling: touch;
 
-  direction: rtl;              /* ✅ ডান থেকে বামে */
+  direction: ltr;              /* ✅ ডান থেকে বামে */
   justify-content: flex-start;
 }
 
