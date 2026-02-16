@@ -253,18 +253,20 @@
   display: grid;
   place-items: center;
 
+  /* 🔥 NEW premium soft gradient */
   background: linear-gradient(
     135deg,
-    #7f00ff,
-    #00c6ff,
-    #ff4ecd
+    #e9f8f1,
+    #dff4e8,
+    #f6f2d8
   );
 
   box-shadow:
     0 14px 30px rgba(0,0,0,.22),
     inset 0 1px 0 rgba(255,255,255,.45);
 
-  transition: transform .15s ease, box-shadow .15s ease;
+  transition: transform .15s ease,
+              box-shadow .15s ease;
 }
 
 .premiumIcon i{
