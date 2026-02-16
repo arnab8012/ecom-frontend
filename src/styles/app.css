@@ -39,3 +39,19 @@ body{
 .footer{
   padding-bottom: calc(var(--bottom-nav-h) + 14px);
 }
+
+/* page slide from top */
+.page-enter {
+  animation: slideFromTop 0.35s ease forwards;
+}
+
+@keyframes slideFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
