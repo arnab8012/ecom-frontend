@@ -243,3 +243,37 @@
   color: #0b1220;
   text-align: center;
 }
+
+/* ===== ULTRA PREMIUM GRADIENT ICON ===== */
+
+.premiumIcon{
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+
+  background: linear-gradient(
+    135deg,
+    #7f00ff,
+    #00c6ff,
+    #ff4ecd
+  );
+
+  box-shadow:
+    0 14px 30px rgba(0,0,0,.22),
+    inset 0 1px 0 rgba(255,255,255,.45);
+
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.premiumIcon i{
+  font-size: 28px;
+  color: #ffffff;
+}
+
+/* mobile tap */
+.catItem:active .premiumIcon{
+  transform: scale(0.92);
+  box-shadow: 0 8px 18px rgba(0,0,0,.25);
+}
