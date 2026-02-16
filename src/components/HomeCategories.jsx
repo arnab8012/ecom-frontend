@@ -39,11 +39,20 @@ function HomeCategories({ cats }) {
             type="button"
             onClick={() => nav(`/shop?category=${c._id}`)}
           >
+
            <div className="catIcon">
-          <span className="catEmoji">
-       {CAT_ICONS[c.name] || "📦"}
-            </span>
-            </div>
+        <i className={
+    c.name === "Mobile Accessories"
+      ? "ph ph-device-mobile"
+      : c.name === "HeadphoneS"
+      ? "ph ph-headphones"
+      : c.name === "Bluetooth Speakers"
+      ? "ph ph-speaker-high"
+      : c.name === "Data Cables"
+      ? "ph ph-plug"
+      : "ph ph-package"
+         }></i>
+       </div>
 
       <div className="catName">{c.name}</div>
           </button>
