@@ -269,7 +269,8 @@
 
 .premiumIcon i{
   font-size: 28px;
-  color: #ffffff;
+  color: #0b3d2e;          /* dark premium green */
+  opacity: 0.9;
 }
 
 /* mobile tap */
