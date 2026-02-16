@@ -1,14 +1,6 @@
 import { memo } from "react";
 import { useNavigate } from "react-router-dom";
 
-/* ✅ এখানে বসাও */
-const CAT_ICONS = {
-  "Mobile Accessories": "📱",
-  "HeadphoneS": "🎧",
-  "Bluetooth Speakers": "🔊",
-  "Data Cables": "🔌",
-};
-
 function HomeCategories({ cats }) {
   const nav = useNavigate();
 
