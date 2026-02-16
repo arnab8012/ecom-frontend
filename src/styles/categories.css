@@ -4,7 +4,7 @@
   gap: 12px;
   overflow-x: auto;
   padding: 10px 2px 4px;
-  scroll-snap-type: x mandatory;
+  scroll-snap-type: none;
   -webkit-overflow-scrolling: touch;
 
   direction: rtl;              /* ✅ ডান থেকে বামে */
