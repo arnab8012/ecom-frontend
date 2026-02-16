@@ -75,7 +75,7 @@ export default function Home() {
   }, [allProducts]);
 
 return (
-    <>
+    <div className="page-enter">
       <Helmet>
         <title>The Curious Empire | Premium Shopping Experience</title>
 
@@ -164,6 +164,6 @@ return (
           })
         )}
       </div>
-    </>
+    </div>
   );
 }
