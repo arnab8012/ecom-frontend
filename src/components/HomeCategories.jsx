@@ -1,9 +1,6 @@
 import { memo } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { memo } from "react";
-import { useNavigate } from "react-router-dom";
-
 /* ✅ এখানে বসাও */
 const CAT_ICONS = {
   "Mobile Accessories": "📱",
