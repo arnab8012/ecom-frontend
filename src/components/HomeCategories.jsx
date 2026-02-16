@@ -1,6 +1,17 @@
 import { memo } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { memo } from "react";
+import { useNavigate } from "react-router-dom";
+
+/* ✅ এখানে বসাও */
+const CAT_ICONS = {
+  "Mobile Accessories": "📱",
+  "HeadphoneS": "🎧",
+  "Bluetooth Speakers": "🔊",
+  "Data Cables": "🔌",
+};
+
 function HomeCategories({ cats }) {
   const nav = useNavigate();
 
@@ -31,19 +42,13 @@ function HomeCategories({ cats }) {
             type="button"
             onClick={() => nav(`/shop?category=${c._id}`)}
           >
-            <div className="catIcon">
-              <img
-                src={c.image || "https://via.placeholder.com/160"}
-                alt={c.name}
-                loading="lazy"
-                onError={(e) => {
-                  e.currentTarget.onerror = null;
-                  e.currentTarget.src = "https://via.placeholder.com/160";
-                }}
-              />
+           <div className="catIcon">
+          <span className="catEmoji">
+       {CAT_ICONS[c.name] || "📦"}
+            </span>
             </div>
 
-            <div className="catName">{c.name}</div>
+      <div className="catName">{c.name}</div>
           </button>
         ))}
       </div>
