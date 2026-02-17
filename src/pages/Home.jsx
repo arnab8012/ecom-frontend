@@ -129,7 +129,7 @@ return (
 
         {/* ===== TEXT BELOW BANNER ===== */}
         <div className="homeHeroText">
-          <div className="homeHeroTitle">The Curious Empire In Bangladesh</div>
+          <div className="homeHeroTitle">The Curious Empire</div>
           <div className="homeHeroSub">Premium Shopping Experience In Bangladesh</div>
         </div>
 
