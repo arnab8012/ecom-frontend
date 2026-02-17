@@ -30,7 +30,7 @@ export default function Footer() {
             <h3 className="footerTitle">The Curious Empire</h3>
 
             <p className="footerDesc">
-              ✨ Premium Shopping Experience — Unique products delivered with quality & care.
+              <span>✨ Premium Shopping Experience — Unique products delivered with quality & care.</span>
 <span>🪀আপনার বিশ্বাসই আমাদের সবচেয়ে বড় শক্তি।</span>
 <span>🪀আমরা শুধু পণ্য বিক্রি করি না—</span>
 <span>🪀আমরা তৈরি করি বিশ্বাস, গুণমান এবং সন্তুষ্টির সম্পর্ক।</span>
