@@ -130,7 +130,9 @@ return (
         {/* ===== TEXT BELOW BANNER ===== */}
         <div className="homeHeroText">
           <div className="homeHeroTitle">Welcome To The Curious Empire</div>
-          <div className="homeHeroSub">Premium Shopping Experience In Bangladesh</div>
+          <div className="homeHeroSub">যেখানে কৌতূহল মানেই নতুন কিছু আবিষ্কার।
+আমরা নিয়ে এসেছি মানসম্মত, ট্রেন্ডি ও নির্ভরযোগ্য পণ্যের সংগ্রহ,
+যা আপনার দৈনন্দিন জীবনকে করবে আরও সহজ ও স্মার্ট।</div>
         </div>
 
         <HomeCategories cats={cats} />
