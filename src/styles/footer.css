@@ -55,6 +55,11 @@
   line-height: 1.35;
 }
 
+.footerDesc span {
+  display: block;
+  margin-top: 6px;
+}
+
 .footerSocial{
   display: flex;
   gap: 10px;
