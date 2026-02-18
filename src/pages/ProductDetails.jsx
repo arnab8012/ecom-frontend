@@ -360,7 +360,15 @@ const canBuy = availableStock > 0 && qty <= availableStock;
                 <input
                   className="qtyInput"
                   value={qty}
-                  onChange={(e) => setQty(Math.max(1, Number(e.target.value || 1)))}
+                  onChange={(e) => {
+  const n = Math.max(1, Number(e.target.value || 1));
+  if (availableStock > 0 && n > availableStock) {
+    setQty(availableStock);
+    showToast(`Only ${availableStock} in stock`);
+    return;
+  }
+  setQty(n);
+}}
                   inputMode="numeric"
                   type="number"
                   min="1"
