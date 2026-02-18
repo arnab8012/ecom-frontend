@@ -403,7 +403,9 @@ export default function ProductDetails() {
 
             <div className="box">
               <h4>Description</h4>
-              <p className="muted">{p.description || "No description yet."}</p>
+              <p className="product-description muted">
+  {p.description || "No description yet."}
+</p>
             </div>
           </div>
         </div>
