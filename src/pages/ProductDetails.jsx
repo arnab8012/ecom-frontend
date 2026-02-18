@@ -398,27 +398,40 @@ const canBuy = availableStock > 0 && qty <= availableStock;
             <div className="pdBtns">
               {/* ✅ Add to Cart => cart এ add হবে, কিন্তু /cart এ যাবে না */}
               <button
-                className="btnPinkFull"
-                onClick={() => {
-                  add(cartItem);
-                  showToast("Added to cart");
-                }}
-                type="button"
-              >
-                Add to Cart
-              </button>
+  className="btnPinkFull"
+  onClick={() => {
+    if (!canBuy) {
+      showToast(availableStock <= 0 ? "Stock Out" : `Only ${availableStock} in stock`);
+      return;
+    }
+    add(cartItem);
+    showToast("Added to cart");
+  }}
+  type="button"
+  disabled={!canBuy}
+>
+  Add to Cart
+</button>
 
               {/* ✅ Buy Now => cart এ add হবে না */}
               <button
-                className="btnDarkFull"
-                onClick={() => {
-                  buyNow(p, variant, qty);
-                  nav("/checkout?mode=buy");
-                }}
-                type="button"
-              >
-                Buy Now
-              </button>
+  className="btnDarkFull"
+  onClick={() => {
+    if (!canBuy) {
+      showToast(availableStock <= 0 ? "Stock Out" : `Only ${availableStock} in stock`);
+      return;
+    }
+    buyNow(p, variant, qty);
+    nav("/checkout?mode=buy");
+  }}
+  type="button"
+  disabled={!canBuy}
+>
+  Buy Now
+</button>
+{availableStock <= 0 ? (
+  <div style={{ marginTop: 10, fontWeight: 900, color: "#b91c1c" }}>Stock Out</div>
+) : null}
             </div>
 
             <div className="box">
