@@ -64,3 +64,7 @@
   background: #0f766e;
   color: #fff;
 }
+.product-description {
+  white-space: pre-line;
+  line-height: 1.6;
+}
