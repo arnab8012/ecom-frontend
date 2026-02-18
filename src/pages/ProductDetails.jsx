@@ -106,6 +106,8 @@ export default function ProductDetails() {
   // ✅ variant-based stock
   const selectedVar = (p?.variants || []).find((v) => v.name === variant);
   const inStock = (selectedVar?.stock ?? p?.variants?.[0]?.stock ?? 0) > 0;
+const availableStock = selectedVar?.stock ?? p?.variants?.[0]?.stock ?? 0;
+const canBuy = availableStock > 0 && qty <= availableStock;
 
   const price = Number(p?.price || 0);
   const brandName = "The Curious Empire";
@@ -365,8 +367,18 @@ export default function ProductDetails() {
                 />
 
                 <button
-                  className="qtyBtn"
-                  onClick={() => setQty((q) => q + 1)}
+  className="qtyBtn"
+  onClick={() =>
+    setQty((q) => {
+      const nextQty = q + 1;
+      if (availableStock > 0 && nextQty > availableStock) {
+        showToast(`Only ${availableStock} in stock`);
+        return q;
+      }
+      return nextQty;
+    })
+  }
+
                   type="button"
                   aria-label="Increase quantity"
                 >
