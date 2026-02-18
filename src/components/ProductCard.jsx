@@ -114,7 +114,7 @@ export default function ProductCard({ p }) {
             {Number(p?.rating || 0)}/5 ({Number(p?.ratingCount || 0)})
           </span>
           <span className="pcDot">•</span>
-          <span className="pcSold">{Number(p?.sold || 0)} Sold</span>
+          <span className="pcSold">{Number(p?.soldCount || 0)} Sold</span>
         </div>
 
         <div className="pActions">
