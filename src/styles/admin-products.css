@@ -108,14 +108,6 @@ input[type="file"] {
   overflow: hidden;
 }
 
-/* image fixed height so it won't become huge */
-.cardImg {
-  width: 100%;
-  height: 170px;
-  object-fit: cover;
-  display: block;
-}
-
 /* body */
 .cardBody {
   padding: 12px;
