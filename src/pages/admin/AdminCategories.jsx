@@ -8,6 +8,9 @@ function Inner() {
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
 
+const [icon, setIcon] = useState("");
+const [uploading, setUploading] = useState(false);
+
   const load = async () => {
     try {
       const r = await api.get("/api/categories");
@@ -17,6 +20,37 @@ function Inner() {
       setCats([]);
     }
   };
+
+async function uploadCategoryIcon(file) {
+  setUploading(true);
+  try {
+    const fd = new FormData();
+    fd.append("image", file);
+
+    const token = localStorage.getItem("admin_token");
+
+    const r = await fetch("/api/admin/category-icon", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: fd,
+    });
+
+    const data = await r.json();
+
+    if (!data.ok) {
+      alert("Icon upload failed");
+      return;
+    }
+
+    setIcon(data.icon.url); // ✅ very important
+  } catch (e) {
+    alert("Upload error");
+  } finally {
+    setUploading(false);
+  }
+}
 
   useEffect(() => {
     load();
@@ -30,10 +64,11 @@ function Inner() {
     setLoading(true);
     try {
       const t = api.adminToken();
-      const r = await api.post("/api/admin/categories", { name: n }, t);
+      const r = await api.post("/api/admin/categories", { name: n, icon }, t);
       if (!r?.ok) return alert(r?.message || "Failed");
 
       setName("");
+      setIcon("");
       load();
     } finally {
       setLoading(false);
@@ -69,6 +104,37 @@ function Inner() {
           onChange={(e) => setName(e.target.value)}
           placeholder="e.g. Electronics"
         />
+
+{/* ✅ Category icon upload */}
+<label className="lbl">Category icon</label>
+
+<input
+  className="input"
+  type="file"
+  accept="image/*"
+  onChange={(e) => {
+    const file = e.target.files?.[0];
+    if (file) uploadCategoryIcon(file);
+  }}
+/>
+
+{uploading && <div className="muted" style={{ marginTop: 6 }}>Uploading icon...</div>}
+
+{icon && (
+  <img
+    src={icon}
+    alt="Category Icon"
+    style={{
+      width: 60,
+      height: 60,
+      borderRadius: 12,
+      marginTop: 8,
+      objectFit: "cover",
+      border: "1px solid #ddd",
+    }}
+  />
+)}
+
         <button className="btnPinkFull" type="button" onClick={add} disabled={loading}>
           {loading ? "Saving..." : "Add Category"}
         </button>
