@@ -29,7 +29,7 @@ async function uploadCategoryIcon(file) {
 
     const token = localStorage.getItem("admin_token");
 
-    const r = await fetch("/api/admin/category-icon", {
+    const r = await fetch("/api/admin/upload/category-icon", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
