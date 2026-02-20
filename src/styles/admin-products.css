@@ -95,7 +95,7 @@ input[type="file"] {
 .grid {
   margin-top: 14px;
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* ✅ 4 fixed column */
+  grid-template-columns: repeat(8, 1fr); /* ✅ 4 fixed column */
   gap: 14px;
 }
 
