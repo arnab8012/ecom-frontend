@@ -95,8 +95,8 @@ input[type="file"] {
 .grid {
   margin-top: 14px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(4, 1fr); /* ✅ 4 fixed column */
+  gap: 14px;
 }
 
 /* card container */
@@ -146,17 +146,20 @@ input[type="file"] {
 /* =========================
    RESPONSIVE (Mobile)
 ========================= */
-@media (max-width: 768px) {
-  .twoCol {
-    grid-template-columns: 1fr;
-  }
-
-
+@media (max-width: 1100px) {
   .grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(8, 1fr);
   }
+}
 
-  .cardImg {
-    height: 210px;
+@media (max-width: 800px) {
+  .grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+@media (max-width: 520px) {
+  .grid {
+    grid-template-columns: repeat(4, 1fr);
   }
 }
