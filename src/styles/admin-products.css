@@ -166,7 +166,7 @@ input[type="file"] {
 
 .cardImg {
   width: 100%;
-  height: 160px;   /* 👈 এখানে কমাও */
+  height: 100px;   /* 👈 এখানে কমাও */
   object-fit: cover;
   display: block;
 }
