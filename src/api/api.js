@@ -71,6 +71,18 @@ export const api = {
     });
   },
 
+  // ✅ NEW: FormData / file upload (category icon, product images etc.)
+  postForm(path, formData, token) {
+    return jsonFetch(`${BASE}${path}`, {
+      method: "POST",
+      headers: {
+        // ⚠️ Content-Type set করবো না (browser নিজে boundary set করে)
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: formData,
+    });
+  },
+
   // ✅ extra helper: POST with token (Settings/Checkout etc.)
   postAuth(path, token, body) {
     return jsonFetch(`${BASE}${path}`, {
