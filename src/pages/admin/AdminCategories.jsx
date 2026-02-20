@@ -60,6 +60,7 @@ async function uploadCategoryIcon(file) {
   const add = async () => {
     const n = name.trim();
     if (!n) return alert("Category name required");
+    if (!icon) return alert("Category icon required");
 
     setLoading(true);
     try {
@@ -69,7 +70,7 @@ async function uploadCategoryIcon(file) {
 
       setName("");
       setIcon("");
-      load();
+      await load();
     } finally {
       setLoading(false);
     }
