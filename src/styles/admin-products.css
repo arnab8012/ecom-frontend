@@ -162,3 +162,4 @@ input[type="file"] {
   object-fit: cover;
   display: block;
 }
+.grid .cardImg{ height: 140px !important; object-fit: cover; }
