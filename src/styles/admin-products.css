@@ -155,9 +155,12 @@ input[type="file"] {
     grid-template-columns: repeat(4, 1fr);
   }
 }
-
 .cardImg {
   width: 100%;
   display: block;
 }
-.grid .cardImg{ height: 140px !important; object-fit: cover; }
+@media (max-width: 520px) {
+  .grid .cardImg {
+    height: 130px;
+  }
+}
