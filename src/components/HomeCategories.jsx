@@ -31,19 +31,33 @@ function HomeCategories({ cats }) {
             type="button"
             onClick={() => nav(`/shop?category=${c._id}`)}
           >
-            <div className="catIcon">
-              <img
-                src={c.image || "https://via.placeholder.com/160"}
-                alt={c.name}
-                loading="lazy"
-                onError={(e) => {
-                  e.currentTarget.onerror = null;
-                  e.currentTarget.src = "https://via.placeholder.com/160";
-                }}
-              />
-            </div>
 
-            <div className="catName">{c.name}</div>
+         <div className="catIcon premiumIcon">
+  {c.icon ? (
+    <img
+      src={c.icon}
+      alt={c.name}
+      className="catImg"
+      loading="lazy"
+    />
+  ) : (
+    <i
+      className={
+        c.name === "Mobile Accessories"
+          ? "ph ph-device-mobile ph-bold"
+          : c.name === "HeadphoneS"
+          ? "ph ph-headphones ph-bold"
+          : c.name === "Bluetooth Speakers"
+          ? "ph ph-speaker-high ph-bold"
+          : c.name === "Data Cables"
+          ? "ph ph-plug ph-bold"
+          : "ph ph-package ph-bold"
+      }
+    ></i>
+  )}
+</div>
+
+      <div className="catName">{c.name}</div>
           </button>
         ))}
       </div>

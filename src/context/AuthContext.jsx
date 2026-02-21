@@ -75,22 +75,26 @@ export function AuthProvider({ children }) {
   }, []);
 
   // ===== LOGIN =====
-  const login = async (phone, password) => {
-    const r = await api.post("/api/auth/login", { phone, password });
-    if (!r?.ok) return r;
+const login = async (phone, password) => {
+  const r = await api.post("/api/auth/login", { phone, password });
+  if (!r?.ok) return r;
 
-    localStorage.setItem("token", r.token);
+  // token save
+  localStorage.setItem("token", r.token);
 
-    const u = r.user || null;
-    setUser(u);
+  // 🔥 IMPORTANT: DB থেকে fresh user নাও
+  const me = await api.getAuth("/api/auth/me", r.token);
+  const u = me?.ok ? me.user : r.user || null;
 
-    const uid = getUid(u) || phone; // fallback phone
-    cart?.useUserCart?.(uid);
-    fav?.useUserFav?.(uid);
+  setUser(u);
 
-    setBooting(false);
-    return { ok: true, user: u };
-  };
+  const uid = getUid(u) || phone;
+  cart?.useUserCart?.(uid);
+  fav?.useUserFav?.(uid);
+
+  setBooting(false);
+  return { ok: true, user: u };
+};
 
   // ===== REGISTER =====
   const register = async ({ fullName, phone, password, gender }) => {

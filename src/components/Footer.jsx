@@ -30,7 +30,14 @@ export default function Footer() {
             <h3 className="footerTitle">The Curious Empire</h3>
 
             <p className="footerDesc">
-              ✨ Premium Shopping Experience — Unique products delivered with quality & care.
+              <span>✨ Premium Shopping Experience — Unique products delivered with quality & care.</span>
+<span>🪀আপনার বিশ্বাসই আমাদের সবচেয়ে বড় শক্তি।</span>
+<span>🪀আমরা শুধু পণ্য বিক্রি করি না—</span>
+<span>🪀আমরা তৈরি করি বিশ্বাস, গুণমান এবং সন্তুষ্টির সম্পর্ক।</span>
+<span>🦋The Curious Empire বিশ্বাস করে—ভালো পণ্য শুধু প্রয়োজন নয়, এটা একটি অভিজ্ঞতা।</span>
+<span>🛒Shop Now & Feel the Difference.</span>
+<span>🚚Fast Delivery | Trusted Service</span>
+<span>💯Quality You Can Trust🏩</span>
             </p>
 
             <div className="footerSocial">
@@ -135,9 +142,6 @@ export default function Footer() {
             alt="Developer"
             className="footerDevImg"
             loading="lazy"
-            onError={(e) => {
-              e.currentTarget.style.display = "none";
-            }}
           />
           <span className="footerDevText">
   THIS WEBSITE DEVELOPED BY{" "}

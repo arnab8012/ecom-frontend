@@ -7,6 +7,7 @@
 .price {
   font-size: 28px;
   font-weight: 900;
+  color: #065f46;
 }
 .cut {
   font-size: 18px;
@@ -63,4 +64,22 @@
 .btnDarkFull {
   background: #0f766e;
   color: #fff;
+}
+.btnPinkFull:disabled,
+.btnDarkFull:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.stockOut {
+  margin-top: 10px;
+  padding: 6px 12px;
+  background: #fee2e2;
+  color: #b91c1c;
+  border-radius: 8px;
+  font-weight: 900;
+  width: fit-content;
+}
+.product-description {
+  white-space: pre-line;
+  line-height: 1.6;
 }

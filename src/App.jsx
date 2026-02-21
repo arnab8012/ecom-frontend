@@ -39,7 +39,10 @@ export default function App() {
       {!isAdmin && <Navbar />}
 
       {/* ✅ Admin হলে paddingBottom লাগবে না */}
-      <div style={{ paddingBottom: isAdmin ? 0 : 95 }}>
+     <div
+  key={pathname}
+  className="page-enter"
+  style={{ paddingBottom: isAdmin ? 0 : 95 }}>
         <Routes>
           {/* ================== Public ================== */}
           <Route path="/" element={<Home />} />

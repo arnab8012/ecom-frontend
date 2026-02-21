@@ -4,10 +4,10 @@
   gap: 12px;
   overflow-x: auto;
   padding: 10px 2px 4px;
-  scroll-snap-type: x mandatory;
+  scroll-snap-type: none;
   -webkit-overflow-scrolling: touch;
 
-  direction: rtl;              /* ✅ ডান থেকে বামে */
+  direction: ltr;              /* ✅ ডান থেকে বামে */
   justify-content: flex-start;
 }
 
@@ -85,4 +85,15 @@
   align-items: center;
   gap: 10px;
   box-shadow: 0 10px 22px rgba(0,0,0,.06);
+}
+.catIcon {
+  overflow: hidden;
+}
+
+.catImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 14px; /* তোমার design অনুযায়ী */
 }

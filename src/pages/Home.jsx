@@ -75,9 +75,9 @@ export default function Home() {
   }, [allProducts]);
 
 return (
-    <>
+    <div className="page-enter">
       <Helmet>
-        <title>The Curious Empire | Premium Shopping Experience</title>
+        <title>The Curious Empire | Premium Shopping Experience In Bangladesh</title>
 
         <meta
           name="description"
@@ -87,7 +87,7 @@ return (
         <link rel="canonical" href="https://thecuriousempire.com/" />
 
         {/* Open Graph */}
-        <meta property="og:title" content="The Curious Empire | Premium Shopping Experience" />
+        <meta property="og:title" content="The Curious Empire | Premium Shopping Experience In Bangladesh" />
         <meta
           property="og:description"
           content="The Curious Empire offers premium shopping with curated products, fast delivery, and trusted quality—shop confidently every day."
@@ -129,8 +129,8 @@ return (
 
         {/* ===== TEXT BELOW BANNER ===== */}
         <div className="homeHeroText">
-          <div className="homeHeroTitle">The Curious Empire</div>
-          <div className="homeHeroSub">Premium Shopping Experience</div>
+          <div className="homeHeroTitle">Welcome To The Curious Empire</div>
+          <div className="homeHeroSub">Premium Shopping Experience – Your Curiosity, Our Collection🎪</div>
         </div>
 
         <HomeCategories cats={cats} />
@@ -164,6 +164,6 @@ return (
           })
         )}
       </div>
-    </>
+    </div>
   );
 }

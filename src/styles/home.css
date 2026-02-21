@@ -54,17 +54,17 @@
 }
 
 .homeHeroTitle{
-  font-size: 26px;
+  font-size: 17px;
   font-weight: 900;
-  color: #0b1220;
-  line-height: 1.1;
+  color: 
+  line-height: 1.0;
 }
 
 .homeHeroSub{
-  margin-top: 4px;
-  font-size: 14px;
-  font-weight: 700;
-  color: rgba(11,18,32,.7);
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #14532d;
 }
 
 
@@ -84,7 +84,7 @@
 
 /* ===== Categories Section ===== */
 .catSection {
-  padding: 16px;
+  padding: 15px;
   background: #fffdf6;
 }
 
@@ -93,7 +93,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 11px;
 }
 
 .catHeader h3 {

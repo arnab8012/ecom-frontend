@@ -8,6 +8,9 @@ function Inner() {
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const [icon, setIcon] = useState("");
+  const [uploading, setUploading] = useState(false);
+
   const load = async () => {
     try {
       const r = await api.get("/api/categories");
@@ -18,6 +21,31 @@ function Inner() {
     }
   };
 
+  async function uploadCategoryIcon(file) {
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("image", file);
+
+      const token = api.adminToken(); // ✅ same token source
+
+      // ✅ IMPORTANT: FormData upload must use postForm (BASE url সহ backend এ যাবে)
+      const r = await api.postForm("/api/admin/upload/category-icon", fd, token);
+
+      if (!r?.ok) {
+        alert(r?.message || "Icon upload failed");
+        return;
+      }
+
+      // backend: { ok:true, icon:{ url, public_id } }
+      setIcon(r.icon?.url || "");
+    } catch (e) {
+      alert("Upload error");
+    } finally {
+      setUploading(false);
+    }
+  }
+
   useEffect(() => {
     load();
   }, []);
@@ -26,15 +54,17 @@ function Inner() {
   const add = async () => {
     const n = name.trim();
     if (!n) return alert("Category name required");
+    if (!icon) return alert("Category icon required");
 
     setLoading(true);
     try {
       const t = api.adminToken();
-      const r = await api.post("/api/admin/categories", { name: n }, t);
+      const r = await api.post("/api/admin/categories", { name: n, icon }, t);
       if (!r?.ok) return alert(r?.message || "Failed");
 
       setName("");
-      load();
+      setIcon("");
+      await load();
     } finally {
       setLoading(false);
     }
@@ -69,6 +99,41 @@ function Inner() {
           onChange={(e) => setName(e.target.value)}
           placeholder="e.g. Electronics"
         />
+
+        {/* ✅ Category icon upload */}
+        <label className="lbl">Category icon</label>
+
+        <input
+          className="input"
+          type="file"
+          accept="image/*"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) uploadCategoryIcon(file);
+          }}
+        />
+
+        {uploading && (
+          <div className="muted" style={{ marginTop: 6 }}>
+            Uploading icon...
+          </div>
+        )}
+
+        {icon && (
+          <img
+            src={icon}
+            alt="Category Icon"
+            style={{
+              width: 60,
+              height: 60,
+              borderRadius: 12,
+              marginTop: 8,
+              objectFit: "cover",
+              border: "1px solid #ddd",
+            }}
+          />
+        )}
+
         <button className="btnPinkFull" type="button" onClick={add} disabled={loading}>
           {loading ? "Saving..." : "Add Category"}
         </button>

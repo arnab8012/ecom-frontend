@@ -106,6 +106,8 @@ export default function ProductDetails() {
   // ✅ variant-based stock
   const selectedVar = (p?.variants || []).find((v) => v.name === variant);
   const inStock = (selectedVar?.stock ?? p?.variants?.[0]?.stock ?? 0) > 0;
+const availableStock = selectedVar?.stock ?? p?.variants?.[0]?.stock ?? 0;
+const canBuy = availableStock > 0 && qty <= availableStock;
 
   const price = Number(p?.price || 0);
   const brandName = "The Curious Empire";
@@ -358,15 +360,33 @@ export default function ProductDetails() {
                 <input
                   className="qtyInput"
                   value={qty}
-                  onChange={(e) => setQty(Math.max(1, Number(e.target.value || 1)))}
+                  onChange={(e) => {
+  const n = Math.max(1, Number(e.target.value || 1));
+  if (availableStock > 0 && n > availableStock) {
+    setQty(availableStock);
+    showToast(`Only ${availableStock} in stock`);
+    return;
+  }
+  setQty(n);
+}}
                   inputMode="numeric"
                   type="number"
                   min="1"
                 />
 
                 <button
-                  className="qtyBtn"
-                  onClick={() => setQty((q) => q + 1)}
+  className="qtyBtn"
+  onClick={() =>
+    setQty((q) => {
+      const nextQty = q + 1;
+      if (availableStock > 0 && nextQty > availableStock) {
+        showToast(`Only ${availableStock} in stock`);
+        return q;
+      }
+      return nextQty;
+    })
+  }
+
                   type="button"
                   aria-label="Increase quantity"
                 >
@@ -378,32 +398,47 @@ export default function ProductDetails() {
             <div className="pdBtns">
               {/* ✅ Add to Cart => cart এ add হবে, কিন্তু /cart এ যাবে না */}
               <button
-                className="btnPinkFull"
-                onClick={() => {
-                  add(cartItem);
-                  showToast("Added to cart");
-                }}
-                type="button"
-              >
-                Add to Cart
-              </button>
+  className="btnPinkFull"
+  onClick={() => {
+    if (!canBuy) {
+      showToast(availableStock <= 0 ? "Stock Out" : `Only ${availableStock} in stock`);
+      return;
+    }
+    add(cartItem);
+    showToast("Added to cart");
+  }}
+  type="button"
+  disabled={!canBuy}
+>
+  Add to Cart
+</button>
 
               {/* ✅ Buy Now => cart এ add হবে না */}
               <button
-                className="btnDarkFull"
-                onClick={() => {
-                  buyNow(p, variant, qty);
-                  nav("/checkout?mode=buy");
-                }}
-                type="button"
-              >
-                Buy Now
-              </button>
+  className="btnDarkFull"
+  onClick={() => {
+    if (!canBuy) {
+      showToast(availableStock <= 0 ? "Stock Out" : `Only ${availableStock} in stock`);
+      return;
+    }
+    buyNow(p, variant, qty);
+    nav("/checkout?mode=buy");
+  }}
+  type="button"
+  disabled={!canBuy}
+>
+  Buy Now
+</button>
+{availableStock <= 0 ? (
+  <div style={{ marginTop: 10, fontWeight: 900, color: "#b91c1c" }}>Stock Out</div>
+) : null}
             </div>
 
             <div className="box">
               <h4>Description</h4>
-              <p className="muted">{p.description || "No description yet."}</p>
+              <p className="product-description muted">
+  {p.description || "No description yet."}
+</p>
             </div>
           </div>
         </div>
