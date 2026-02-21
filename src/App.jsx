@@ -48,6 +48,7 @@ export default function App() {
           transition={{ duration: 0.25, ease: "easeOut" }}
           style={{ paddingBottom: isAdmin ? 0 : 95 }}
         >
+<ScrollToTop />
           <Routes location={location}>
             {/* ================== Public ================== */}
             <Route path="/" element={<Home />} />
