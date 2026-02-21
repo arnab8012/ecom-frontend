@@ -26,11 +26,9 @@ import AdminBanners from "./pages/admin/AdminBanners";
 import PrivateRoute from "./components/PrivateRoute";
 import BottomNav from "./components/BottomNav";
 import Footer from "./components/Footer";
-
 import "./styles/app.css";
-
 import { AnimatePresence, motion } from "framer-motion";
-
+import ScrollToTop from "./components/ScrollToTop";
 
 export default function App() {
   const location = useLocation();
