@@ -107,62 +107,60 @@ input[type="file"] {
   box-shadow: 0 10px 26px rgba(0,0,0,.06);
   overflow: hidden;
 
-  /* ✅ NEW: fixed height so all cards same */
-  height: 360px;              /* 🔽 কম–বেশি এখানে: 320 / 360 / 400 */
+  /* ✅ FIX: all cards same height */
+  height: 360px;                 /* 🔽 340/360/380 এখানে বদলাবে */
   display: flex;
   flex-direction: column;
 }
 
-/* image */
+/* image (✅ FIX: uniform image height) */
 .cardImg {
   width: 100%;
-  height: 150px;              /* ✅ NEW: image height fixed */
-  object-fit: cover;          /* ✅ NEW: image সুন্দর থাকবে */
+  height: 140px;                 /* 🔽 130/140/150 এখানে বদলাবে */
+  object-fit: cover;
   display: block;
 }
 
-/* body */
+/* body (✅ FIX: footer bottom) */
 .cardBody {
   padding: 12px;
 
-  /* ✅ optional: remaining space use করে footer নিচে থাকবে */
-  display: flex;
-  flex-direction: column;
-  flex: 1;
+  display: flex;                 /* ✅ NEW */
+  flex-direction: column;        /* ✅ NEW */
+  flex: 1;                       /* ✅ NEW */
 }
 
+/* title (optional clamp so it doesn't grow) */
 .cardTitle {
   font-weight: 900;
   font-size: 15px;
   line-height: 1.25;
   margin-bottom: 6px;
 
-  /* ✅ NEW: title বেশি হলে 2 লাইনে কাটবে */
+  /* ✅ NEW: 2 line limit */
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-/* price row */
+/* price row (✅ FIX: push to bottom) */
 .priceRow {
-  margin-top: 6px;
+  margin-top: auto;              /* ✅ NEW */
+  padding-top: 10px;
 }
+
 .price {
   font-weight: 900;
   font-size: 16px;
 }
 
-/* action buttons row */
+/* action buttons row (✅ FIX: flex:1 removed) */
 .cardBody button {
-  flex: 1;
+  flex: 0 0 auto;                /* ✅ FIX: flex:1 বাদ */
+  width: 100%;
   padding: 10px 12px;
-}
-
-/* ✅ NEW: buttons/price নিচে রাখার জন্য */
-.cardBody .priceRow,
-.cardBody .actionsRow {
-  margin-top: auto;
+  margin-top: 10px;
 }
 
 /* =========================
@@ -186,29 +184,9 @@ input[type="file"] {
   }
 }
 
-/* ✅ already had — kept */
+/* mobile image height (kept + works) */
 @media (max-width: 520px) {
   .grid .cardImg {
-    height: 130px; /* mobile এ একটু ছোট */
+    height: 130px;
   }
-}
-/* =========================
-   FORCE footer content to bottom
-========================= */
-
-/* card body flex */
-.cardBody {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-/* price নিচে নামাবে */
-.cardBody .priceRow {
-  margin-top: auto;
-}
-
-/* Edit button সবসময় নিচে */
-.cardBody button {
-  margin-top: 8px;
 }
