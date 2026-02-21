@@ -320,3 +320,68 @@ input[type="file"] {
 .cardBody > div:last-child button{
   flex: 1 !important;
 }
+/* =========================
+   FINAL FIX — Price + Actions always bottom
+   (paste at END of admin-products.css)
+========================= */
+
+/* card fixed height */
+.card{
+  height: 360px !important;     /* চাইলে 340/380 */
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+}
+
+/* image uniform */
+.cardImg{
+  width: 100% !important;
+  height: 140px !important;     /* চাইলে 130/150 */
+  object-fit: cover !important;
+  display: block !important;
+}
+
+/* body becomes positioning container */
+.cardBody{
+  position: relative !important;
+  flex: 1 !important;
+  padding: 12px !important;
+
+  /* নিচে price + button এর জন্য জায়গা রাখবে */
+  padding-bottom: 92px !important;
+}
+
+/* title 2 lines only */
+.cardTitle{
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+}
+
+/* ✅ price locked just above buttons */
+.priceRow{
+  position: absolute !important;
+  left: 12px !important;
+  right: 12px !important;
+  bottom: 56px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* ✅ actions row (your last div in cardBody) locked at bottom */
+.cardBody > div:last-child{
+  position: absolute !important;
+  left: 12px !important;
+  right: 12px !important;
+  bottom: 12px !important;
+
+  display: flex !important;
+  gap: 10px !important;
+  margin: 0 !important;
+}
+
+/* equal width buttons */
+.cardBody > div:last-child button{
+  flex: 1 !important;
+}
