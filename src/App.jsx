@@ -32,6 +32,7 @@ import "./styles/app.css";
 import { AnimatePresence, motion } from "framer-motion";
 
 export default function App() {
+  const location = useLocation();
   const { pathname } = useLocation();
   const isAdmin = pathname.startsWith("/admin");
 
