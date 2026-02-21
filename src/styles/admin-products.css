@@ -190,3 +190,95 @@ input[type="file"] {
     height: 130px;
   }
 }
+/* =========================
+   FINAL FIX (OVERRIDE) — bottom lock
+   Paste this at the VERY END of your CSS
+========================= */
+
+/* card container */
+.card {
+  position: relative;     /* ✅ important */
+  height: 360px;          /* 🔽 কম/বেশি: 340/360/380 */
+  overflow: hidden;
+  background: #fff;
+  border-radius: 18px;
+  border: 1px solid #eee;
+  box-shadow: 0 10px 26px rgba(0,0,0,.06);
+  display: flex;
+  flex-direction: column;
+}
+
+/* image fixed */
+.cardImg {
+  width: 100%;
+  height: 140px;          /* 🔽 130/140/150 */
+  object-fit: cover;
+  display: block;
+}
+
+/* body takes remaining space */
+.cardBody {
+  padding: 12px;
+  flex: 1;
+  position: relative;
+
+  /* ✅ reserve space for price + button at bottom */
+  padding-bottom: 90px;
+}
+
+/* title clamp so it won't make layout tall */
+.cardTitle {
+  font-weight: 900;
+  font-size: 15px;
+  line-height: 1.25;
+  margin-bottom: 6px;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;        /* 2 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ✅ price row locked above button */
+.priceRow {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 54px;                 /* price sits above button */
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.price {
+  font-weight: 900;
+  font-size: 16px;
+}
+
+/* ✅ Edit button locked at bottom */
+.cardBody button {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+
+  width: auto;
+  flex: 0 0 auto !important;    /* ✅ kills old flex:1 */
+  margin: 0 !important;
+  padding: 10px 12px;
+}
+
+/* mobile tweaks */
+@media (max-width: 520px) {
+  .card {
+    height: 340px;              /* mobile */
+  }
+  .cardImg {
+    height: 130px;
+  }
+  .cardBody {
+    padding-bottom: 86px;
+  }
+  .priceRow {
+    bottom: 52px;
+  }
+}
