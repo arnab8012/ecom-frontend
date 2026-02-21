@@ -30,7 +30,6 @@ import Footer from "./components/Footer";
 import "./styles/app.css";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useLocation } from "react-router-dom";
 
 export default function App() {
   const { pathname } = useLocation();
