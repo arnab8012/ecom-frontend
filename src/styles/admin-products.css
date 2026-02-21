@@ -126,7 +126,8 @@ input[type="file"] {
   flex: 1;
 
   display: grid;
-  grid-template-rows: auto auto 1fr auto auto; /* title / cat / spacer / price / actions */
+  grid-template-rows: auto auto auto 1fr; 
+  /* title | category | price | actions */
   gap: 8px;
 
   min-width: 0;
@@ -205,11 +206,13 @@ input[type="file"] {
   }
 
   /* make action row 2 equal columns */
-  .cardBody > div:last-child {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 4px !important;
-  }
+  /* actions row */
+.cardBody > div:last-child{
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 4px !important;
+  margin-top: auto !important;   /* 🔑 নিচে আটকাবে */
+}
 
   /* ultra compact buttons but keep full text */
   .cardBody > div:last-child button {
