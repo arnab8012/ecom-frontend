@@ -166,18 +166,14 @@ input[type="file"] {
   align-self: stretch;
 }
 
-/* ✅ actions buttons (no round/cut, equal width) */
 .cardBody > div:last-child button {
   flex: 1;
-  min-width: 0;               /* ✅ allow shrink */
-  width: 100%;
   padding: 10px 12px;
   border-radius: 14px;
 
-  white-space: nowrap;        /* ✅ keep text in one line */
-  overflow: hidden;           /* ✅ if narrow, hide overflow */
-  text-overflow: ellipsis;    /* ✅ show ... */
-  line-height: 1.1;
+  white-space: normal;   /* ✅ লেখা কাটবে না */
+  overflow: visible;     /* ✅ পুরো লেখা দেখাবে */
+  text-overflow: unset;  /* ✅ ellipsis বন্ধ */
 }
 
 /* =========================
