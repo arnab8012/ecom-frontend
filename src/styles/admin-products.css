@@ -90,13 +90,13 @@ input[type="file"] {
 }
 
 /* =========================
-   PRODUCT GRID
+   PRODUCT GRID (FIXED)
 ========================= */
 .grid {
   margin-top: 14px;
   display: grid;
-  grid-template-columns: repeat(8, 1fr); /* ✅ 4 fixed column */
   gap: 14px;
+  grid-template-columns: repeat(4, 1fr); /* ✅ mobile/desktop stable */
 }
 
 /* card container */
@@ -107,47 +107,44 @@ input[type="file"] {
   box-shadow: 0 10px 26px rgba(0,0,0,.06);
   overflow: hidden;
 
-  /* ✅ FIX: all cards same height */
-  height: 360px;                 /* 🔽 340/360/380 এখানে বদলাবে */
+  height: 360px;                 /* ✅ all same height */
   display: flex;
   flex-direction: column;
 }
 
-/* image (✅ FIX: uniform image height) */
+/* image */
 .cardImg {
   width: 100%;
-  height: 140px;                 /* 🔽 130/140/150 এখানে বদলাবে */
+  height: 140px;
   object-fit: cover;
   display: block;
 }
 
-/* body (✅ FIX: footer bottom) */
+/* ✅ KEY FIX: cardBody as GRID (no overlap ever) */
 .cardBody {
   padding: 12px;
+  flex: 1;
 
-  display: flex;                 /* ✅ NEW */
-  flex-direction: column;        /* ✅ NEW */
-  flex: 1;                       /* ✅ NEW */
+  display: grid;
+  grid-template-rows: auto auto 1fr auto auto; /* title / cat / spacer / price / actions */
+  gap: 8px;
 }
 
-/* title (optional clamp so it doesn't grow) */
+/* title clamp */
 .cardTitle {
   font-weight: 900;
   font-size: 15px;
   line-height: 1.25;
-  margin-bottom: 6px;
 
-  /* ✅ NEW: 2 line limit */
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-/* price row (✅ FIX: push to bottom) */
 .priceRow {
-  margin-top: auto;              /* ✅ NEW */
-  padding-top: 10px;
+  margin: 0;
+  padding: 0;
 }
 
 .price {
@@ -155,26 +152,25 @@ input[type="file"] {
   font-size: 16px;
 }
 
-/* action buttons row (✅ FIX: flex:1 removed) */
-.cardBody button {
-  flex: 0 0 auto;                /* ✅ FIX: flex:1 বাদ */
-  width: 100%;
+/* ✅ actions row = last div inside cardBody */
+.cardBody > div:last-child {
+  margin-top: 0 !important;
+  display: flex !important;
+  gap: 10px !important;
+}
+
+/* equal width buttons */
+.cardBody > div:last-child button {
+  flex: 1;
   padding: 10px 12px;
-  margin-top: 10px;
 }
 
 /* =========================
    RESPONSIVE (Mobile)
 ========================= */
-@media (max-width: 1100px) {
-  .grid {
-    grid-template-columns: repeat(8, 1fr);
-  }
-}
-
 @media (max-width: 800px) {
   .grid {
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
@@ -182,206 +178,12 @@ input[type="file"] {
   .grid {
     grid-template-columns: repeat(4, 1fr);
   }
-}
 
-/* mobile image height (kept + works) */
-@media (max-width: 520px) {
-  .grid .cardImg {
-    height: 130px;
-  }
-}
-/* =========================
-   FINAL FIX (OVERRIDE) — bottom lock
-   Paste this at the VERY END of your CSS
-========================= */
-
-/* card container */
-.card {
-  position: relative;     /* ✅ important */
-  height: 360px;          /* 🔽 কম/বেশি: 340/360/380 */
-  overflow: hidden;
-  background: #fff;
-  border-radius: 18px;
-  border: 1px solid #eee;
-  box-shadow: 0 10px 26px rgba(0,0,0,.06);
-  display: flex;
-  flex-direction: column;
-}
-
-/* image fixed */
-.cardImg {
-  width: 100%;
-  height: 140px;          /* 🔽 130/140/150 */
-  object-fit: cover;
-  display: block;
-}
-
-/* body takes remaining space */
-.cardBody {
-  padding: 12px;
-  flex: 1;
-  position: relative;
-
-  /* ✅ reserve space for price + button at bottom */
-  padding-bottom: 90px;
-}
-
-/* title clamp so it won't make layout tall */
-.cardTitle {
-  font-weight: 900;
-  font-size: 15px;
-  line-height: 1.25;
-  margin-bottom: 6px;
-
-  display: -webkit-box;
-  -webkit-line-clamp: 2;        /* 2 lines */
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-/* ✅ price row locked above button */
-.priceRow {
-  position: absolute;
-  left: 12px;
-  right: 12px;
-  bottom: 54px;                 /* price sits above button */
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-.price {
-  font-weight: 900;
-  font-size: 16px;
-}
-
-/* ✅ Edit button locked at bottom */
-.cardBody button {
-  position: absolute;
-  left: 12px;
-  right: 12px;
-  bottom: 12px;
-
-  width: auto;
-  flex: 0 0 auto !important;    /* ✅ kills old flex:1 */
-  margin: 0 !important;
-  padding: 10px 12px;
-}
-
-/* mobile tweaks */
-@media (max-width: 520px) {
   .card {
-    height: 340px;              /* mobile */
+    height: 340px;
   }
+
   .cardImg {
     height: 130px;
   }
-  .cardBody {
-    padding-bottom: 86px;
-  }
-  .priceRow {
-    bottom: 52px;
-  }
-}
-.card { border: 4px solid red !important; }
-/* ===== EXACT FIX for your JSX ===== */
-.card{
-  height: 360px !important;
-  display: flex !important;
-  flex-direction: column !important;
-}
-
-.cardImg{
-  height: 140px !important;
-  object-fit: cover !important;
-}
-
-.cardBody{
-  display: flex !important;
-  flex-direction: column !important;
-  flex: 1 !important;
-}
-
-/* title 2 lines only */
-.cardTitle{
-  display: -webkit-box !important;
-  -webkit-line-clamp: 2 !important;
-  -webkit-box-orient: vertical !important;
-  overflow: hidden !important;
-}
-
-/* ✅ action row (last div) goes to bottom */
-.cardBody > div:last-child{
-  margin-top: auto !important;
-  display: flex !important;
-  gap: 10px !important;
-}
-
-/* equal width buttons */
-.cardBody > div:last-child button{
-  flex: 1 !important;
-}
-/* =========================
-   FINAL FIX — Price + Actions always bottom
-   (paste at END of admin-products.css)
-========================= */
-
-/* card fixed height */
-.card{
-  height: 360px !important;     /* চাইলে 340/380 */
-  display: flex !important;
-  flex-direction: column !important;
-  overflow: hidden !important;
-}
-
-/* image uniform */
-.cardImg{
-  width: 100% !important;
-  height: 140px !important;     /* চাইলে 130/150 */
-  object-fit: cover !important;
-  display: block !important;
-}
-
-/* body becomes positioning container */
-.cardBody{
-  position: relative !important;
-  flex: 1 !important;
-  padding: 12px !important;
-
-  /* নিচে price + button এর জন্য জায়গা রাখবে */
-  padding-bottom: 92px !important;
-}
-
-/* title 2 lines only */
-.cardTitle{
-  display: -webkit-box !important;
-  -webkit-line-clamp: 2 !important;
-  -webkit-box-orient: vertical !important;
-  overflow: hidden !important;
-}
-
-/* ✅ price locked just above buttons */
-.priceRow{
-  position: absolute !important;
-  left: 12px !important;
-  right: 12px !important;
-  bottom: 56px !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-/* ✅ actions row (your last div in cardBody) locked at bottom */
-.cardBody > div:last-child{
-  position: absolute !important;
-  left: 12px !important;
-  right: 12px !important;
-  bottom: 12px !important;
-
-  display: flex !important;
-  gap: 10px !important;
-  margin: 0 !important;
-}
-
-/* equal width buttons */
-.cardBody > div:last-child button{
-  flex: 1 !important;
 }
