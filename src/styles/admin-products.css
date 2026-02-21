@@ -228,3 +228,16 @@ input[type="file"] {
     font-size: 15px;
   }
 }
+/* FINAL polish for mobile 4-column */
+@media (max-width: 520px) {
+  /* buttons center aligned */
+  .cardBody > div:last-child{
+    align-items: center;
+  }
+
+  /* buttons look balanced */
+  .cardBody > div:last-child button{
+    font-weight: 600;
+    letter-spacing: .2px;
+  }
+}
