@@ -192,3 +192,23 @@ input[type="file"] {
     height: 130px; /* mobile এ একটু ছোট */
   }
 }
+/* =========================
+   FORCE footer content to bottom
+========================= */
+
+/* card body flex */
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* price নিচে নামাবে */
+.cardBody .priceRow {
+  margin-top: auto;
+}
+
+/* Edit button সবসময় নিচে */
+.cardBody button {
+  margin-top: 8px;
+}
