@@ -302,7 +302,6 @@ function Inner() {
 
         {form.images?.length ? (
           <>
-            {/* ✅ FIX: preview image responsive + not full screen */}
             <div
               style={{
                 display: "flex",
@@ -399,7 +398,10 @@ function Inner() {
           <div className="card" key={p._id}>
             <img
               className="cardImg"
-              src={p.images?.[0] || "https://via.placeholder.com/400x300?text=Product"}
+              src={
+                p.images?.[0] ||
+                "https://via.placeholder.com/400x300?text=Product"
+              }
               alt=""
             />
             <div className="cardBody">
@@ -411,10 +413,18 @@ function Inner() {
 
               {/* ✅ Edit/Delete actions */}
               <div style={{ display: "flex", gap: 10, marginTop: 10 }}>
-                <button className="btnGhost" type="button" onClick={() => onEdit(p)}>
+                <button
+                  className="btnGhost"
+                  type="button"
+                  onClick={() => onEdit(p)}
+                >
                   Edit
                 </button>
-                <button className="btnDark" type="button" onClick={() => onDelete(p._id)}>
+                <button
+                  className="btnDark"
+                  type="button"
+                  onClick={() => onDelete(p._id)}
+                >
                   Delete
                 </button>
               </div>
