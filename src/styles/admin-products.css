@@ -96,7 +96,7 @@ input[type="file"] {
   margin-top: 14px;
   display: grid;
   gap: 14px;
-  grid-template-columns: repeat(4, 1fr); /* ✅ mobile/desktop stable */
+  grid-template-columns: repeat(4, 1fr);
 }
 
 /* card container */
@@ -107,7 +107,7 @@ input[type="file"] {
   box-shadow: 0 10px 26px rgba(0,0,0,.06);
   overflow: hidden;
 
-  height: 360px; /* ✅ all same height */
+  height: 360px;
   display: flex;
   flex-direction: column;
 }
@@ -120,7 +120,7 @@ input[type="file"] {
   display: block;
 }
 
-/* ✅ KEY FIX: cardBody as GRID (no overlap ever) */
+/* ✅ cardBody as GRID */
 .cardBody {
   padding: 12px;
   flex: 1;
@@ -129,7 +129,7 @@ input[type="file"] {
   grid-template-rows: auto auto 1fr auto auto; /* title / cat / spacer / price / actions */
   gap: 8px;
 
-  min-width: 0; /* ✅ important for flex/grid overflow */
+  min-width: 0;
 }
 
 /* title clamp */
@@ -156,28 +156,32 @@ input[type="file"] {
   font-size: 16px;
 }
 
-/* ✅ actions row = last div inside cardBody */
+/* actions row */
 .cardBody > div:last-child {
   margin-top: 0 !important;
   display: flex !important;
   gap: 10px !important;
 
-  min-width: 0;      /* ✅ prevent overflow */
+  min-width: 0;
   align-self: stretch;
 }
 
+/* actions buttons */
 .cardBody > div:last-child button {
-  flex: 1;
+  flex: 1 1 0;
+  min-width: 0;
+
   padding: 10px 12px;
   border-radius: 14px;
 
-  white-space: normal;   /* ✅ লেখা কাটবে না */
-  overflow: visible;     /* ✅ পুরো লেখা দেখাবে */
-  text-overflow: unset;  /* ✅ ellipsis বন্ধ */
+  white-space: nowrap;
+  overflow: visible;
+  text-overflow: clip;
+  line-height: 1.1;
 }
 
 /* =========================
-   RESPONSIVE (Mobile)
+   RESPONSIVE
 ========================= */
 @media (max-width: 800px) {
   .grid {
@@ -185,17 +189,35 @@ input[type="file"] {
   }
 }
 
+/* ✅ Mobile: keep 4 columns + compact actions (Option A) */
 @media (max-width: 520px) {
   .grid {
     grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
   }
 
   .card {
-    height: 340px;
+    height: 330px;
   }
 
   .cardImg {
-    height: 130px;
+    height: 120px;
+  }
+
+  /* make action row 2 equal columns */
+  .cardBody > div:last-child {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 4px !important;
+  }
+
+  /* ultra compact buttons but keep full text */
+  .cardBody > div:last-child button {
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+    border-radius: 10px !important;
+    line-height: 1.05 !important;
+    white-space: nowrap !important;
   }
 
   .cardTitle {
@@ -204,9 +226,5 @@ input[type="file"] {
 
   .price {
     font-size: 15px;
-  }
-
-  .cardBody > div:last-child button {
-    padding: 9px 10px;
   }
 }
